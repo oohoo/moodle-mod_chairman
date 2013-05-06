@@ -24,6 +24,11 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 require_once('../../config.php');
 global $CFG;
 ?>
+
+div.ui-datepicker{
+ font-size:10px;
+}
+
 .cornerBox { position: relative; background: #cfcfcf; }
 .lightcornerBox { position: relative; background: #dadbda; }
 .corner { position: absolute; width: 10px; height: 10px; background: url('<?php echo $CFG->wwwroot;?>/mod/chairman/pix/corners.gif') no-repeat; font-size: 0%; }

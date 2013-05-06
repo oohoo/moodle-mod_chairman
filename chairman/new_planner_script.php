@@ -82,6 +82,7 @@ if($edit != 0){
 }
 
 foreach($dates as $date){
+	
     $date_arr = explode('@',$date);
     
     $date_raw = explode('/',$date_arr[0]);

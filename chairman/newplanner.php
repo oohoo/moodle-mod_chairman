@@ -34,19 +34,11 @@ if($planner != 0){
 }
 
 //get dependencies
-$PAGE->requires->yui2_lib('fonts-min');
-$PAGE->requires->yui2_lib('button');
-$PAGE->requires->yui2_lib('container');
-$PAGE->requires->yui2_lib('calendar');
-$PAGE->requires->yui2_lib('yahoo-dom-event');
-$PAGE->requires->yui2_lib('dragdrop-min');
-$PAGE->requires->yui2_lib('element-min');
-$PAGE->requires->yui2_lib('button-min');
-$PAGE->requires->yui2_lib('container-min');
-$PAGE->requires->yui2_lib('calendar-min');
-$PAGE->requires->yui2_lib('yui_yahoo');
-$PAGE->requires->yui2_lib('yui_event');
+$PAGE->requires->jquery();
+$PAGE->requires->jquery_plugin('ui');
+$PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->js('/mod/chairman/planner.js');
+$PAGE->requires->js('/mod/chairman/planner_calendar.js');
 
 
 //require_js(array('yui_yahoo', 'yui_event'));
@@ -56,118 +48,6 @@ $PAGE->requires->js('/mod/chairman/planner.js');
 chairman_check($id);
 chairman_header($id,'newplanner','newplanner.php?id='.$id);
 
-echo '<script type="text/javascript">
-    YAHOO.util.Event.onDOMReady(function(){
-    	//alert(\'ok\');
-
-        var Event = YAHOO.util.Event,
-            Dom = YAHOO.util.Dom,
-            dialog,
-            calendar;
-
-        var showBtn = Dom.get("show");
-
-        Event.on(showBtn, "click", function() {
-
-            // Lazy Dialog Creation - Wait to create the Dialog, and setup document click listeners, until the first time the button is clicked.
-            if (!dialog) {
-
-                // Hide Calendar if we click anywhere in the document other than the calendar
-                Event.on(document, "click", function(e) {
-                    var el = Event.getTarget(e);
-                    var dialogEl = dialog.element;
-                    if (el != dialogEl && !Dom.isAncestor(dialogEl, el) && el != showBtn && !Dom.isAncestor(showBtn, el)) {
-                        dialog.hide();
-                    }
-                });
-
-                function resetHandler() {
-                    // Reset the current calendar page to the select date, or
-                    // to today if nothing is selected.
-                    var selDates = calendar.getSelectedDates();
-                    var resetDate;
-
-                    if (selDates.length > 0) {
-                        resetDate = selDates[0];
-                    } else {
-                        resetDate = calendar.today;
-                    }
-
-                    calendar.cfg.setProperty("pagedate", resetDate);
-                    calendar.render();
-                }
-
-                function closeHandler() {
-                    dialog.hide();
-                }
-
-                dialog = new YAHOO.widget.Dialog("container", {
-                    visible:false,
-                    context:["show", "tl", "bl"],
-                    buttons:[ {text:"Reset", handler: resetHandler, isDefault:true}, {text:"Close", handler: closeHandler}],
-                    draggable:false,
-                    close:true
-                });
-                dialog.setHeader(\'Pick A Date\');
-                dialog.setBody(\'<div id="cal"></div>\');
-                dialog.render(document.body);
-
-                dialog.showEvent.subscribe(function() {
-                    if (YAHOO.env.ua.ie) {
-                        // Since we\'re hiding the table using yui-overlay-hidden, we
-                        // want to let the dialog know that the content size has changed, when
-                        // shown
-                        dialog.fireEvent("changeContent");
-                    }
-                });
-            }
-
-            // Lazy Calendar Creation - Wait to create the Calendar until the first time the button is clicked.
-            if (!calendar) {
-
-                calendar = new YAHOO.widget.Calendar("cal", {
-                    iframe:false,          // Turn iframe off, since container has iframe support.
-                    hide_blank_weeks:true  // Enable, to demonstrate how we handle changing height, using changeContent
-                });
-                calendar.render();
-
-                calendar.selectEvent.subscribe(function() {
-                    if (calendar.getSelectedDates().length > 0) {
-
-                        var selDate = calendar.getSelectedDates()[0];
-
-                        // Pretty Date Output, using Calendar\'s Locale values: Friday, 8 February 2008
-                        var day = selDate.getDate();
-                        var month = selDate.getMonth()+1;
-                        var year = selDate.getFullYear();
-
-                        Dom.get("date").value = day + "/" + month + "/" + year;
-                    } else {
-                        Dom.get("date").value = "";
-                    }
-                    dialog.hide();
-                });
-
-                calendar.renderEvent.subscribe(function() {
-                    // Tell Dialog it\'s contents have changed, which allows
-                    // container to redraw the underlay (for IE6/Safari2)
-                    dialog.fireEvent("changeContent");
-                });
-            }
-
-            var seldate = calendar.getSelectedDates();
-
-            if (seldate.length > 0) {
-                // Set the pagedate to show the selected date if it exists
-                calendar.cfg.setProperty("pagedate", seldate[0]);
-                calendar.render();
-            }
-
-            dialog.show();
-        });
-    });
-</script>
-';
 
 //content
 echo '<div class="title">'.get_string('newplanner','chairman').'</div>';
@@ -224,13 +104,18 @@ echo '<td valign="top">'.get_string('timezone_used','mod_chairman').'</td>';
 require_once($CFG->dirroot.'/calendar/lib.php');
 $timezones = get_list_of_timezones();
 //get user timezone
-if ($plannerobj->timezone == '99'){
-    $current = $USER->timezone;
-	if ($current == '99') {
-		$current = $CFG->timezone;
+
+
+$current = 99;
+if(isset($plannerobj)){
+	if ($plannerobj->timezone == '99'){
+		$current = $USER->timezone;
+		if ($current == '99') {
+			$current = $CFG->timezone;
+		}
+	} else {
+		$current = $plannerobj->timezone;
 	}
-} else {
-    $current = $plannerobj->timezone;
 }
 echo '<td>'.html_writer::select($timezones, "timezone", $current, array('99'=>get_string("serverlocaltime"))).'</td>';
 echo '</tr>';
@@ -240,8 +125,8 @@ echo '<td>';
 echo '<table><tr>';
 echo '<td style="border:1px solid black;" valign="top">';
 echo '<b>'.get_string('day','chairman').'</b><br/>';
-echo '<div class="datefield"><input type="text" id="date" name="date" size="8" style="padding:3px;vertical-align:bottom;" />';
-echo '<button type="button" id="show" title="Show Calendar" style="vertical-align:bottom;"><img src="calbtn.gif" width="18" height="18" alt="Calendar" ></button></div>';
+echo '<div id="datepicker"></div>';
+//echo '<button type="button" id="show" title="Show Calendar" style="vertical-align:bottom;"><img src="calbtn.gif" width="18" height="18" alt="Calendar" ></button></div>';
 echo '<br/><b>'.get_string('from','chairman').'</b><br/>';
 echo render_timepicker('from',time()).'<br/>';
 echo '<br/><b>'.get_string('to','chairman').'</b><br/>';

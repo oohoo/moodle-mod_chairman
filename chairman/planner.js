@@ -17,27 +17,35 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 
 
 function planner_add_date(){
-    var day = document.getElementById('date');
-    var from = document.getElementById('from_time');
-    var to = document.getElementById('to_time');
-    var list = document.getElementById('list');
+    var day = $("#datepicker");
+    var from = $("#from_time").find(":selected").text();
+    var to = $("#to_time").find(":selected").text();
+    var list = $("#list");
 
-    if(day.value == ''){
-        //Do nothing
+    var from_array = from.split(":");
+    var to_array = to.split(":");
+    
+    //if no day is selected or start time is less than or the same as the ending time
+    //we don't want to ignore the attempted add
+    if(day == null || from_array[0]*60+from_array[1] >= to_array[0]*60+to_array[1]){
+        return;
     }
-    else{
-        var text = day.value + ' ' + from.value + ' - ' + to.value;
-        var value = day.value + '@' + from.value + '@' + to.value;
+    
+    	var dateTypeVar = $('#datepicker').datepicker('getDate');
+    	
+    	day_value = $.datepicker.formatDate('dd/mm/yy', dateTypeVar);
+    	var value = day_value + '@' + from + '@' + to;
+    	
+    	day_text = $.datepicker.formatDate("M d, yy", dateTypeVar);
+        var text = day_text + ' ' + from + ' - ' + to;
+        
+        day.datepicker({ dateFormat: "dd/mm/yy" });
 
-        var option = new Option(text,value);
-
-        try{
-            list.add(option, null);    //Gecko
-        }
-        catch(e){
-            list.add(option);          //IE
-        }
-    }
+       list.append($('<option>', {
+            value: value,
+            text: text
+        }));
+  
 }
 
 function planner_remove_date(){
