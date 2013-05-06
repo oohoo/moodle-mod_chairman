@@ -6,3 +6,7 @@ $(function() {
       dateFormat: "dd/mm/yy"
     });
   });
+
+$(function() {
+    $( "#list" ).selectable();
+  });

@@ -29,6 +29,10 @@ div.ui-datepicker{
  font-size:10px;
 }
 
+  #list .ui-selecting { background: #FECA40; }
+  #list .ui-selected { background: #F39814; color: white; }
+  #list { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+
 .cornerBox { position: relative; background: #cfcfcf; }
 .lightcornerBox { position: relative; background: #dadbda; }
 .corner { position: absolute; width: 10px; height: 10px; background: url('<?php echo $CFG->wwwroot;?>/mod/chairman/pix/corners.gif') no-repeat; font-size: 0%; }

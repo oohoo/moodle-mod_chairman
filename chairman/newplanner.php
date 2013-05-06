@@ -124,25 +124,35 @@ echo '<td valign="top">'.get_string('dates','chairman').':</td>';
 echo '<td>';
 echo '<table><tr>';
 echo '<td style="border:1px solid black;" valign="top">';
+
+echo '<div style="display: table">';
+echo '<div style="width=180px;display: table-cell;">';
 echo '<b>'.get_string('day','chairman').'</b><br/>';
 echo '<div id="datepicker"></div>';
-//echo '<button type="button" id="show" title="Show Calendar" style="vertical-align:bottom;"><img src="calbtn.gif" width="18" height="18" alt="Calendar" ></button></div>';
+echo '</div>';
+
+
+echo '<div style="padding-left:10px;width=80px;display: table-cell;">';
 echo '<br/><b>'.get_string('from','chairman').'</b><br/>';
 echo render_timepicker('from',time()).'<br/>';
 echo '<br/><b>'.get_string('to','chairman').'</b><br/>';
 echo render_timepicker('to',(time()+(60*60)));
+echo '</div>';
+
+echo '</div>';
+
 echo '</td>';
 echo '<td><button type="button" onclick="planner_add_date();"><img src="right.gif"></button><br/><button type="button" onclick="planner_remove_date();"><img src="garbage.gif"></button></td>';
-echo '<td style="border:1px solid black;"><div id="listerror" style="font-size:10px;color:red;"></div><select name="list[]" id="list" multiple="multiple" style="width:300px;height:150px;">';
+echo '<td style="border:1px solid black;"><div id="listerror" style="font-size:10px;color:red;"></div><ol id="list" style="overflow-x: hidden;overflow: scroll;width:300px;height:150px;">';
 if($planner != 0){
     $dates_obj = $DB->get_records('chairman_planner_dates',array('planner_id'=>$planner));
     foreach($dates_obj as $date_obj){
         $value = date('d/n/Y@H:i@',$date_obj->from_time).date('H:i',$date_obj->to_time);
         $text = date('d/n/Y H:i - ',$date_obj->from_time).date('H:i',$date_obj->to_time);
-        echo '<option value="'.$value.'">'.$text.'</option>';
+        echo '<li value="'.$value.'">'.$text.'</li>';
     }
 }
-echo '</select></td>';
+echo '</ol></td>';
 echo '</tr></table>';
 echo '</td>';
 echo '</tr>';

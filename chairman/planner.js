@@ -24,10 +24,14 @@ function planner_add_date(){
 
     var from_array = from.split(":");
     var to_array = to.split(":");
+   
+    
+    var from_value = parseInt(from_array[0]*60+from_array[1]);
+    var to_value = parseInt(to_array[0]*60+to_array[1]);
     
     //if no day is selected or start time is less than or the same as the ending time
     //we don't want to ignore the attempted add
-    if(day == null || from_array[0]*60+from_array[1] >= to_array[0]*60+to_array[1]){
+    if(day == null || from_value >= to_value){
         return;
     }
     
@@ -41,21 +45,16 @@ function planner_add_date(){
         
         day.datepicker({ dateFormat: "dd/mm/yy" });
 
-       list.append($('<option>', {
+       list.append($('<li>', {
             value: value,
             text: text
         }));
   
 }
 
-function planner_remove_date(){
-    var list = document.getElementById('list');
-
-    for(var i=0; i<list.length; i++){
-        if(list.options[i].selected){
-            list.remove(i);
-        }
-    }
+function planner_remove_date()
+{
+	$("#list .ui-selected").remove();
 }
 
 function planner_submit(){
