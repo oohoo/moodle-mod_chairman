@@ -290,7 +290,8 @@ $moodle_members = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $l
             $participant[] = & $mform->createElement('html', "");//remove_moodle_user[$index]
 
             $mform->addElement('hidden', "participant_moodle_id[$index]", $moodle_user->moodleid);
-
+            $mform->setType('participant_moodle_id', PARAM_INT);
+            
             $exclusion_id[] = $moodle_user->moodleid;
 
             $mform->addGroup($participant, "participant_moodle[$index]", '&nbsp;', array(' '), false);
@@ -660,9 +661,9 @@ $index++;
 
 //--------HIDDEN ELEMENTS-------------------------------------------------------
         $mform->addElement('hidden', 'event_id', '');
-        $mform->setType('event_id', PARAM_INT);
+        $mform->setType('event_id', PARAM_TEXT);
         $mform->addElement('hidden', 'selected_tab', '');
-        $mform->setType('selected_tab', PARAM_INT);
+        $mform->setType('selected_tab', PARAM_TEXT);
         $mform->addElement('hidden', 'base_url', "$CFG->wwwroot");
         $mform->setType('base_url', PARAM_TEXT);
         $mform->addElement('hidden', 'courseid', "$chairman->course");

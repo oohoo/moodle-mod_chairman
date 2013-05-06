@@ -156,6 +156,7 @@ $mform->addElement('html', '</br>');
 $mform->addElement('html','</br>');
 $mform->addElement('static', "topic_status[$year][$index]", get_string('topic_status', 'chairman'), '');
 $mform->addElement('hidden', "topic_ids[$year][$index]", $topic->id);
+$mform->setType('topic_ids', PARAM_RAW);
 $mform->addElement('static', "follow_up[$year][$index]", get_string('topic_followup', 'chairman'), '');
 
 //-------FILE MANAGER -- VIEW ONLY----------------------------------------------
@@ -210,6 +211,7 @@ $votes = array();
 
 
 $mform->addElement('hidden', "motion_ids[$year][$index][$sub_index]", $motion->id);
+$mform->setType('motion_ids', PARAM_RAW);
 $mform->addElement('html', "</br>");
 
 
@@ -302,7 +304,9 @@ $index++;
 
         //Hidden Elements
         $mform->addElement('hidden', 'event_id', '');
+        $mform->setType('event_id', PARAM_TEXT);
         $mform->addElement('hidden', 'selected_tab', '');
+         $mform->setType('selected_tab', PARAM_TEXT);
 
         //Set defaults to private value
         $this->default_toform = $toform;

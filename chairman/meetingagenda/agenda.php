@@ -383,7 +383,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
             }
 
             //send email notification
-            if ($fromform->notify_now == 1){
+            if (isset($fromform->notify_now) && $fromform->notify_now == 1){
                 //get meeting
                 $meeting = $DB->get_record('chairman_events',array('id' => $event_id));
                 //get president

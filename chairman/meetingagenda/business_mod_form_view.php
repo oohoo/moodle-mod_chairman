@@ -158,7 +158,7 @@ $chairmanMemberRecords = $DB->get_records('chairman_agenda_members', array('chai
                 $mform->disabledIf("participant_status_notes[$index]", "participant_status[$index]", 'eq', 0);
                 $mform->disabledIf("participant_status_notes[$index]", "participant_status[$index]", 'eq', -1);
                 $mform->addElement('hidden', "participant_id[$index]", $member->id);
-
+                $mform->setType('participant_id', PARAM_INT);
 //--DEFAULT VALUES--------------------------------------------------------------
 //------------------------------------------------------------------------------
                 //Get Real name from moodle
@@ -218,6 +218,7 @@ $moodle_members = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $l
 
             $mform->addElement('hidden', "participant_moodle_id[$index]", $moodle_user->moodleid);
             $exclusion_id[] = $moodle_user->moodleid;
+            $mform->setType('participant_moodle_id', PARAM_INT);
 
             $mform->addGroup($participant, "participant_moodle[$index]", '', array(' '), false);
 
@@ -255,7 +256,7 @@ $guests = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=
                 $participant[] = & $mform->createElement('static', "participant_guest_name[$index]", '', "");
 
                 $mform->addElement('hidden', "participant_guest_id[$index]", $guest->id);
-
+                $mform->setType('participant_guest_id', PARAM_INT);
 
             $mform->addGroup($participant, "participant_guest[$index]", '', array(' '), false);
 
@@ -305,6 +306,7 @@ $mform->addElement('html', '</br>');
 $mform->addElement('html','</br>');
 $mform->addElement('static', "topic_status[$index]", get_string('topic_status', 'chairman'), '');
 $mform->addElement('hidden', "topic_ids[$index]", $topic->id);
+$mform->setType('topic_ids', PARAM_INT);
 //$mform->addElement('static', "follow_up[$index]", get_string('topic_followup', 'chairman'), '');
 
 //-------FILE MANAGER -- VIEW ONLY----------------------------------------------
@@ -359,6 +361,7 @@ $results = array();
 
 
 $mform->addElement('hidden', "motion_ids[$index][$sub_index]", $motion->id);
+$mform->setType('motion_ids', PARAM_INT);
 $mform->addElement('html', "</br>");
 
 
@@ -451,9 +454,13 @@ $index++;
 
         //Hidden Values
         $mform->addElement('hidden', 'event_id', '');
+        $mform->setType('event_id', PARAM_TEXT);
         $mform->addElement('hidden', 'selected_tab', '');
+        $mform->setType('selected_tab', PARAM_TEXT);
         $mform->addElement('hidden', 'base_url', "$CFG->wwwroot");
+        $mform->setType('base_url', PARAM_TEXT);
         $mform->addElement('hidden', 'courseid', "$chairman->course");
+        $mform->setType('courseid', PARAM_INT);
         
         //Set default values to private variable
         $this->default_toform = $toform;

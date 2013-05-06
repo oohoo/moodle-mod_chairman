@@ -208,9 +208,9 @@ $index++;
 
 //Hidden Variables
 $mform->addElement('hidden', 'event_id', '');
-$mform->setType('event_id', PARAM_INT);
+$mform->setType('event_id', PARAM_TEXT);
 $mform->addElement('hidden', 'selected_tab', '');
-$mform->setType('selected_tab', PARAM_INT);
+$mform->setType('selected_tab', PARAM_TEXT);
 
 //Set defaults to private variable
 $this->default_toform = $toform;

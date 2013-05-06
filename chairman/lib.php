@@ -184,18 +184,6 @@ function chairman_get_post_actions() {
     return array();
 }
 
-function chairman_get_types() {
-    $types = array();
-
-    $type = new object();
-    $type->modclass = MOD_CLASS_ACTIVITY;
-    $type->type = "chairman";
-    $type->typestr = get_string('modulename', 'chairman');
-    $types[] = $type;
-
-    return $types;
-}
-
 /**
  * This function is used by the reset_course_userdata function in moodlelib.
  * @param $data the data submitted from the reset course.
@@ -234,7 +222,7 @@ function chairman_supports($feature) {
         case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
         case FEATURE_GRADE_HAS_GRADE:         return false;
         case FEATURE_GRADE_OUTCOMES:          return false;
-        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_MOD_ARCHETYPE:           return MOD_CLASS_ACTIVITY;
         case FEATURE_BACKUP_MOODLE2:          return false;
 
         default: return null;

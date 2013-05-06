@@ -456,17 +456,14 @@ function chairman_get_timezone_offset($remote_tz, $origin_tz = null) {
             return false; // A UTC timestamp was returned -- bail out!
         }
     }
-
-   $timezone_identifiers = DateTimeZone::listIdentifiers();
+    $offset = 3600;
+    $remote_timezonename = timezone_name_from_abbr("", $remote_tz*$offset, false);
+    $origin_timezonename = timezone_name_from_abbr("", $origin_tz*$offset, false);
     
-    if(is_numeric($remote_tz))
-        $remote_tz = $timezone_identifiers[$remote_tz];
-    
-    if(is_numeric($origin_tz))
-        $origin_tz = $timezone_identifiers[$origin_tz];
-    
-    $origin_dtz = new DateTimeZone($origin_tz);
-    $remote_dtz = new DateTimeZone($remote_tz);
+    if($remote_timezonename === false || $origin_timezonename===false) return false;
+   
+    $origin_dtz = new DateTimeZone($origin_timezonename);
+    $remote_dtz = new DateTimeZone($remote_timezonename);
     $origin_dt = new DateTime("now", $origin_dtz);
     $remote_dt = new DateTime("now", $remote_dtz);
     $offset = $origin_dtz->getOffset($origin_dt) - $remote_dtz->getOffset($remote_dt);

@@ -105,10 +105,15 @@ $this->repeat_elements($repeatarray, $repeatno, $repeateloptions, 'option_repeat
 //Hidden Elements for information transfer between pages------------------------
 //------------------------------------------------------------------------------
 $mform->addElement('hidden', 'is_editable', 'no');
+$mform->setType('is_editable', PARAM_RAW);
 $mform->addElement('hidden', 'created', 'no');
+$mform->setType('created', PARAM_RAW);
 $mform->addElement('hidden', 'event_id', '');
+$mform->setType('event_id', PARAM_RAW);
 $mform->addElement('hidden', 'selected_tab', '');
+$mform->setType('selected_tab', PARAM_RAW);
 $mform->addElement('hidden', 'delete_requested', 'no');
+$mform->setType('delete_requested', PARAM_RAW);
 
 
 
