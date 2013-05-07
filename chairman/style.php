@@ -25,13 +25,30 @@ require_once('../../config.php');
 global $CFG;
 ?>
 
-div.ui-datepicker{
+#datepicker{
  font-size:10px;
 }
 
-  #list .ui-selecting { background: #FECA40; }
-  #list .ui-selected { background: #F39814; color: white; }
-  #list { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+#list .ui-selecting{
+ 	background: #FECA40; 
+ }
+
+ #list .ui-selected{ 
+ 	background: #F39814; 
+ 	color: white;
+ }
+
+ #list{ 
+ 	list-style-type: none; 
+ 	margin: 0; padding: 0; 
+ 	width: 60%;
+ }
+ 
+ #list li{
+ 	border:1px solid grey;
+ 	margin-top: 1px;
+ 	
+ }
 
 .cornerBox { position: relative; background: #cfcfcf; }
 .lightcornerBox { position: relative; background: #dadbda; }

@@ -15,7 +15,15 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************
 **************************************************************************/
 
-
+/**
+ * Takes the current status of the online jquery calendar and the "from" & "to" times
+ * and constructs a date for the meeting. This date is added to the list of dates when
+ * this meeting will occur.
+ * 
+ * If no date is selected in the inline calendar or the from time is less than the to time
+ * nothing will occur.
+ * 
+ */
 function planner_add_date(){
     var day = $("#datepicker");
     var from = $("#from_time").find(":selected").text();
@@ -52,42 +60,57 @@ function planner_add_date(){
   
 }
 
+/**
+ * Removes all entries in the list of dates that are currently selected.
+ * 
+ * 
+ */
 function planner_remove_date()
 {
 	$("#list .ui-selected").remove();
 }
 
 function planner_submit(){
-    var name = document.getElementById('name');
-    var nameerror = document.getElementById('nameerror');
+    var name = $('name');
+    var nameerror = $('nameerror');
 
     //Check name
-    if(name.value == ''){
-        nameerror.innerHTML = '*Vous devez fournir un nom';
+    if(name.val() == ''){
+        nameerror.val('*Vous devez fournir un nom');
         return false;
     }
     else{
-        nameerror.innerHTML = '';
+    	nameerror.val('');
     }
 
     //Check dates
-    var list = document.getElementById('list');
-    var listerror = document.getElementById('listerror');
+    var list = $('#list');
+    var list_elements = $('#list li');
+    var listerror = $('#listerror');
+    var dates = $('#dates');
 
-    if(list.length == 0){
-        listerror.innerHTML = '*Vous devez fournir au moins une date';
+    if(list_elements.length == 0){
+        listerror.val('*Vous devez fournir au moins une date');
         return false;
     }
     else{
-        listerror.innerHTML = '';
+        listerror.val('');
     }
 
-    //Validation complete
+    var lastElement = dates;
+    $.each(list_elements, function(i, item) {
+    	
+    	var element = $('<input/>', {
+    	    id: 'dates',
+    	    name: 'dates['+i+']',
+    	    type: 'hidden',
+    	    value: $(item).attr('value')
+    	});
+    	
+        element.insertAfter(lastElement);
+        lastElement = element
+    });
+    
 
-    //Check all dates in list
-    for(var i = 0; i<list.length; i++){
-        list.options[i].selected = true;
-    }
-
-    document.newplanner.submit();
+    $('#newplanner').submit();
 }

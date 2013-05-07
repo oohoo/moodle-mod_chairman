@@ -52,7 +52,7 @@ chairman_header($id,'newplanner','newplanner.php?id='.$id);
 //content
 echo '<div class="title">'.get_string('newplanner','chairman').'</div>';
 
-echo '<form action="'.$CFG->wwwroot.'/mod/chairman/new_planner_script.php?id='.$id.'" method="POST" name="newplanner">';
+echo '<form action="'.$CFG->wwwroot.'/mod/chairman/new_planner_script.php?id='.$id.'" method="POST" id="newplanner" name="newplanner">';
 echo '<input type="hidden" name="id" value="'.$id.'">';
 if($planner != 0){
     echo '<input type="hidden" name="edit" value="'.$planner.'">';
@@ -124,7 +124,7 @@ echo '<td valign="top">'.get_string('dates','chairman').':</td>';
 echo '<td>';
 echo '<table><tr>';
 echo '<td style="border:1px solid black;" valign="top">';
-
+echo '<input type="hidden" name="dates[]" id="dates">';
 echo '<div style="display: table">';
 echo '<div style="width=180px;display: table-cell;">';
 echo '<b>'.get_string('day','chairman').'</b><br/>';
@@ -148,7 +148,7 @@ if($planner != 0){
     $dates_obj = $DB->get_records('chairman_planner_dates',array('planner_id'=>$planner));
     foreach($dates_obj as $date_obj){
         $value = date('d/n/Y@H:i@',$date_obj->from_time).date('H:i',$date_obj->to_time);
-        $text = date('d/n/Y H:i - ',$date_obj->from_time).date('H:i',$date_obj->to_time);
+        $text = date('M j, Y H:i - ',$date_obj->from_time).date('H:i',$date_obj->to_time);
         echo '<li value="'.$value.'">'.$text.'</li>';
     }
 }

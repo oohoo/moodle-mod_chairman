@@ -32,7 +32,8 @@ $edit = optional_param('edit',0,PARAM_INT);   //If editing, this points to the p
 $name = required_param('name',PARAM_TEXT);  // Planner name
 $description = optional_param('description',null,PARAM_TEXT);    // Planner description
 $user_rules = optional_param('rule',null,PARAM_RAW);     // Array of member id's + rule
-$dates = optional_param('list',null,PARAM_RAW);      // Array of all potential dates
+$dates = optional_param('dates',null,PARAM_RAW);      // Array of all potential dates
+
 $notify_now = optional_param('notify_now',0,PARAM_INT); 
 $timezone = optional_param('timezone',99,PARAM_TEXT);
 
