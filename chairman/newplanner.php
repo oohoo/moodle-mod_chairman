@@ -33,6 +33,18 @@ if($planner != 0){
     $plannerobj = $DB->get_record('chairman_planner', array('id'=>$planner));
 }
 
+?>
+<script type="text/javascript">
+moodleMsgs = {
+
+<?php
+	echo 'planner_empty_name:"'.get_string('planner_empty_name','chairman').'",';
+	echo 'planner_empty_dates:"'.get_string('planner_empty_dates','chairman').'"';
+?>
+};
+</script>
+
+<?php
 //get dependencies
 $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');

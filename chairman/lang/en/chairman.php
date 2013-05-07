@@ -118,6 +118,9 @@ $string['respond'] = 'Respond';
 $string['closed'] = 'Closed';
 $string['viewresults'] = 'View Results';
 $string['save'] = 'Save';
+$string['planner_empty_dates'] = 'No Dates';
+$string['planner_empty_name'] = 'No Name';
+
 
 $string['youhaveresponded'] = 'You have already responded';
 $string['youhavenotresponded'] = 'You have not responded yet';

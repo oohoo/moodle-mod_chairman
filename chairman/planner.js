@@ -70,17 +70,25 @@ function planner_remove_date()
 	$("#list .ui-selected").remove();
 }
 
+/**
+ * This function will validate the form has been fully completed, will prepared it for submission,
+ * and make the call to actually submit it.
+ * 
+ * If the form isn't correctly filled out an appropriate error message is displayed.
+ * 
+ * @returns false when invalid or missing data is present in form
+ */
 function planner_submit(){
-    var name = $('name');
-    var nameerror = $('nameerror');
+    var name = $('#name');
+    var nameerror = $('#nameerror');
 
     //Check name
     if(name.val() == ''){
-        nameerror.val('*Vous devez fournir un nom');
+        nameerror.text(moodleMsgs.planner_empty_name);
         return false;
     }
     else{
-    	nameerror.val('');
+    	nameerror.text('');
     }
 
     //Check dates
@@ -90,11 +98,11 @@ function planner_submit(){
     var dates = $('#dates');
 
     if(list_elements.length == 0){
-        listerror.val('*Vous devez fournir au moins une date');
+        listerror.text(moodleMsgs.planner_empty_dates);
         return false;
     }
     else{
-        listerror.val('');
+        listerror.text('');
     }
 
     var lastElement = dates;
