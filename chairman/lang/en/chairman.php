@@ -118,8 +118,8 @@ $string['respond'] = 'Respond';
 $string['closed'] = 'Closed';
 $string['viewresults'] = 'View Results';
 $string['save'] = 'Save';
-$string['planner_empty_dates'] = 'No Dates';
-$string['planner_empty_name'] = 'No Name';
+$string['planner_empty_name'] = 'You must provide a name for the meeting schedule.';
+$string['planner_empty_dates'] = 'You must provide at least one date for the meeting schedule.';
 
 
 $string['youhaveresponded'] = 'You have already responded';
