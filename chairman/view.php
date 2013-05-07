@@ -42,7 +42,7 @@ if($president = $DB->get_record('chairman_members', array('chairman_id'=>$id , '
     echo '<span class="content"><a href="mailto:'.$president_user->email.'">'.$president_user->firstname.' '.$president_user->lastname.'</a>';
     
     if(chairman_isadmin($id)) {
-        echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/delete_member_script.php?id='.$id.'&member='.$president->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
+        echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/chairman_membership/delete_member_script.php?id='.$id.'&member='.$president->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
     }
     echo '<br/><br/></span></div>';
 }
@@ -57,7 +57,7 @@ if($vicepresident = $DB->get_record('chairman_members', array('chairman_id'=>$id
     echo '<span class="content"><a href="mailto:'.$vicepresident_user->email.'">'.$vicepresident_user->firstname.' '.$vicepresident_user->lastname.'</a>';
 
     if(chairman_isadmin($id)) {
-        echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/delete_member_script.php?id='.$id.'&member='.$vicepresident->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
+        echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/chairman_membership/delete_member_script.php?id='.$id.'&member='.$vicepresident->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
     }
     echo '<br/><br/></span></div>';
 }
@@ -71,7 +71,7 @@ if($administrator = $DB->get_record('chairman_members', array('chairman_id'=>$id
     echo '<span class="content"><a href="mailto:'.$administrator_user->email.'">'.$administrator_user->firstname.' '.$administrator_user->lastname.'</a>';
 
     if(chairman_isadmin($id)) {
-        echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/delete_member_script.php?id='.$id.'&member='.$administrator->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
+        echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/chairman_membership/delete_member_script.php?id='.$id.'&member='.$administrator->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
     }
     echo '<br/><br/></span></div>';
 }
@@ -92,7 +92,7 @@ if ($members = $DB->get_records_sql($memberssql)) {
         echo '<span class="content"><a href="mailto:'.$member->email.'">'.$member->firstname.' '.$member->lastname.'</a>';
 
         if(chairman_isadmin($id)) {
-            echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/delete_member_script.php?id='.$id.'&member='.$member->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
+            echo ' - <a href="'.$CFG->wwwroot.'/mod/chairman/chairman_membership/delete_member_script.php?id='.$id.'&member='.$member->id.'" onClick="return confirm(\''.get_string('deletememberquestion', 'chairman').'\');"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/delete.gif"></a>';
         }
         echo '<br/>';
 
@@ -121,7 +121,7 @@ if(chairman_isMember($id) || chairman_isadmin($id)) {
     echo '<div class="add">';
     echo $email_button;
     if (chairman_isadmin($id)){
-        echo '<a href="'.$CFG->wwwroot.'/mod/chairman/add_member.php?id='.$id.'"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/switch_plus.gif'.'">'.get_string('addmember', 'chairman').'</a>';
+        echo '<a href="'.$CFG->wwwroot.'/mod/chairman/chairman_membership/add_member.php?id='.$id.'"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/switch_plus.gif'.'">'.get_string('addmember', 'chairman').'</a>';
     }
     echo '</div>';
 
