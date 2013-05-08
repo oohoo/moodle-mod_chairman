@@ -113,7 +113,7 @@ $toform->selected_tab = $selected_tab;
 $mform->set_data($toform);
 
 //Display Menu
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/topic_by_year_sidebar.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/topics/topic_by_year_sidebar.php");
 
 //Display Form
 print '<div class="form">';
@@ -160,7 +160,7 @@ $toform->selected_tab = $selected_tab;
 $mform->set_data($toform);
 
 //Display Menu
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/topic_by_year_sidebar.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/topics/topic_by_year_sidebar.php");
 
 //Display Form
 print '<div class="form">';

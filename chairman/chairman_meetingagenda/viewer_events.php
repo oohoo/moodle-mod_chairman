@@ -45,7 +45,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
  */
 
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda_viewer.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda/css/agenda_viewer.css");
 
 global $DB;
 

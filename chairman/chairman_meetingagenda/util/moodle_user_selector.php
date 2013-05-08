@@ -67,7 +67,7 @@ class my_user_selector extends user_selector_base {
 
     function get_options() {
         $options = parent::get_options();
-        $options['file'] = '/mod/chairman/chairman_meetingagenda/moodle_user_selector.php';
+        $options['file'] = '/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php';
         return $options;
         
         }

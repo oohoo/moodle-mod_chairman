@@ -21,11 +21,11 @@ defined('MOODLE_INTERNAL') || die();
 
 
 require_once("$CFG->libdir/formslib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/moodle_user_selector.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/ajax_lib.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 
-class mod_buisness_mod_form extends moodleform {
+class mod_business_mod_form extends moodleform {
 
     private $instance;
     private $event_id;

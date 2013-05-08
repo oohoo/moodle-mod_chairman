@@ -17,11 +17,11 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************
 **************************************************************************/
 
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business_menu_style.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/css/business_menu_style.css");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
 
 //START DIV FOR CSS
-print '<div class="buisness_side_menu">';
+print '<div class="business_side_menu">';
 
 
 
@@ -85,7 +85,7 @@ $current_event = $DB->get_record('chairman_events', array('id'=>$event_id));
 
 //DOWNLOAD AGENDA LINK -- Replaced with button
 //print '<h3 class="headerbar">'."PDF".'</h3><ul>';
-//$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/pdf_script.php?event_id=" . $event_id;
+//$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/util/pdf_script.php?event_id=" . $event_id;
 //print '<li><a href="'.$url.'" target="_blank">'."Download".'</a></li>';
 
 

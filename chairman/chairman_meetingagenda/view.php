@@ -118,15 +118,15 @@ $selected_tab = optional_param('selected_tab', -1, PARAM_INT);
 if ($selected_tab==3) {
 	$currenttab = 'arising_issues';
 	$thispageurl = $PAGE->url;
-	$contents = 'business.php';
+	$contents = 'business/business.php';
 
 
-//Detailed Buisness Arising List (Disabled -- Not Used)
+//Detailed business Arising List (Disabled -- Not Used)
 /*
  } elseif ($selected_tab==2) {
     $currenttab = 'open_topics';
 	$thispageurl = $PAGE->url;
-	$contents = 'open_topics.php';
+	$contents = 'topics/open_topics.php';
 */
 
 //Detailed Topic by year (Disabled -- Not Used)
@@ -134,7 +134,7 @@ if ($selected_tab==3) {
 } elseif ($selected_tab==4) {
 	$currenttab = 'topics_by_year';
 	$thispageurl = $PAGE->url;
-	$contents = 'topics_by_year.php';
+	$contents = 'topics/topics_by_year.php';
 
 */
 
@@ -142,27 +142,27 @@ if ($selected_tab==3) {
 } elseif ($selected_tab==7) {
 	$currenttab = 'topics_by_year_list';
 	$thispageurl = $PAGE->url;
-	$contents = 'topics_by_year_list.php';
+	$contents = 'topics/topics_by_year_list.php';
 
 
 //Motions By Year
 } elseif ($selected_tab==5) {
         $currenttab = 'motions_by_year';
         $thispageurl = $PAGE->url;
-        $contents = 'motions_by_year.php';
+        $contents = 'motions/motions_by_year.php';
 
 //Business Arising List
 } elseif ($selected_tab==6) {
         $currenttab = 'open_topic_list';
         $thispageurl = $PAGE->url;
-        $contents = 'open_topic_list.php';        
+        $contents = 'topics/open_topic_list.php';        
 
 //Agenda
 } else {
 
     $currenttab = 'agenda';
 	$thispageurl = $PAGE->url;
-	$contents = 'agenda.php';
+	$contents = 'agenda/agenda.php';
 	$selected_tab = 1;
 }
 

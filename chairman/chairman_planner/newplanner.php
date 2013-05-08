@@ -49,8 +49,8 @@ moodleMsgs = {
 $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
-$PAGE->requires->js('/mod/chairman/chairman_planner/planner.js');
-$PAGE->requires->js('/mod/chairman/chairman_planner/planner_calendar.js');
+$PAGE->requires->js('/mod/chairman/chairman_planner/script/planner.js');
+$PAGE->requires->js('/mod/chairman/chairman_planner/script/planner_calendar.js');
 
 
 // print header

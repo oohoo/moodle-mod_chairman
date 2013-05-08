@@ -17,8 +17,8 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************
 **************************************************************************/
 
-require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
-require_once('../lib_chairman.php');
+require_once(dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/config.php');
+require_once('../../lib_chairman.php');
 
 $event_id = optional_param('event_id', 0, PARAM_INT); // event ID, or
 
@@ -35,10 +35,10 @@ if ($event_id) {
 	//$DB->delete_records('chairman_agenda', array('chairman_events_id' => $event_id));
        //exit();
 	} else {
-          print_error('Unable to Complete Agenda');
+          print_error('Unable to Delete');
         }
 } else {
-print_error('Unable to Complete Agenda');
+print_error('Unable to Delete');
 }
 
 chairman_check($chairman_id);
@@ -62,20 +62,27 @@ if (isset($user_role) && ($user_role == '1' || $user_role == '2' || $user_role =
 
 if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'admin') {
 
- if ($DB->record_exists('chairman_agenda', array('id' => $agenda->id))) {
-                $agenda_object = new stdClass();
-                $agenda_object->id = $agenda->id;
-                $agenda_object->completed = 1;
-
-
-                $DB->update_record('chairman_agenda', $agenda_object, $bulk = false);
-            }
-redirect($CFG->wwwroot."/mod/chairman/chairman_meetingagenda/view.php?event_id=".$event_id);
-} else {
-print_error("Access Restriction");
+//Delete all files within the instace of this module for agenda
+$fs = get_file_storage();
+$files = $fs->get_area_files($cm->instance, 'mod_chairman', 'attachment' );
+foreach ($files as $f) {
+    // $f is an instance of stored_file
+$f->delete();
 }
 
 
+$DB->delete_records('chairman_agenda_topics', array('chairman_agenda'=>$agenda_id));
+$DB->delete_records('chairman_agenda_guests', array('chairman_agenda'=>$agenda_id));
+$DB->delete_records('chairman_agenda_motions', array('chairman_agenda'=>$agenda_id));
+$DB->delete_records('chairman_agenda_attendance', array('chairman_agenda'=>$agenda_id));
+$DB->delete_records('chairman_agenda_members', array('agenda_id'=>$agenda_id));
+$DB->delete_records('chairman_agenda', array('id'=>$agenda_id));
+
+redirect($CFG->wwwroot."/mod/chairman/view.php?id=".$chairman_id);
+
+} else {
+print_error("Access Restriction");
+}
 
 
 ?>

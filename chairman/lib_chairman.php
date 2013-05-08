@@ -25,7 +25,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 /**
  * Gets Firstname Lastname and email of chairman members.
  *
- * @global object
+ * @global $DB
  * @param id The chairman id
  * @return array of users
  */

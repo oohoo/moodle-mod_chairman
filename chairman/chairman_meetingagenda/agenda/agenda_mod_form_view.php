@@ -84,7 +84,7 @@ $repeatarray=array();
     $repeatarray[] = $mform->createElement('static', 'duration_topic', get_string('duration_agenda', 'chairman'),"");
     $repeatarray[] = $mform->createElement('static', 'topic_description', get_string('desc_agenda', 'chairman'));
     
-$mform->registerElementType('filemanager_view_only', "$CFG->dirroot/mod/chairman/chairman_meetingagenda/filemanager_view_only.php", 'MoodleQuickForm_Modified_Filemanager');
+$mform->registerElementType('filemanager_view_only', "$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/filemanager_view_only.php", 'MoodleQuickForm_Modified_Filemanager');
     $repeatarray[] = $mform->createElement('filemanager_view_only', 'attachments', get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );
    // $repeatarray[] = $mform->createElement('static', 'spacer_', '',"----------------------------------------------------------------------------");
     $repeatarray[] = $mform->createElement('static', 'spacer_', '',"");

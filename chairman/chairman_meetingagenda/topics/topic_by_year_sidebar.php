@@ -28,12 +28,12 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business_menu_style.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/css/business_menu_style.css");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
 
 //-----TOPIC NAMES--------------------------------------------------------------
 
-print '<div class="buisness_side_menu">';
+print '<div class="business_side_menu">';
 print '<h3 class="headerbar">'.get_string('menu_topics','chairman').'</h3><ul>';
 
 //Get minimum and Max Year for events

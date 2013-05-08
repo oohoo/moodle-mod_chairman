@@ -89,13 +89,13 @@ $selected_tab = optional_param('selected_tab', -1, PARAM_INT);
 if ($selected_tab==6) {
 	$currenttab = 'topics_by_year_list';
 	$thispageurl = $PAGE->url;
-	$contents = 'topics_by_year_list.php';
+	$contents = 'topics/topics_by_year_list.php';
 /*
   DISABLED--TOPICS BE YEAR
 } elseif ($selected_tab==4) {
       $currenttab = 'topics_by_year';
 	$thispageurl = $PAGE->url;
-	$contents = 'topics_by_year.php';
+	$contents = 'topics/topics_by_year.php';
  */
 
 
@@ -103,15 +103,15 @@ if ($selected_tab==6) {
 
         $currenttab = 'motions_by_year';
         $thispageurl = $PAGE->url;
-        $contents = 'motions_by_year.php';
+        $contents = 'motions/motions_by_year.php';
 } elseif($selected_tab==3) {
     $currenttab = 'open_topics';
 	$thispageurl = $PAGE->url;
-	$contents = 'open_topics.php';
+	$contents = 'topics/open_topics.php';
 } elseif($selected_tab==2) {
     $currenttab = 'open_topics_list';
 	$thispageurl = $PAGE->url;
-	$contents = 'open_topic_list.php';
+	$contents = 'topics/open_topic_list.php';
 } else {
     $currenttab = 'viewer_events';
 	$thispageurl = $PAGE->url;

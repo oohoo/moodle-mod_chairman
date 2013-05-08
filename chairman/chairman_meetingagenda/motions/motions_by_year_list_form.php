@@ -33,11 +33,9 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************/
 
 /**
- * The form for the "Motions By Year", but only with viewing permissions, for the Agenda/Meeting Extension to Committee Module.
+ * The form for the "Motions By Year" tab for the Agenda/Meeting Extension to Committee Module.
  *
- * **DEPRECATED: Detailed View
- *              -Detailed View functionality was removed from release version
- *              -Replaced with list view only (Can be re-enabled by removing commented sections from view.php & viewer.php)
+ *          **List View
  *
  *
  * @package   Agenda/Meeting Extension to Committee Module
@@ -48,11 +46,11 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/moodle_user_selector.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda_link.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda/css/agenda_link.css");
 
-class mod_agenda_motions_by_year_form extends moodleform {
+class mod_agenda_motions_by_year_list_form extends moodleform {
 
     private $instance;
     private $event_id;
@@ -104,8 +102,8 @@ if ($commityRecords) {
 
      //possible motion status
     $motion_result = array( '-1'=>'-----',
-                            '1'=>'<font color="#4AA02C">'.get_string('motion_accepted', 'chairman').'</font>',
-                           '0'=>get_string('motion_rejected', 'chairman'));
+                            '1'=>'<font color="#4AA02C">['.get_string('motion_accepted', 'chairman').']</font>',
+                           '0'=>'<font color="#8F8F8F">['.get_string('motion_rejected', 'chairman').']</font>');
 
 //Max/Min Years for all motions of the committee
 $sql = "SELECT min(e.year) as minyear, max(e.year) as maxyear from {chairman_events} e WHERE e.chairman_id = $chairman_id";
@@ -124,12 +122,6 @@ $index = 1;
 //For each $year get motions for the committee
 for($year=$start_year;$year<=$end_year;$year++){
 
-
-//$sql = "SELECT DISTINCT m.*, e.day, e.month, e.year, e.id as EID ".
-   //     "FROM {chairman_agenda} a, {chairman_agenda_motions} m, {chairman_events} e ".
-    //    "WHERE m.chairman_agenda = a.id AND a.chairman_id = e.chairman_id AND a.chairman_events_id = e.id ".
-      //  "AND a.chairman_id = $chairman_id AND e.year = $year ".
-        //"ORDER BY year ASC, month ASC, day ASC";
 
 $sql = "SELECT DISTINCT m.*, e.day, e.month, e.year, e.id as EID ".
         "FROM {chairman_agenda} a, {chairman_agenda_motions} m, {chairman_events} e, {chairman_agenda_topics} t ".
@@ -150,6 +142,7 @@ if($motions){
     $mform->addElement('header', "YEAR","$year");
     $motion_index=1;
 
+    
     foreach($motions as $key=>$motion){
 
         $proposing_choices = $chairmanmembers;
@@ -158,60 +151,41 @@ if($motions){
         $proposing_choices['-1']=get_string('proposedby', 'chairman');
         $supporting_choices['-1']=get_string('supportedby', 'chairman');
 
-        $mform->addElement('static', "", "", "<h6>".get_string('motion', 'chairman')." $motion_index:</h6>");
-
+        
 //-----LINK TO TOPIC'S AGENDA-----------------------------------------------------------
-$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $motion->eid . "&selected_tab=" . 3;
-$mform->addElement('html','<div class="agenda_link_motion"><li><a href="'.$url.'">'.toMonth($motion->month) ." ".$motion->day.", ".$motion->year.'</a></li></div>');
 
-        //$mform->addElement('static', "proposition[$index][$motion_index]", get_string('motion_proposal', 'chairman'), array('size'=>'50'));
+        $motionitems = array();
+        
+        $url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $motion->eid . "&selected_tab=" . 3;
 
-        $notes = print_collapsible_region($motion->motion, 'motion_proposal', "proposition_".$index."_".$motion_index, get_string('motion_proposal', 'chairman'), $userpref = false, $default = false, $return = true);
-$mform->addElement('html', $notes);
 
-        $mform->addElement('static', "proposed[$index][$motion_index]", get_string('motion_by', 'chairman') , $proposing_choices, $attributes=null);
-        $mform->addElement('static', "supported[$index][$motion_index]", get_string('motion_second', 'chairman') , $supporting_choices, $attributes=null);
+$motionitems[] = $mform->createElement('static', 'description', '',$motion_index . '. <a href="'.$url.'">'.toMonth($motion->month) ." ".$motion->day.", ".$motion->year.'</a>');
 
 
 
+        //$motionitems[] = $mform->createElement('static','test', '', $motion->motion);
+        $motionitems[] = $mform->createElement('static', "motion_result[$index][$motion_index]", '', $motion_result, $attributes=null);
 
+$mform->addElement('html', '<div class="chairman_list">');
 
-$votes = array();
-    $votes[] =$mform->createElement('static', "aye_label[$index][$motion_index]", "", "Aye: ");
-    $votes[] =$mform->createElement('static', "aye[$index][$motion_index]", '', array('size'=>'1 em','maxlength'=>"3"));
-    $votes[] =$mform->createElement('static', "nay_label[$index][$motion_index]", "", "Nay: ");
-    $votes[] =$mform->createElement('static', "nay[$index][$motion_index]", '', array('size'=>'1 em','maxlength'=>"3"));
-    $votes[] =$mform->createElement('static', "abs_label[$index][$motion_index]", "", "Abs: ");
-    $votes[] =$mform->createElement('static', "abs[$index][$motion_index]", '', array('size'=>'1 em','maxlength'=>"3"));
-    $votes[] =$mform->createElement('static', "unanimous[$index][$motion_index]", '', "");
+        $mform->addGroup($motionitems, 'group', '', array(' '), false);
 
-    $mform->addGroup($votes, "motion_votes[$index][$motion_index]", get_string('motion_votes', 'chairman') , array(' '), false);
+        //$notes = print_collapsible_region($motion->motion, 'motion_proposal_list', "proposition_".$index."_".$motion_index, get_string('motion_proposal', 'chairman'), FALSE, false, TRUE);
 
-  $results = array();
-    $results[] = $mform->createElement('static', "motion_result[$index][$motion_index]", '', $motion_result, $attributes=null);
-    $mform->addGroup($results, "result[$index][$motion_index]", get_string('motion_outcome', 'chairman') , array(' '), false);
+        $notes = $motion->motion;
 
+        if(isset($motion->carried) && $motion->carried==0){
+       $notes = '<font color="#8F8F8F">'.$notes.'</font>';
+        }
 
-$mform->addElement('hidden', "motion_ids[$index][$motion_index]", $motion->id);
-$mform->setType('motion_ids', PARAM_INT);
-$mform->addElement('html', "</br>");
+        $mform->addElement('html', '<div class="collapsibleregion">'.$notes.'</div>');
+        //$mform->addElement('html', $notes);
 
+$mform->addElement('html', '</div><br style="clear:both;">');
 
 //-------DEFAULT VALUEs FOR MOTIONS---------------------------------------------
 
 $toform->proposition[$index][$motion_index] = $motion->motion;
-
-if(isset($motion->motionby)){
-$mform->setDefault("proposed[$index][$motion_index]", $proposing_choices[$motion->motionby]);
-} else {
-$mform->setDefault("proposed[$index][$motion_index]", "");
-}
-
-if(isset($motion->secondedby)){
- $mform->setDefault("supported[$index][$motion_index]", $supporting_choices[$motion->secondedby]);
-} else {
-$mform->setDefault("supported[$index][$motion_index]", "");
-}
 
 if(isset($motion->carried)){
  $mform->setDefault("motion_result[$index][$motion_index]", $motion_result[$motion->carried]);
@@ -220,43 +194,6 @@ $mform->setDefault("motion_result[$index][$motion_index]", "");
 }
 
 
-if(isset($motion->unanimous)){
-
-$toform->unanimous[$index][$motion_index] = "(".get_string('unanimous','chairman').")";
-}
-
-$toform->aye[$index][$motion_index] = $motion->yea;
-$toform->nay[$index][$motion_index] = $motion->nay;
-$toform->abs[$index][$motion_index] = $motion->abstained;
-
-
-//-------------SET Highest vote as bolded---------------------------------------
-if($motion->yea > $motion->nay){
-    if($motion->yea > $motion->abstained){
-        $toform->aye[$index][$motion_index] = "<b>".$toform->aye[$index][$motion_index]."</b>";
-        $toform->aye_label[$index][$motion_index] = "<b>Aye: </b>";
-    } elseif($motion->abstained!=$motion->yea) {
-$toform->abs[$index][$motion_index] = "<b>".$toform->abs[$index][$motion_index]."</b>";
-$toform->abs_label[$index][$motion_index] = "<b>Abs: </b>";
-    }
-} else{
-    if($motion->nay > $motion->abstained){
-$toform->nay[$index][$motion_index] = "<b>".$toform->nay[$index][$motion_index]."</b>";
-$toform->nay_label[$index][$motion_index] = "<b>Nay: </b>";
-    } elseif($motion->abstained!=$motion->nay) {
-$toform->abs[$index][$motion_index] = "<b>".$toform->abs[$index][$motion_index]."</b>";
-$toform->abs_label[$index][$motion_index] = "<b>Abs: </b>";
-    }
-
-}
-
- $mform->addGroupRule("motion_votes[$index][$motion_index]",
- array("aye[$index][$motion_index]" => array(array(get_string('numeric_only','chairman'), 'numeric', null, 'client', false, true)),
-       "nay[$index][$motion_index]" => array(array(get_string('numeric_only','chairman'), 'numeric', null, 'client', false, true)),
-       "abs[$index][$motion_index]" => array(array(get_string('numeric_only','chairman'), 'numeric', null, 'client', false, true))
-     ));
-
-$mform->addElement('static', "</br></br>");
 //---------END DEFAULTS---------------------------------------------------------
 
 $motion_index++;

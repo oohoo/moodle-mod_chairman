@@ -18,9 +18,9 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************/
 
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/moodle_user_selector.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business.css");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/ajax_lib.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/css/business.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 
 global $DB;
 
@@ -278,7 +278,7 @@ function addAndUpdate_Motion($event_id, $selected_tab,$agenda_id) {
 
         }
             //There will only be one item in array(one button pressed), but
-            //nice way to get the array key, which represents which topic we are looking at ($index in buisness_mod_form.php)
+            //nice way to get the array key, which represents which topic we are looking at ($index in business_mod_form.php)
 
             foreach ($buttonPressed as $index => $garbage) { //topic level
                 $topic_return = $index; //used to get to <a> tag anchor(html) on page redirect
@@ -444,7 +444,7 @@ function addAndUpdate_Motions($event_id, $selected_tab,$agenda_id) {
         }
 
             //There will only be one item in array(one button pressed), but
-            //nice way to get the array key, which represents which topic we are looking at ($index in buisness_mod_form.php)
+            //nice way to get the array key, which represents which topic we are looking at ($index in business_mod_form.php)
 
             //print_object($_REQUEST);exit();
 
@@ -603,7 +603,7 @@ function addAndUpdate_Motions($event_id, $selected_tab,$agenda_id) {
 function pdf_version($event_id){
     global $CFG;
 
-$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/pdf_script.php?event_id=" . $event_id;
+$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/util/pdf_script.php?event_id=" . $event_id;
 
 
 print<<<HERE
@@ -658,8 +658,8 @@ pdf_version($event_id);
     }
 
 //----------FORM OBJECT---------------------------------------------------------
-    require_once('buisness_mod_form.php'); //Form for users that can view
-    $mform = new mod_buisness_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
+    require_once('business_mod_form.php'); //Form for users that can view
+    $mform = new mod_business_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
 
 
 
@@ -835,7 +835,7 @@ redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id
         $mform->set_data($toform); //Set values
 
         //Display Menu
-        require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/buisness_sidebar.php");
+        require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");
 
         //Display Form
         print '<div class="form">';
@@ -863,7 +863,7 @@ global $DB, $CFG;
 
 pdf_version($event_id);
 require_once('business_mod_form_view.php'); //Form for users that can view
-$mform = new mod_buisness_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
+$mform = new mod_business_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
 
 $toform = $mform->getDefault_toform();
 $toform->event_id = $event_id;
@@ -871,7 +871,7 @@ $toform->selected_tab = $selected_tab;
 $mform->set_data($toform);
 
 //Display Menu
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/buisness_sidebar.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");
 print '<div class="form">';
 $mform->display(false);
 print '</div>';

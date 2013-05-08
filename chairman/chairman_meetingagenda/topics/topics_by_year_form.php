@@ -32,9 +32,9 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/moodle_user_selector.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda_link.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda/css/agenda_link.css");
 
 class mod_agenda_topics_by_year_form extends moodleform {
 
@@ -160,7 +160,7 @@ $mform->setType('topic_ids', PARAM_RAW);
 $mform->addElement('static', "follow_up[$year][$index]", get_string('topic_followup', 'chairman'), '');
 
 //-------FILE MANAGER -- VIEW ONLY----------------------------------------------
-$mform->registerElementType('filemanager_view_only', "$CFG->dirroot/mod/chairman/chairman_meetingagenda/filemanager_view_only.php", 'MoodleQuickForm_Modified_Filemanager');
+$mform->registerElementType('filemanager_view_only', "$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/filemanager_view_only.php", 'MoodleQuickForm_Modified_Filemanager');
 $mform->addElement('filemanager_view_only', "attachments[".$index."]", get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );
 
                 $draftitemid = file_get_submitted_draft_itemid('attachments[' . $index . "]");

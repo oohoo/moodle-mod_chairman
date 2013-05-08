@@ -28,12 +28,12 @@ width: 80%;
 padding-left: 10px;
 }
 
-.buisness_side_menu {
+.business_side_menu {
 width: 190px; /*width of menu*/
 float: left;
 }
 
-.buisness_side_menu .headerbar{
+.business_side_menu .headerbar{
 font: bold 13px Verdana;
 color: white;
 background: #606060; /*url(media/arrowstop.gif) no-repeat 8px 6px; last 2 values are the x and y coordinates of bullet image*/
@@ -42,7 +42,7 @@ text-transform: uppercase;
 padding: 7px 0 7px 31px; /*31px is left indentation of header text*/
 }
 
-.buisness_side_menu ul{
+.business_side_menu ul{
 list-style-type: none;
 list-style-image: none;
 margin: 0;
@@ -50,13 +50,13 @@ padding: 0;
 margin-bottom: 0; /*bottom spacing between each UL and rest of content*/
 }
 
-.buisness_side_menu ul li{
+.business_side_menu ul li{
 padding-bottom: 2px; /*bottom spacing between menu items*/
 list-style-type: none;
 list-style-image: none;
 }
 
-.buisness_side_menu ul li a{
+.business_side_menu ul li a{
     list-style-type: none;
 list-style-image: none;
 font: normal 12px Arial;
@@ -69,13 +69,13 @@ padding-left: 8px; /*link text is indented 8px*/
 text-decoration: none;
 }
 
-.buisness_side_menu ul li a:visited{
+.business_side_menu ul li a:visited{
 list-style-type: none;
 list-style-image: none;
 color: black;
 }
 
-.buisness_side_menu ul li a:hover{ /*hover state CSS*/
+.business_side_menu ul li a:hover{ /*hover state CSS*/
 list-style-type: none;
 list-style-image: none;
 color: white;

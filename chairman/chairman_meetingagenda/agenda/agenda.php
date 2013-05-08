@@ -26,7 +26,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 */
 
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/ajax_lib.php");
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 
 //-------------------SECURITY---------------------------------------------------
 //------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ print '<script type="text/javascript">';
 print 'if(document.location.href=="';
 print $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php"){';
 print<<<HERE
-document.write('<center><img src="loading14.gif" alt="Loading..." /></center>');
+document.write('<center><img src="img/loading14.gif" alt="Loading..." /></center>');
 
 }
 </script>
@@ -95,7 +95,7 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
 function pdf_version($event_id){
     global $CFG;
 
-$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/pdf_script.php?event_id=" . $event_id;
+$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/util/pdf_script.php?event_id=" . $event_id;
 $url .= '&plain_pdf=1';
 
 
@@ -171,7 +171,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
             //Simple html form containing a confirm delete button, and applicable warnings of doing so
             print '<center><h3><font color="red">' . get_string('remove_agenda_warning', 'chairman') . '</h3></br>';
             print '<h4>' . get_string('remove_agenda_warning_subscript', 'chairman') . '</h4></font></br>';
-            print '<form action="delete_agenda.php">';
+            print '<form action="agenda/delete_agenda.php">';
             print '<input type="submit" value="Confirm Removal" name="removal_confirmed"/>';
             print '<input type="hidden" name="event_id" id="event_id" value="' . $event_id . '"/>';
             print '</form></center>';
@@ -799,7 +799,7 @@ $commityRecords = $DB->get_records('chairman_members', array('chairman_id' => $c
             
 print<<<HERE
 <script type="text/javascript">
-document.write('<center><img src="loading14.gif" alt="Loading..." /></center>');
+document.write('<center><img src="img/loading14.gif" alt="Loading..." /></center>');
 </script>
 HERE;
 

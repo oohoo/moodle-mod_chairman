@@ -311,7 +311,7 @@ FMHTML;
 
     $module = array(
         'name'=>'form_filemanager',
-        'fullpath'=>'/mod/chairman/chairman_meetingagenda/filemanager_view_only.js',
+        'fullpath'=>'/mod/chairman/chairman_meetingagenda/util/filemanager_view_only.js',
         'requires' => array('core_filepicker', 'base', 'io', 'node', 'json', 'yui2-button', 'yui2-container', 'yui2-layout', 'yui2-menu', 'yui2-treeview'),
         'strings' => array(array('loading', 'repository'), array('nomorefiles', 'repository'), array('confirmdeletefile', 'repository'),
              array('add', 'repository'), array('accessiblefilepicker', 'repository'), array('move', 'moodle'),
