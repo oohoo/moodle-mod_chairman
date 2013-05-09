@@ -24,6 +24,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 require_once('../../config.php');
 require_once('lib.php');
 require_once('lib_chairman.php');
+
 echo '<link rel="stylesheet" type="text/css" href="style.php">';
 global $CFG, $PAGE, $OUTPUT;
 
@@ -32,6 +33,7 @@ $id = optional_param('id',0,PARAM_INT);    // Course Module ID
 // print header
 chairman_check($id);
 chairman_header($id,'members','view.php?id='.$id);
+
 
 //If there is a president, show here
 if($president = $DB->get_record('chairman_members', array('chairman_id'=>$id , 'role_id'=>1))) {

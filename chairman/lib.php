@@ -725,5 +725,7 @@ function chairman_update_module($type, $courseid, $committee_name, $committee_id
         break;
         
     }
+    
+    
 }
 ?>

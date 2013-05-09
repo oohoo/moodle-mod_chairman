@@ -266,4 +266,25 @@ $string['use_questionnaire'] = 'Add questionnaire';
 $string['use_questionnaire_help'] = 'If you would like to have a questionnaire associated to this committee, click on the checkbox';
 $string['logo'] = 'Logo';
 $string['logo_help'] = 'Select the logo you would like to use when printing out the agendas as PDF.';
+
+//Database Migration
+$string['comity_db_dne'] = "Committee Manager Database file - install.xml could not be found.";
+$string['chairman_db_dne'] = "Chairman Database file - install.xml could not be found.";
+$string['committee_migrate'] = "Committee Module Migration";
+$string['importing_table'] = "Importing Table: ";
+$string['importing_failure'] = "An error was detected during migration. Removing migrated data...";
+$string['importing_table_desc'] = "An existing committee manager module has been detected by the system. All committee data will be migrated to the chairman module.";
+$string['importing_table_count'] = "Number of records to be imported: ";
+$string['importing_table_percent_complete'] = "Percent Completed: ";
+$string['importing_table_complete'] = "Complete.";
+
+$string['importing_converting_instances'] = "Migrating Module Instances...";
+
+$string['importing_table_dne'] = "Error in migration map: Table doesn't exist in chairman db - ";
+$string['importing_table_field_dne'] = "Error in migration map: Field doesn't exist in chairman table - ";
+
+$string['migration_failed'] = "Migration of committee data failed.";
+$string['removing_committee'] = "Removing Committee Manager";
+$string['dir_delete_failed'] = "Unable to automatically remove committee manager module directory due to permissions. Please manually remove this directory and uninstall the committee manager module.";
+
 ?>
