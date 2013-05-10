@@ -19,6 +19,10 @@
         <FIELD NAME="wiki" TYPE="int" LENGTH="20" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" COMMENT="Holds wiki id" PREVIOUS="forum" NEXT="use_forum"/>
         <FIELD NAME="use_forum" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="wiki" NEXT="use_wiki"/>
         <FIELD NAME="use_wiki" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="use_forum"/>
+        <FIELD NAME="use_questionnaire" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="use_wiki" NEXT="questionnaire"/>
+        <FIELD NAME="questionnaire" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="use_questionnaire" NEXT="bbb"/>
+        <FIELD NAME="bbb" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="questionnaire" NEXT="use_bbb"/>
+        <FIELD NAME="use_bbb" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" PREVIOUS="bbb"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

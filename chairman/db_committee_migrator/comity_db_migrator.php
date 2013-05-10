@@ -31,6 +31,8 @@ class comity_db_migrator {
     private $comity_module_db_file;
     private $migration_map;
     private $clean_mapping = true;
+    private $foreign_field_map;
+    private $foreign_id_map;
 
     /**
      * General Constructor for the object
@@ -43,6 +45,7 @@ class comity_db_migrator {
 
         $this->comity_module_db_file = "$CFG->dirroot/mod/comity/db/install.xml";
         $this->migration_map = $this->build_migration_map();
+        $this->foreign_field_map = $this->foreign_dependency_map();
     }
 
     /**
@@ -58,6 +61,9 @@ class comity_db_migrator {
     /**
      * Migrates all data present within committee manager module into the
      * new chairman module.
+     * 
+     * This includes the migration of the sql data, mapping of the foreign table
+     * dependencies, and finally updating all the dependencies between tables.
      * 
      * @global object OUTPUT
      * @global moodle_database $DB
@@ -117,7 +123,7 @@ class comity_db_migrator {
                 }
 
                 //add generated id to generated ids
-                array_push($generated_table_ids, $return_value);
+                $generated_table_ids[$record->id] = $return_value;
 
                 //display updated completed display
                 $percentage_display = $this->report_table_import($count, $total_records, $percentage_display);
@@ -126,10 +132,17 @@ class comity_db_migrator {
             $this->report_table_import($count, $total_records, $percentage_display);
             echo "</br></br></br>";
             $generated_ids[$chairman_table] = $generated_table_ids;
+            $this->map_foreign_dependencies($chairman_table, $generated_table_ids);
         }
 
+        //replace current instances of comity to chairman instances
         $this->replace_comity_modules();
         echo $OUTPUT->box_end();
+
+        //Update the foreign key references in all chairman tables
+        //these are now different than the commity values - mapped in $this->foreign_id_map
+        $this->update_foreign_dependencies();
+
         return true;
     }
 
@@ -155,6 +168,107 @@ class comity_db_migrator {
         }
 
         echo $OUTPUT->box_end();
+    }
+
+    /**
+     * Updates all table fields that are foreign ID reference of other table's id,
+     * based on the $this->foreign_id_map variable that was build during the migration
+     * of the data.
+     * 
+     * 
+     */
+    private function update_foreign_dependencies() {
+
+        global $DB, $OUTPUT;
+
+        echo $OUTPUT->box_start('updating_dependencies');
+        echo $OUTPUT->heading(get_string('data_dependencies', 'chairman'));
+
+        //migrate each table
+        foreach ($this->migration_map as $comity_table => $chairman_table) {
+
+            //not a table mapping - skip
+            if (strpos($comity_table, $this->field_identifier))
+                continue;
+
+            //display header
+            echo "<h4>" . get_string('updating_table_ids', 'chairman') . " " . $comity_table . "</h4>";
+
+            //get migration map for current table
+            $field_mapping = $this->migration_map[$comity_table . $this->field_identifier];
+
+            //get chairman records
+            $records = $DB->get_records($chairman_table, null, '', implode($field_mapping, ","));
+            $total_records = count($records);
+
+            //output total number of records to be migrated
+            echo get_string('importing_table_percent_complete', 'chairman') . " 0%... ";
+
+            $count = 0;
+            $percentage_display = 10;
+            //migrate each record in table
+            foreach ($records as $record) {
+                $count++;
+
+                $clean_refs = true;
+                foreach ($field_mapping as $chairman_field) {
+                    if (array_key_exists($chairman_field, $this->foreign_id_map)) {
+                        $record->$chairman_field = $this->foreign_id_map[$chairman_field][$record->$chairman_field];
+
+                        if ($record->$chairman_field == null) {
+                            $clean_refs = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$clean_refs)
+                    continue;
+
+
+                $DB->update_record($chairman_table, $record, true, true);
+
+                //display updated completed display
+                $percentage_display = $this->report_table_import($count, $total_records, $percentage_display);
+            }
+
+            $this->report_table_import($count, $total_records, $percentage_display);
+            echo "</br></br></br>";
+        }
+
+        echo $OUTPUT->box_end();
+        return true;
+    }
+
+    /**
+     * Constructs a direct map between the old community id of a table entry and
+     * the new id for chairman for each potential reference fieldname in
+     * $this->$foreign_field_map. This mapping is added to the $this->foreign_id_map
+     * array under the key of the "name of the referencing field".
+     * 
+     * ex:
+     * If an entry of comity was 5 and and chairman had a new id of 1.
+     * (Along with a bunch of other comity to chairman mappings).
+     * 
+     * Another table may make a foreign key reference to this table by using
+     * "chairman_id" in the table - this is a referencing field. 
+     * 
+     * The mapping added to $this->foreign_id_map would be:
+     * $this->foreign_field_map["chairman_id"] = array(5=>6,..<other mappings>..);
+     * 
+     * 
+     * @param type $chairman_table
+     * @param type $generated_ids
+     * 
+     */
+    private function map_foreign_dependencies($chairman_table, $generated_ids) {
+        if (array_key_exists($chairman_table, $this->foreign_field_map)) {
+            $foreign_fields = $this->foreign_field_map[$chairman_table];
+
+            foreach ($foreign_fields as $foreign_field) {
+                $this->foreign_id_map[$foreign_field] = $generated_ids;
+            }
+        }
     }
 
     /**
@@ -291,10 +405,13 @@ class comity_db_migrator {
 
         foreach ($comity_course_modules as $comity_course_module) {
             $comity_course_module->module = $chairman_module->id;
+            $comity_course_module->instance = $this->foreign_id_map['chairman_id'][$comity_course_module->instance];
             $DB->update_record("course_modules", $comity_course_module, true);
         }
 
-        echo $OUTPUT->notification(get_string('importing_table_complete', 'chairman') . "<br/><br/><br/>",'notifysuccess');
+        get_fast_modinfo(0, 0, true);
+        rebuild_course_cache();
+        echo $OUTPUT->notification(get_string('importing_table_complete', 'chairman') . "<br/><br/><br/>", 'notifysuccess');
     }
 
     /**
@@ -373,6 +490,7 @@ class comity_db_migrator {
             if ($dbMan->table_exists($comity_table_name) && $dbMan->table_exists($chariman_table_equiv))
                 $map[$comity_table_name] = $chariman_table_equiv;
             else {
+                echo $comity_table_name . " " . $chariman_table_equiv;
                 $OUTPUT->error_text(get_string('importing_table_dne', 'chairman') . $chariman_table_equiv);
                 $this->clean_mapping = false;
             }
@@ -418,6 +536,8 @@ class comity_db_migrator {
                         $dbMan->field_exists($chairman_table, $chairman_field_equiv))
                     $field_map[$comity_field_name] = $chairman_field_equiv;
                 else {
+                    echo "Comm: " . $comity_table . " " . $comity_field_name;
+                    echo "Cha: " . $chairman_table . " " . $chairman_field_equiv;
                     $OUTPUT->error_text(get_string('importing_table_field_dne', 'chairman') . $chairman_table . "=>" . $chairman_field_equiv);
                     $this->clean_mapping = false;
                 }
@@ -439,6 +559,23 @@ class comity_db_migrator {
      */
     private function convert_comity_to_chairman($comity_name) {
         return str_replace("comity", "chairman", $comity_name);
+    }
+
+    private function foreign_dependency_map() {
+        $map = array(
+            'chairman' => array('chairman_id'),
+            'chairman_agenda' => array('chairman_agenda', 'agenda_id'),
+            'chairman_agenda_members' => array('motionby', 'secondedby', 'chairman_members'),
+            'chairman_agenda_topics' => array('chairman_agenda_topics'),
+            'chairman_events' => array('chairman_events_id'),
+            'chairman_files' => array('parent'),
+            'chairman_members' => array('chairman_member_id'),
+            'chairman_planner' => array('planner_id'),
+            'chairman_planner_dates' => array('planner_date_id'),
+            'chairman_planner_users' => array('planner_user_id')
+        );
+
+        return $map;
     }
 
 }

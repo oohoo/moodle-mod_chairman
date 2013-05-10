@@ -285,6 +285,9 @@ $string['importing_table_field_dne'] = "Error in migration map: Field doesn't ex
 
 $string['migration_failed'] = "Migration of committee data failed.";
 $string['removing_committee'] = "Removing Committee Manager";
-$string['dir_delete_failed'] = "Unable to automatically remove committee manager module directory due to permissions. Please manually remove this directory and uninstall the committee manager module.";
+$string['dir_delete_failed'] = "Unable to automatically remove committee manager module directory due to permissions. Please manually remove this directory and uninstall committee manager.";
+
+$string['data_dependencies'] = "Updating Table Dependencies";
+$string['updating_table_ids'] = "Updating Table: ";
 
 ?>
