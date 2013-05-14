@@ -58,12 +58,10 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
          * Note: A database diagram of the structure is avaliable in the documentation
          */
         
-        //Level 1
+        //Level 2
         $chairman->add_child($members);
         $members->add_child($member);
        
-        
-        //Level 2
         $chairman->add_child($planners);
         $planners->add_child($planner);
         
@@ -75,29 +73,31 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         
         
         //Level 3
+        $planner->add_child($pl_users);
+        $pl_users->add_child($pl_user);
+        
         $event->add_child($agendas);
         $agendas->add_child($agenda);
         
         $planner->add_child($pl_dates);
         $pl_dates->add_child($pl_date);
         
-        $planner->add_child($pl_users);
-        $pl_users->add_child($pl_user);
-        
         $agenda->add_child($ag_topics);
         $ag_topics->add_child($ag_topic);
         
+        
+        //Level 4
         $agenda->add_child($ag_members);
         $ag_members->add_child($ag_member);
         
         $agenda->add_child($ag_guests);
         $ag_guests->add_child($ag_guest);
         
-        $pl_dates->add_child($pl_responses);
+        $pl_date->add_child($pl_responses);
         $pl_responses->add_child($pl_response);
         
         
-        //Level 4
+        //Level 5
         $ag_topic->add_child($ag_motions);
         $ag_motions->add_child($ag_motion);
         
@@ -158,7 +158,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_members = new backup_nested_element('chairman_members');
         $chairman_member = new backup_nested_element('chairman_member', array('id'), array(
-            'user_id', 'role_id'));
+            'user_id', 'role_id', 'chairman_id'));
         
         return array($chairman_member, $chairman_members);
     }
@@ -172,7 +172,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_planners = new backup_nested_element('chairman_planners');
         $chairman_planner = new backup_nested_element('chairman_planner', array('id'), array(
-            'active', 'name', 'timezone', 'description'));
+            'active', 'name', 'timezone', 'description', 'chairman_id'));
         
         return array($chairman_planner,$chairman_planners);
     }
@@ -186,8 +186,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_files = new backup_nested_element('chairman_files');
         $chairman_file = new backup_nested_element('chairman_file', array('id'), array(
-            'private', 'user_id', 'timemodified', 'name',
-            'parent', 'type'));
+            'private', 'user_id', 'timemodified', 'name', 'parent', 'type', 'chairman_id'));
         
         return array($chairman_file,$chairman_files);
     }
@@ -203,8 +202,8 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $chairman_event = new backup_nested_element('chairman_event', array('id'), array(
             'user_id', 'day', 'month', 'year', 'starthour', 'startminutes', 'endhour', 'endminutes',
             'summary', 'description', 'stamp_start', 'stamp_end', 'stamp_t_start', 'stamp_t_end',
-            'room_reservation_id','notify','notify_week', 'notify_sent', 'notify_week_sent', 'timezone'
-            ));
+            'room_reservation_id','notify','notify_week', 'notify_sent', 'notify_week_sent', 'timezone', 
+            'chairman_id'));
         
         return array($chairman_event, $chairman_events);
     }
@@ -218,7 +217,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_agendas = new backup_nested_element('chairman_agendas');
         $chairman_agenda = new backup_nested_element('chairman_agenda', array('id'), array(
-            'location'));
+            'location', 'chairman_id'));
         
         return array($chairman_agenda, $chairman_agendas);
     }
@@ -275,7 +274,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_members = new backup_nested_element('chairman_agenda_members');
         $chairman_member = new backup_nested_element('chairman_agenda_member', array('id'), array(
-            'user_id', 'role_id'));
+            'user_id', 'role_id', 'chairman_id'));
         
         return array($chairman_member,$chairman_members);
     }
@@ -372,7 +371,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
      */
     private function chairman_files_table_config($table)
     {
-        $table->set_source_table('chairman_files', array('chairman_id' => backup::VAR_MODID));
+        $table->set_source_table('chairman_files', array('chairman_id' => backup::VAR_MODID), 'id ASC');
         $table->annotate_ids('user', 'user_id');
     }
     
@@ -421,6 +420,8 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $table->set_source_table('chairman_agenda_topics', array('chairman_agenda' => backup::VAR_PARENTID));
         $table->annotate_files('mod_chairman', 'attachement', 'filename');
+        $table->annotate_ids('user', 'modifiedby');
+        
     }
     
     /**
