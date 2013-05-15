@@ -251,7 +251,15 @@ class comity_db_migrator {
         return true;
     }
     
-    private function migrate_file_data($record, $chairman_id)
+    /**
+     * Transfers all files associated with a comity module record to the associated 
+     * chairman module. This includes all files for committee & a committee's agenga.
+     * 
+     * @global moodle_database $DB
+     * @param array $record An entry in the comity table for the committee manager module
+     * 
+     */
+    private function migrate_file_data($record)
     {
        global $DB;
        $component_comity = 'mod_comity';
@@ -267,6 +275,7 @@ class comity_db_migrator {
         $files = $fs->get_area_files($context->id, $component_comity, $fileare_comity, false, "", false);
         $files_agenda = $fs->get_area_files($record->id, $component_comity, $fileare_comity_agenda, false, "", false);
         
+        //general committee files
         foreach($files as $file)
         {
              $file_record = array('contextid'=>$context->id,
@@ -281,6 +290,7 @@ class comity_db_migrator {
             $fs->create_file_from_storedfile($file_record, $file);
         }
         
+        //agenda files
         foreach($files_agenda as $file)
         {
             $file_record = array('contextid'=>$context->id,
