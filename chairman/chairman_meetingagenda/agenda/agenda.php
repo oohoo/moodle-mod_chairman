@@ -245,8 +245,10 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
                     //Assign unused filename id to this new topic
                     $topic_object->filename = $count;
 
+                    
+                    $context = get_context_instance(CONTEXT_MODULE,$cm->id);
                     //prepare file area for topic
-                    file_save_draft_area_files($topic_files[$key], $cm->instance, 'mod_chairman', 'attachment', $count, array('subdirs' => 0, 'maxfiles' => 50));
+                    file_save_draft_area_files($topic_files[$key], $context->id, 'mod_chairman', 'attachment', $count, array('subdirs' => 0, 'maxfiles' => 50));
 
 
 
@@ -319,8 +321,9 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
                     //print_object($cm);
                     //print_object($fromform);
 
+                    $context = get_context_instance(CONTEXT_MODULE,$cm->id);
                     //Save state of files draft area
-                    file_save_draft_area_files($fromform->attachments[$key], $cm->instance, 'mod_chairman', 'attachment', $count, array('subdirs' => 0, 'maxfiles' => 50));
+                    file_save_draft_area_files($fromform->attachments[$key], $context->id, 'mod_chairman', 'attachment', $count, array('subdirs' => 0, 'maxfiles' => 50));
 
                     //Topic doesn't exist and name has been changed from Default "New Topic", therefore we add to database
                 } elseif ($topic_id == "" && $topic_title[$key] != get_string('topic_title_default', 'chairman')) {
@@ -355,7 +358,8 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
 
                     //Updating record, and file draft area state
                     $DB->insert_record('chairman_agenda_topics', $topic_object, $returnid = true, $bulk = false);
-                    file_save_draft_area_files($fromform->attachments[$key], $cm->instance, 'mod_chairman', 'attachment', $count, array('subdirs' => 0, 'maxfiles' => 50));
+                    $context = get_context_instance(CONTEXT_MODULE,$cm->id);
+                    file_save_draft_area_files($fromform->attachments[$key], $context->id, 'mod_chairman', 'attachment', $count, array('subdirs' => 0, 'maxfiles' => 50));
                 }
             } // end topic updating
 
@@ -518,7 +522,9 @@ pdf_version($event_id);
 
 
                 $draftitemid = file_get_submitted_draft_itemid('attachments[' . $index . "]");
-                file_prepare_draft_area($draftitemid, $cm->instance, 'mod_chairman', 'attachment', $entry, array('subdirs' => 0, 'maxfiles' => 50));
+                
+                $context = get_context_instance(CONTEXT_MODULE,$cm->id); 
+                file_prepare_draft_area($draftitemid, $context->id, 'mod_chairman', 'attachment', $entry, array('subdirs' => 0, 'maxfiles' => 50));
                 $toform->attachments[$index] = $draftitemid;
 
 
@@ -664,7 +670,8 @@ require_once('agenda_mod_form_view.php'); //Form for users that can view
 
 //print_object($mform->attributes);
                 $draftitemid = file_get_submitted_draft_itemid('attachments[' . $index . "]");
-                file_prepare_draft_area($draftitemid, $cm->instance, 'mod_chairman', 'attachment', $entry, array('subdirs' => 1, 'maxfiles' => 50));
+                $context = get_context_instance(CONTEXT_MODULE,$chairman_id);
+                file_prepare_draft_area($draftitemid, $context->id, 'mod_chairman', 'attachment', $entry, array('subdirs' => 1, 'maxfiles' => 50));
                 $toform->attachments[$index] = $draftitemid;
 
 //print $cm->instance . " " . $entry . " " . $draftitemid . '</br>';

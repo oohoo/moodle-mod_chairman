@@ -53,7 +53,7 @@ print '<script type="text/javascript">';
 print 'if(document.location.href=="';
 print $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php"){';
 print<<<HERE
-document.write('<center><img src="loading14.gif" alt="Loading..." /></center>');
+document.write('<center><img src="img/loading14.gif" alt="Loading..." /></center>');
 
 }
 </script>
@@ -236,7 +236,8 @@ function updatetopics($cm) {
             //Double check topic exists in database
             if ($DB->record_exists('chairman_agenda_topics', array('id' => $topicid))) {
                 $DB->update_record('chairman_agenda_topics', $dataobject, $bulk = false);
-                file_save_draft_area_files($attachments[$index], $cm->instance, 'mod_chairman', 'attachment', $filearea_ids[$index], array('subdirs' => 0, 'maxfiles' => 50));
+                $context = get_context_instance(CONTEXT_MODULE,$cm->id); 
+                file_save_draft_area_files($attachments[$index], $context->id, 'mod_chairman', 'attachment', $filearea_ids[$index], array('subdirs' => 0, 'maxfiles' => 50));
             }
         }
     }

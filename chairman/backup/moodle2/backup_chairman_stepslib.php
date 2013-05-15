@@ -82,9 +82,6 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $planner->add_child($pl_dates);
         $pl_dates->add_child($pl_date);
         
-        $agenda->add_child($ag_topics);
-        $ag_topics->add_child($ag_topic);
-        
         
         //Level 4
         $agenda->add_child($ag_members);
@@ -92,6 +89,9 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         
         $agenda->add_child($ag_guests);
         $ag_guests->add_child($ag_guest);
+        
+        $agenda->add_child($ag_topics);
+        $ag_topics->add_child($ag_topic);
         
         $pl_date->add_child($pl_responses);
         $pl_responses->add_child($pl_response);

@@ -375,8 +375,8 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $data->chairman_agenda = $this->get_new_parentid('chairman_agenda');
         $data->chairman_agenda_topics = $this->get_new_parentid('chairman_agenda_topic');
 
-        $data->motionby = $this->get_mappingid("user", $data->motionby);
-        $data->secondedby = $this->get_mappingid("user", $data->secondedby);
+        $data->motionby = $this->get_mappingid("chairman_agenda_members", $data->motionby);
+        $data->secondedby = $this->get_mappingid("chairman_agenda_members", $data->secondedby);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
 

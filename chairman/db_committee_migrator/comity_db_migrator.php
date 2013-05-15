@@ -125,12 +125,17 @@ class comity_db_migrator {
                 //add generated id to generated ids
                 $generated_table_ids[$record->id] = $return_value;
 
+                if($comity_table == 'comity')
+                    $this->migrate_file_data($record, $return_value);
+                    
+                
                 //display updated completed display
                 $percentage_display = $this->report_table_import($count, $total_records, $percentage_display);
             }
 
             $this->report_table_import($count, $total_records, $percentage_display);
             echo "</br></br></br>";
+            
             $generated_ids[$chairman_table] = $generated_table_ids;
             $this->map_foreign_dependencies($chairman_table, $generated_table_ids);
         }
@@ -181,7 +186,7 @@ class comity_db_migrator {
 
         global $DB, $OUTPUT;
 
-        echo $OUTPUT->box_start('updating_dependencies');
+        echo $OUTPUT->box_start('migrating_committee_data');
         echo $OUTPUT->heading(get_string('data_dependencies', 'chairman'));
 
         //migrate each table
@@ -212,7 +217,13 @@ class comity_db_migrator {
 
                 $clean_refs = true;
                 foreach ($field_mapping as $chairman_field) {
+                    if($chairman_field == 'chairman_id') continue; //this field maps to course module, which doesn't change
                     if (array_key_exists($chairman_field, $this->foreign_id_map)) {
+                        if(!isset($this->foreign_id_map[$chairman_field][$record->$chairman_field]))
+                        {
+                           echo $chairman_field . " " . $record->$chairman_field;
+                           continue;
+                        }
                         $record->$chairman_field = $this->foreign_id_map[$chairman_field][$record->$chairman_field];
 
                         if ($record->$chairman_field == null) {
@@ -238,6 +249,52 @@ class comity_db_migrator {
 
         echo $OUTPUT->box_end();
         return true;
+    }
+    
+    private function migrate_file_data($record, $chairman_id)
+    {
+       global $DB;
+       $component_comity = 'mod_comity';
+       $fileare_comity = 'comity';
+       $fileare_comity_agenda = 'attachment';
+               
+        $module = $DB->get_record("modules", array('name'=>'comity' ));
+        $cm = $DB->get_record("course_modules", array('instance'=>$record->id, 'module'=>$module->id ));
+        
+        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+        $fs = get_file_storage();
+        
+        $files = $fs->get_area_files($context->id, $component_comity, $fileare_comity, false, "", false);
+        $files_agenda = $fs->get_area_files($record->id, $component_comity, $fileare_comity_agenda, false, "", false);
+        
+        foreach($files as $file)
+        {
+             $file_record = array('contextid'=>$context->id,
+                                  'component'=>'mod_chairman', 
+                                  'filearea'=>'chairman',
+                                  'itemid'=>0, 
+                                  'filepath'=>$file->get_filepath(),
+                                  'filename'=>$file->get_filename(),
+                                  'timecreated'=>$file->get_timecreated(), 
+                                  'timemodified'=>$file->get_timemodified());
+             
+            $fs->create_file_from_storedfile($file_record, $file);
+        }
+        
+        foreach($files_agenda as $file)
+        {
+            $file_record = array('contextid'=>$context->id,
+                                  'component'=>'mod_chairman', 
+                                  'filearea'=>'attachment',
+                                  'itemid'=>$file->get_itemid(), 
+                                  'filepath'=>$file->get_filepath(),
+                                  'filename'=>$file->get_filename(),
+                                  'timecreated'=>$file->get_timecreated(), 
+                                  'timemodified'=>$file->get_timemodified());
+             
+            $fs->create_file_from_storedfile($file_record, $file);
+        }
+        
     }
 
     /**
@@ -409,6 +466,10 @@ class comity_db_migrator {
             $DB->update_record("course_modules", $comity_course_module, true);
         }
 
+        //In the pre-moodle 2.0 references are made to the course module as the reference ID instead of the chairman table
+        //therefore since "chairman_id" references are actually mapping to course_module ids.
+        unset($this->foreign_id_map['chairman_id']);
+        
         get_fast_modinfo(0, 0, true);
         rebuild_course_cache();
         echo $OUTPUT->notification(get_string('importing_table_complete', 'chairman') . "<br/><br/><br/>", 'notifysuccess');

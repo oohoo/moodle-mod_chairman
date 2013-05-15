@@ -64,7 +64,7 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
 
 //Delete all files within the instace of this module for agenda
 $fs = get_file_storage();
-$files = $fs->get_area_files($cm->instance, 'mod_chairman', 'attachment' );
+$files = $fs->get_area_files($cm->id, 'mod_chairman', 'attachment' );
 foreach ($files as $f) {
     // $f is an instance of stored_file
 $f->delete();
