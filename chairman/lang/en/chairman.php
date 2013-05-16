@@ -290,4 +290,14 @@ $string['dir_delete_failed'] = "Unable to automatically remove committee manager
 $string['data_dependencies'] = "Updating Table Dependencies";
 $string['updating_table_ids'] = "Updating Table: ";
 
+$string['updating_table_ids'] = "Updating Table: ";
+
+
+/*
+ * Chairman Files
+ */
+$string['private_files_label'] = "Private Files";
+$string['public_files_label'] = "Public Files";
+$string['files_label'] = "Chairman Labels";
+$string['filesview'] = "Chairman Files"
 ?>

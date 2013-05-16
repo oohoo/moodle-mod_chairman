@@ -344,6 +344,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $table->set_source_table('chairman', array('id' => backup::VAR_ACTIVITYID));
         $table->annotate_files('mod_chairman', 'chairman', null);
+        $table->annotate_files('mod_chairman', 'chairman_private', null);
     }
     
     /**

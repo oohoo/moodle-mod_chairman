@@ -1,0 +1,32 @@
+/**
+ * *************************************************************************
+ * *                                Chairman                              **
+ * *************************************************************************
+ * @package mod                                                          **
+ * @subpackage chairman                                                  **
+ * @name Chairman                                                        **
+ * @copyright oohoo.biz                                                  **
+ * @link http://oohoo.biz                                                **
+ * @author Raymond Wainman                                               **
+ * @author Patrick Thibaudeau                                            **
+ * @author Dustin Durand                                                 **
+ * @license                                                              **
+  http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
+ * *************************************************************************
+ * ************************************************************************ */
+
+Introduction:
+This file describes a variety of specifics that were discovered while converting the old committee manager module into the chairman module.
+
+Database:
+The full database structure has been mapped out in a diagram that is located in the documentation folder along side the chairman source.
+
+-Any references to chairman_id is a reference to the module course id in the tables
+	$table->chairman_id <==> $cm->id
+
+-The chairman_files table in the database is unused in chairman, but is left in just in case.
+If a failure occurs during migration from comity to chairman and the comity dbs are removed,
+the data from the original comity will still be present in the chairman_files tables as it
+was in the comity_files table. BUT THE ACTUAL TABLE IS UNUSED IN CHAIRMAN.
+
+

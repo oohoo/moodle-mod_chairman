@@ -79,6 +79,10 @@ class comity_db_migrator {
 
         echo get_string('importing_table_desc', 'chairman') . '<br/><br/>';
 
+        //PREPARE FOR CONVERT
+        //We need to clean filenames in comity before conversion
+        $this->convert_comity_filenames();
+        
         //migrate each table
         foreach ($this->migration_map as $comity_table => $chairman_table) {
 
@@ -125,17 +129,17 @@ class comity_db_migrator {
                 //add generated id to generated ids
                 $generated_table_ids[$record->id] = $return_value;
 
-                if($comity_table == 'comity')
+                if ($comity_table == 'comity')
                     $this->migrate_file_data($record, $return_value);
-                    
-                
+
+
                 //display updated completed display
                 $percentage_display = $this->report_table_import($count, $total_records, $percentage_display);
             }
 
             $this->report_table_import($count, $total_records, $percentage_display);
             echo "</br></br></br>";
-            
+
             $generated_ids[$chairman_table] = $generated_table_ids;
             $this->map_foreign_dependencies($chairman_table, $generated_table_ids);
         }
@@ -217,12 +221,11 @@ class comity_db_migrator {
 
                 $clean_refs = true;
                 foreach ($field_mapping as $chairman_field) {
-                    if($chairman_field == 'chairman_id') continue; //this field maps to course module, which doesn't change
+                    if ($chairman_field == 'chairman_id')
+                        continue; //this field maps to course module, which doesn't change
                     if (array_key_exists($chairman_field, $this->foreign_id_map)) {
-                        if(!isset($this->foreign_id_map[$chairman_field][$record->$chairman_field]))
-                        {
-                           echo $chairman_field . " " . $record->$chairman_field;
-                           continue;
+                        if (!isset($this->foreign_id_map[$chairman_field][$record->$chairman_field])) {
+                            continue;
                         }
                         $record->$chairman_field = $this->foreign_id_map[$chairman_field][$record->$chairman_field];
 
@@ -250,6 +253,32 @@ class comity_db_migrator {
         echo $OUTPUT->box_end();
         return true;
     }
+
+    /**
+     * In the original committee manager module the files names were saved in their
+     * raw state, while moodle stored them in a cleaned state. Before migrating them
+     * we want to clean them in the DB.
+     * 
+     * This will help avoid files being missed due to bad file names.
+     * Note:(These files worked in committee since moodle autocleans the parameters
+     * when grabbing the files, but when we are attempting to get the files - it
+     * will cause issues!
+     * 
+     * 
+     * @global moodle_database $DB
+     */
+    private function convert_comity_filenames()
+    {
+        global $DB;
+        
+       $comity_files =  $DB->get_records('comity_files');
+        
+       foreach($comity_files as $comity_file )
+       {
+           $comity_file->name = clean_filename($comity_file->name);
+           $DB->update_record('comity_files', $comity_file, true);  
+       }
+    }
     
     /**
      * Transfers all files associated with a comity module record to the associated 
@@ -259,52 +288,100 @@ class comity_db_migrator {
      * @param array $record An entry in the comity table for the committee manager module
      * 
      */
-    private function migrate_file_data($record)
-    {
-       global $DB;
-       $component_comity = 'mod_comity';
-       $fileare_comity = 'comity';
-       $fileare_comity_agenda = 'attachment';
-               
-        $module = $DB->get_record("modules", array('name'=>'comity' ));
-        $cm = $DB->get_record("course_modules", array('instance'=>$record->id, 'module'=>$module->id ));
-        
+    private function migrate_file_data($record) {
+        global $DB;
+        $component_comity = 'mod_comity';
+        $fileare_comity = 'comity';
+        $fileare_comity_agenda = 'attachment';
+
+        $module = $DB->get_record("modules", array('name' => 'comity'));
+        $cm = $DB->get_record("course_modules", array('instance' => $record->id, 'module' => $module->id));
+
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         $fs = get_file_storage();
-        
+
         $files = $fs->get_area_files($context->id, $component_comity, $fileare_comity, false, "", false);
         $files_agenda = $fs->get_area_files($record->id, $component_comity, $fileare_comity_agenda, false, "", false);
-        
+
         //general committee files
-        foreach($files as $file)
-        {
-             $file_record = array('contextid'=>$context->id,
-                                  'component'=>'mod_chairman', 
-                                  'filearea'=>'chairman',
-                                  'itemid'=>0, 
-                                  'filepath'=>$file->get_filepath(),
-                                  'filename'=>$file->get_filename(),
-                                  'timecreated'=>$file->get_timecreated(), 
-                                  'timemodified'=>$file->get_timemodified());
-             
+        foreach ($files as $file) {
+
+            //grab assocaited file in comity file db
+            $db_file = $DB->get_record('comity_files', array('name' => $file->get_filename(), 'timemodified' => $file->get_timemodified(), 'comity_id' => $cm->id));
+
+            //if file doesn't exist then its an orphaned filed, with no reference and we can ignore it
+            if (!$db_file) continue;
+            
+            //if private we are using a different component space
+            $private_annotation = "";
+            if ($db_file->private == 1)
+                $private_annotation = "_private";
+
+            //build folder tree based on the hiearchy in comity files db
+            $filepath = "/";
+            $parent_deleted = false;
+            while ($db_file->parent != 0) {
+                $db_file = $DB->get_record('comity_files', array('id' => $db_file->parent, 'comity_id' => $cm->id));
+                
+                //a parent folder has been deleted
+                //no need to transfer
+                if (!$db_file)
+                {
+                    $parent_deleted = true;
+                    break;
+                }
+                
+                //append current element to filepath
+                $filepath = "/" . $db_file->name . $filepath;
+
+                //check if permission of this folder is private (then everything underneath is also private)
+                if ($db_file->private == 1)
+                    $private_annotation = "_private";
+            }
+            
+            //a parent was missing - bail out
+            if($parent_deleted) continue;
+
+            $file_record = array('contextid' => $context->id,
+                'component' => 'mod_chairman',
+                'filearea' => 'chairman' . $private_annotation,
+                'itemid' => 0,
+                'filepath' => $filepath,
+                'filename' => $file->get_filename(),
+                'timecreated' => $file->get_timecreated(),
+                'timemodified' => $file->get_timemodified());
+
+            //the way the files where done before leaves me wary of potential duplicates
+            // - so we check and change filename if need be
+            $file_exists = $fs->file_exists($file_record->contextid, $file_record->component, $file_record->filearea, 0, $file_record->filepath, $file_record->filename);
+            
+            $repeat = 0;
+            while ($file_exists) {
+                $repeat++;
+                $file_exists = $fs->file_exists($file_record->contextid, $file_record->component, $file_record->filearea, 0, $file_record->filepath, $repeat."_".$file_record->filename);
+            }
+            
+            if($repeat > 0)
+                $file_record['filename'] = $repeat . "_" . $file_record['filename'];
+
+
             $fs->create_file_from_storedfile($file_record, $file);
         }
-        
+
         //agenda files
-        foreach($files_agenda as $file)
-        {
-            $file_record = array('contextid'=>$context->id,
-                                  'component'=>'mod_chairman', 
-                                  'filearea'=>'attachment',
-                                  'itemid'=>$file->get_itemid(), 
-                                  'filepath'=>$file->get_filepath(),
-                                  'filename'=>$file->get_filename(),
-                                  'timecreated'=>$file->get_timecreated(), 
-                                  'timemodified'=>$file->get_timemodified());
-             
+        //These were done on the base of moodle forms and can be directly moved
+        foreach ($files_agenda as $file) {
+            $file_record = array('contextid' => $context->id,
+                'component' => 'mod_chairman',
+                'filearea' => 'attachment',
+                'itemid' => $file->get_itemid(),
+                'filepath' => $file->get_filepath(),
+                'filename' => $file->get_filename(),
+                'timecreated' => $file->get_timecreated(),
+                'timemodified' => $file->get_timemodified());
+
             $fs->create_file_from_storedfile($file_record, $file);
         }
-        
     }
 
     /**
@@ -479,7 +556,7 @@ class comity_db_migrator {
         //In the pre-moodle 2.0 references are made to the course module as the reference ID instead of the chairman table
         //therefore since "chairman_id" references are actually mapping to course_module ids.
         unset($this->foreign_id_map['chairman_id']);
-        
+
         get_fast_modinfo(0, 0, true);
         rebuild_course_cache();
         echo $OUTPUT->notification(get_string('importing_table_complete', 'chairman') . "<br/><br/><br/>", 'notifysuccess');
@@ -561,7 +638,6 @@ class comity_db_migrator {
             if ($dbMan->table_exists($comity_table_name) && $dbMan->table_exists($chariman_table_equiv))
                 $map[$comity_table_name] = $chariman_table_equiv;
             else {
-                echo $comity_table_name . " " . $chariman_table_equiv;
                 $OUTPUT->error_text(get_string('importing_table_dne', 'chairman') . $chariman_table_equiv);
                 $this->clean_mapping = false;
             }
@@ -607,8 +683,6 @@ class comity_db_migrator {
                         $dbMan->field_exists($chairman_table, $chairman_field_equiv))
                     $field_map[$comity_field_name] = $chairman_field_equiv;
                 else {
-                    echo "Comm: " . $comity_table . " " . $comity_field_name;
-                    echo "Cha: " . $chairman_table . " " . $chairman_field_equiv;
                     $OUTPUT->error_text(get_string('importing_table_field_dne', 'chairman') . $chairman_table . "=>" . $chairman_field_equiv);
                     $this->clean_mapping = false;
                 }

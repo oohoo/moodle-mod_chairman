@@ -102,7 +102,7 @@ function chairman_printnavbar($id) {
     echo '<a href="'.$CFG->wwwroot.'/mod/chairman/chairman_meetingagenda/viewer.php?chairman_id='.$id.'">'.get_string('agendas', 'chairman').'</a>';
     echo '</td></tr>';
     echo '<tr><td>';
-    echo '<a href="'.$CFG->wwwroot.'/mod/chairman/chairman_filesystem/files.php?id='.$id.'">'.get_string('files', 'chairman').'</a>';
+    echo '<a href="'.$CFG->wwwroot.'/mod/chairman/chairman_filesystem/file_form.php?id='.$id.'">'.get_string('files', 'chairman').'</a>';
     echo '</td></tr>';
     if ($chairman->use_forum == 1) {
         echo '<tr><td>';
@@ -152,7 +152,7 @@ function chairman_header($chairman,$pagename,$pagelink) {
 
 //---------------CONTENT---------------//
 
-    //echo '<link rel="stylesheet" type="text/css" href="../style.php">';
+    echo '<link rel="stylesheet" type="text/css" href="'.$CFG->wwwroot.'/mod/chairman/style.php">';
 
     
     echo "<h2>$chairman_name</h2>";
@@ -272,7 +272,7 @@ function breadcrumb($folderid) {
     if($folderid==0) {
         $obj = new stdClass();
         $obj->name = get_string('root','chairman');
-        $obj->url = $CFG->wwwroot.'/mod/chairman/chairman_filesystem/files.php?id='.$id.'&file=0';
+        $obj->url = $CFG->wwwroot.'/mod/chairman/chairman_filesystem/file_form.php?id='.$id.'&file=0';
         $obj->private = 0;
         //Make array (easier to add objects after)
         $returned[] = $obj;
@@ -281,7 +281,7 @@ function breadcrumb($folderid) {
     else {
         $obj = new stdClass();
         $obj->name = $folderobj->name;
-        $obj->url = $CFG->wwwroot.'/mod/chairman/chairman_filesystem/files.php?id='.$id.'&file='.$folderobj->id;
+        $obj->url = $CFG->wwwroot.'/mod/chairman/chairman_filesystem/file_form.php?id='.$id.'&file='.$folderobj->id;
         $obj->private = $folderobj->private;
 
         $returned = breadcrumb($folderobj->parent);
