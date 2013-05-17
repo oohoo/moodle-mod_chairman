@@ -298,8 +298,7 @@ $mform->setType('topic_ids', PARAM_INT);
 //$mform->addElement('static', "follow_up[$index]", get_string('topic_followup', 'chairman'), '');
 
 //-------FILE MANAGER -- VIEW ONLY----------------------------------------------
-$mform->registerElementType('filemanager_view_only', "$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/filemanager_view_only.php", 'MoodleQuickForm_Modified_Filemanager');
-$mform->addElement('filemanager_view_only', "attachments[".$index."]", get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );
+$mform->addElement('filemanager', "attachments[".$index."]", get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );
 
                 $context = get_context_instance(CONTEXT_MODULE,$this->chairman_id); 
                 $draftitemid = file_get_submitted_draft_itemid('attachments[' . $index . "]");
