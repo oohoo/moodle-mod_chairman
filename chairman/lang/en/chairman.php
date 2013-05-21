@@ -299,5 +299,30 @@ $string['updating_table_ids'] = "Updating Table: ";
 $string['private_files_label'] = "Private Files";
 $string['public_files_label'] = "Public Files";
 $string['files_label'] = "Chairman Labels";
-$string['filesview'] = "Chairman Files"
+$string['filesview'] = "Chairman Files";
+        
+        
+$string['external_link_label'] = "External Links";
+$string['navigation'] = "Navigation";
+$string['new_external_link']="New Link";
+
+$string['addlinklabel']="Add New Link";
+$string['linknamelabel']="Name: ";
+$string['linklabel']="Link: ";
+$string['addlink']="Add Link";
+$string['form_info_default']="All fields are required.";
+
+$string['emptyname']="Link display name cannot be empty.";
+$string['emptylink']="Link cannot be empty.";
+$string['unauthorized_link']="Only an administrator of the committee can add an external link.";
+$string['delete_link']="Delete External Link";
+$string['delete_link_msg']="Are you sure you want to remove this external link?";
+$string['remove_link']="Delete Link";
+
+$string['link_ajax_failed']="Unable to add external link";
+$string['link_ajax_sending']="Updating...";
+$string['unknown_ajax_type_link']="Unknown Type provided to controller.";
+
+
+
 ?>
