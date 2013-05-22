@@ -39,6 +39,7 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $chairman_planner = "$chairman_base/chairman_planners/chairman_planner";
         $chairman_file = "$chairman_base/chairman_files/chairman_file";
         $chairman_events = "$chairman_base/chairman_events/chairman_event";
+        $chairman_links = "$chairman_base/chairman_links/chairman_link";
 
         //level 3 mapping
         $chairman_agenda = "$chairman_events/chairman_agendas/chairman_agenda";
@@ -60,6 +61,7 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $paths[] = new restore_path_element('chairman_planner', $chairman_planner);
         $paths[] = new restore_path_element('chairman_file', $chairman_file);
         $paths[] = new restore_path_element('chairman_event', $chairman_events);
+        $paths[] = new restore_path_element('chairman_link', $chairman_links);
         $paths[] = new restore_path_element('chairman_agenda', $chairman_agenda);
         $paths[] = new restore_path_element('chairman_planner_date', $chairman_planner_date);
         $paths[] = new restore_path_element('chairman_planner_user', $chairman_planner_user);
@@ -82,8 +84,8 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
     protected function after_execute() {
         // Add choice related files, no need to match by itemname (just internally handled context)
         $this->add_related_files('mod_chairman', 'attachement', 'filename');
-        $this->add_related_files('mod_chairman', 'chairman', 'filename');
-        $this->annotate_files('mod_chairman', 'chairman_private', null);
+        $this->add_related_files('mod_chairman', 'chairman', null);
+        $this->add_related_files('mod_chairman', 'chairman_private', null);
     }
 
     /**
@@ -196,6 +198,27 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $newitemid = $DB->insert_record('chairman_events', $data);
 
         $this->set_mapping('chairman_event', $oldid, $newitemid);
+    }
+    
+        /**
+     * Processes all instances of chairman links present in the backup,
+     * and inserts them into the appropriate chairman table in moodle.
+     * 
+     * @global moodle_database $DB
+     * @param Object $data
+     */
+    protected function process_chairman_link($data) {
+        global $DB;
+
+        $data = (object) $data;
+        $oldid = $data->id;
+
+        $data->chairman_id = $this->get_course_module_id("chairman_id", $data);
+
+        // insert the choice record
+        $newitemid = $DB->insert_record('chairman_links', $data);
+
+        $this->set_mapping('chairman_link', $oldid, $newitemid);
     }
 
     /**

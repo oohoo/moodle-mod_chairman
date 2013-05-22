@@ -40,6 +40,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         list($planner, $planners) = $this->chairman_planner_table_element();
         list($file,$files) = $this->chairman_files_table_element();
         list($event,$events) = $this->chairman_events_table_element();
+        list($link,$links) = $this->chairman_links_table_element();
         
         list($agenda,$agendas) = $this->chairman_agenda_table_element();
         list($pl_date,$pl_dates) = $this->chairman_planner_dates_table_element();
@@ -70,6 +71,9 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         
         $chairman->add_child($events);
         $events->add_child($event);
+        
+        $chairman->add_child($links);
+        $links->add_child($link);
         
         
         //Level 3
@@ -113,6 +117,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $this->chairman_planner_table_config($planner);
         $this->chairman_files_table_config($file);
         $this->chairman_events_table_config($event);
+        $this->chairman_links_table_config($link);
         
         $this->chairman_agenda_table_config($agenda);
         $this->chairman_planner_dates_table_config($pl_date);
@@ -208,10 +213,19 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         return array($chairman_event, $chairman_events);
     }
     
+    private function chairman_links_table_element()
+    {
+       $chairman_links = new backup_nested_element('chairman_links');
+        $chairman_link = new backup_nested_element('chairman_link', array('id'), array(
+            'name', 'link','chairman_id'));
+        
+        return array($chairman_link, $chairman_links);
+    }
+    
      /**
-     * Generates the backup_nested_element for the chairman agenda table
+     * Generates the backup_nested_element for the chairman links table
      * 
-     * @return backup_nested_element Chairman Agenda Table
+     * @return backup_nested_element Chairman Links Table
      */
     private function chairman_agenda_table_element()
     {
@@ -384,6 +398,15 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $table->set_source_table('chairman_events', array('chairman_id' => backup::VAR_MODID));
         $table->annotate_ids('user', 'user_id');
+    }
+    
+    /**
+     * Generates the backup_nested_element for the chairman links table
+     * 
+     */
+    private function chairman_links_table_config($table)
+    {
+        $table->set_source_table('chairman_links', array('chairman_id' => backup::VAR_MODID));
     }
     
      /**

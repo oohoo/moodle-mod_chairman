@@ -44,6 +44,12 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
     background: #c3d6f5;
 }
 
+#chairman_menu li,
+#chairman_links li
+{
+    word-wrap: break-word;
+}
+
 #chairman_main{
     position: relative;
     background-color: #e6effe;

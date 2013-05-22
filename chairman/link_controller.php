@@ -21,7 +21,9 @@
  * via an ajax call.
  */
 require_once('../../config.php');
-require_once('beta_chairman_lib.php');
+global $CFG;
+
+require_once("$CFG->dirroot/mod/chairman/lib_chairman.php");
 
 $id = required_param('id', PARAM_INT);
 $type = required_param('type', PARAM_TEXT);
