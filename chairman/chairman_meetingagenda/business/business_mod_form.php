@@ -72,9 +72,6 @@ $agenda_id = $this->agenda_id;
 $chairman_id = $this->chairman_id;
 $instance = $this->instance;
 
-
-
-
 $agenda = $DB->get_record('chairman_agenda', array('id' => $agenda_id), '*', $ignoremultiple = false);
 $event_record = $DB->get_record('chairman_events', array('id' => $event_id), '*', $ignoremultiple = false);
 
@@ -97,7 +94,7 @@ conditionally_add_static($mform, $event_record->description, 'description', get_
 $mform->addElement('static', 'edit_url','');
 
 //---------EDIT URL-------------------------------------------------------------
-$url = "<a href=$CFG->wwwroot/mod/chairman/chairman_event/edit_event.php?id=$chairman_id&event_id=$event_id>Change/Edit</a>";
+$url = "<a href=$CFG->wwwroot/mod/chairman/chairman_events/edit_event.php?id=$chairman_id&event_id=$event_id>Change/Edit</a>";
 $toform->edit_url = $url;
 
 //----------------CHANGE DEFAULT VARIABLES--------------------------------------
@@ -181,7 +178,8 @@ $commityRecords = $DB->get_records('chairman_agenda_members', array('chairman_id
                     $participant[] = & $mform->createElement('static',"","", "</td><td>");
 
                     $participant[] = & $mform->createElement('text', "participant_status_notes[$index]", '', array('size' => '30'));
-
+                    $mform->setType('participant_status_notes', PARAM_TEXT);
+                        
                     $participant[] = & $mform->createElement('static',"","", "</td></tr>");
 
                 $group = &$mform->addGroup($participant, "participant[$index]", '', array(' '), false);
@@ -464,6 +462,7 @@ $mform->addElement('htmleditor', "topic_notes[$index]", '&nbsp;', array('cols'  
 //STATUS OF TOPIC
 $mform->addElement('html','</br>');
 $mform->addElement('select', "topic_status[$index]", get_string('topic_status', 'chairman'), $topic_statuses, $attributes=null);
+$mform->setType('topic_status', PARAM_TEXT);
 $mform->addElement('hidden', "topic_ids[$index]", $topic->id);
 $mform->setType('topic_ids', PARAM_INT);
 //$mform->addElement('text', "follow_up[$index]", get_string('topic_followup', 'chairman'), array('size'=>'50'));
@@ -507,20 +506,27 @@ $member_support = array();
     $member_support[] = $mform->createElement('select', "proposed[$index][$sub_index]", '', $proposing_choices, $attributes=null);
     $member_support[] = $mform->createElement('select', "supported[$index][$sub_index]", '', $supporting_choices, $attributes=null);;
 $mform->addGroup($member_support, "member_support[$index][$sub_index]", get_string('motion_support', 'chairman') , array(' '), false);
-   
+$mform->setType('proposed', PARAM_INT);
+$mform->setType('supported', PARAM_INT);
+
 $votes = array();
     $votes[] =$mform->createElement('static', "", "", "Aye: ");
     $votes[] =$mform->createElement('text', "aye[$index][$sub_index]", '', array('size'=>'3','maxlength'=>"3"));
+    $mform->setType('aye', PARAM_INT);
     $votes[] =$mform->createElement('static', "", "", "Nay: ");
     $votes[] =$mform->createElement('text', "nay[$index][$sub_index]", '', array('size'=>'3','maxlength'=>"3"));
+    $mform->setType('nay', PARAM_INT);
     $votes[] =$mform->createElement('static', "", "", "Abs: ");
     $votes[] =$mform->createElement('text', "abs[$index][$sub_index]", '', array('size'=>'3','maxlength'=>"3"));
+    $mform->setType('abs', PARAM_INT);
     $votes[] = $mform->createElement('checkbox', "unanimous[$index][$sub_index]", '', " ".get_string('unanimous','chairman'));
-
+    $mform->setType('unanimous', PARAM_INT);
+    
     $mform->addGroup($votes, "motion_votes[$index][$sub_index]", get_string('motion_votes', 'chairman') , array(' '), false);
 
     $results = array();
     $results[] = $mform->createElement('select', "motion_result[$index][$sub_index]", '', $motion_result, $attributes=null);
+    
     $mform->addGroup($results, "result[$index][$sub_index]", get_string('motion_outcome', 'chairman') , array(' '), false);
 
 
@@ -615,11 +621,14 @@ $mform->addGroup($member_support, "member_support_new[$index]", get_string('moti
 $votes = array();
     $votes[] =$mform->createElement('static', "", "", get_string('topic_vote_aye', 'chairman'));
     $votes[] =$mform->createElement('text', "aye_new[$index]", '', array('size'=>'3','maxlength'=>"3"));
+    $mform->setType('aye_new', PARAM_TEXT);
     $votes[] =$mform->createElement('static', "", "", get_string('topic_vote_nay', 'chairman'));
     $votes[] =$mform->createElement('text', "nay_new[$index]", '', array('size'=>'3','maxlength'=>"3"));
+    $mform->setType('nay_new', PARAM_TEXT);
     $votes[] =$mform->createElement('static', "", "", get_string('topic_vote_abs', 'chairman'));
     $votes[] =$mform->createElement('text', "abs_new[$index]", '', array('size'=>'3','maxlength'=>"3"));
-$votes[] = $mform->createElement('checkbox', "unanimous_new[$index]", '', " ".get_string('unanimous','chairman'));
+    $mform->setType('abs_new', PARAM_TEXT); 
+     $votes[] = $mform->createElement('checkbox', "unanimous_new[$index]", '', " ".get_string('unanimous','chairman'));
 
     $mform->addGroup($votes, "motion_votes_new[$index]", get_string('motion_votes', 'chairman') , array(' '), false);
 

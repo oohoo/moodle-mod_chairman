@@ -36,7 +36,7 @@ function ajax_post(script,div){
     {
         if (xmlhttp.readyState==1)
         {
-            document.getElementById(div).innerHTML='<img src="pix/ajax-loader.gif">';
+            document.getElementById(div).innerHTML='<img src="../pix/ajax-loader.gif">';
         }
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
@@ -69,7 +69,7 @@ function ajax_get(script,div){
     {
         if (xmlhttp.readyState==3)
         {
-            document.getElementById(div).innerHTML='<img src="pix/ajax-loader.gif">';
+            document.getElementById(div).innerHTML='<img src="../pix/ajax-loader.gif">';
         }
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {

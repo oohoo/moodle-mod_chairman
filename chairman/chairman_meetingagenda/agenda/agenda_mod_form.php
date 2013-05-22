@@ -74,16 +74,19 @@ $mform->addElement('static', 'edit_url','');
 
 //---------Agenda Topics--------------------------------------------------------
 //------------------------------------------------------------------------------
-$mform->addElement('header', 'mod-committee-create_topics', get_string('create_topics', 'chairman'));
+//$mform->addElement('header', 'mod-committee-create_topics', get_string('create_topics', 'chairman'));
 $repeatno = $this->repeat_count;
 
 //-----Repeating Topic Elements-------------------------------------------------
 $repeatarray=array();
+    $repeatarray[] = $mform->createElement('header', 'mod_committee_create_topics', get_string('create_topic', 'chairman').' {no}');
+    
     $repeatarray[] = $mform->createElement('text', 'topic_title', get_string('title_agenda', 'chairman'),array('size'=>'80'));
     $mform->setType('topic_title', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('text', 'duration_topic', get_string('duration_agenda', 'chairman'),"");
     $mform->setType('duration_topic', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('textarea', 'topic_description', get_string('desc_agenda', 'chairman'), 'wrap="virtual" rows="5" cols="80"');
+    $mform->setType('topic_description', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('filemanager', 'attachments', get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );
     $submit = &$mform->createElement('submit', 'remove_topic', get_string('remove_topic','chairman'));
     $submit->setLabel('&nbsp;');
@@ -94,6 +97,7 @@ $repeatarray=array();
     $repeateloptions = array();
     $this->repeat_elements($repeatarray, $repeatno, $repeateloptions, 'option_repeats','option_add_fields', 1, get_string('add_topic','chairman'));
 
+    
 //-----Conditional Rules--------------------------------------------------------
  $mform->disabledIf('option_add_fields', 'created', 'eq', 'no');
  $mform->disabledIf('submitbutton', 'is_editable', 'eq', 'no');

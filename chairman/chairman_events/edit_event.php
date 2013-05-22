@@ -25,7 +25,6 @@ require_once('../../../config.php');
 require_once('../lib.php');
 require_once('../chairman_meetingagenda/lib.php');
 require_once('../lib_chairman.php');
-echo '<link rel="stylesheet" type="text/css" href="../style.php">';
 
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 

@@ -155,6 +155,7 @@ $string['complete_agenda_warning'] = "Do you wish to COMPLETE the agenda?";
 $string['complete_agenda_warning_subscript'] = "Note: The contents of the agenda will no longer be editable if set to complete.";
 $string['confirm_remove_agenda'] = "Confirm Removal";
 $string['create_topics'] = 'Topics';
+$string['create_topic'] = 'Topic';
 $string['date_agenda'] = 'Date: ';
 $string['desc_agenda'] = 'Description';
 $string['desc_agenda_c'] = 'Description: ';

@@ -28,6 +28,10 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 
+//Temp fix for moodle bug - see file for details
+//@TODO Remove once moodle bug has been fixed.
+echo "<script type='text/javascript' src='agenda/js/agenda_form.js'/>";
+
 //-------------------SECURITY---------------------------------------------------
 //------------------------------------------------------------------------------
 //Simple role cypher for code clarity
@@ -435,7 +439,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
             $toform->created = 'yes'; //If agenda exists, change hidden field to yes
         }
 
-        $url = "<a href=$CFG->wwwroot/mod/chairman/chairman_event/edit_event.php?id=$chairman_id&event_id=$event_id>Change/Edit</a>";
+        $url = "<a href=$CFG->wwwroot/mod/chairman/chairman_events/edit_event.php?id=$chairman_id&event_id=$event_id>Change/Edit</a>";
 
         $toform->edit_url = $url;
 
@@ -541,6 +545,7 @@ pdf_version($event_id);
 
 print '<input type="hidden" name="base_url" value="'.$CFG->wwwroot.'"/>';
 print '<input type="hidden" name="courseid" value="'.$chairman->course.'"/>';
+
 
     }
 
@@ -690,6 +695,10 @@ require_once('agenda_mod_form_view.php'); //Form for users that can view
 
 print '<input type="hidden" name="base_url" value="'.$CFG->wwwroot.'"/>';
 print '<input type="hidden" name="courseid" value="'.$chairman->course.'"/>';
+
+//Temp fix for moodle bug - see file for details
+//@TODO Remove once moodle bug has been fixed.
+echo "<script type='text/javascript' src='agenda/js/agenda_form.js'/>";
 
 
 }

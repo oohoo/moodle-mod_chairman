@@ -21,8 +21,6 @@ require_once('../../config.php');
 require_once('lib.php');
 require_once('lib_chairman.php');
 
-echo '<link rel="stylesheet" type="text/css" href="style.php">';
-
 $id = optional_param('id',0,PARAM_INT);    // Planner ID
 $planner = $DB->get_record('chairman_planner', array('id'=>$id));
 

@@ -32,7 +32,7 @@ require_once('../lib_chairman.php');
 
 $event_id = optional_param('event_id', 0, PARAM_INT); // event ID
 
-global $DB,$PAGE,$USER,$COURSE;
+global $DB,$PAGE,$USER,$COURSE, $OUTPUT;
 
 $agenda = null;
 
@@ -92,7 +92,7 @@ $user_role = $current_user_record->role_id;
 //if($current_user_record){
 //print "Role: " . $user_role .  '</br>';
 //}
-
+$PAGE->requires->jquery();
 $PAGE->set_url('/mod/chairman/chairman_meetingagenda/view.php?event_id='.$event_id);
 $PAGE->set_title("$chairman->name");
 $PAGE->set_heading("$chairman->name");

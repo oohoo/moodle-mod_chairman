@@ -1,0 +1,142 @@
+
+/**
+**************************************************************************
+**                                Chairman                              **
+**************************************************************************
+* @package mod                                                          **
+* @subpackage chairman                                                  **
+* @name Chairman                                                        **
+* @copyright oohoo.biz                                                  **
+* @link http://oohoo.biz                                                **
+* @author Raymond Wainman                                               **
+* @author Patrick Thibaudeau                                            **
+* @author Dustin Durand                                                 **
+* @license                                                              **
+http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
+**************************************************************************
+**************************************************************************/
+
+#chairman_root {
+    position: relative;
+    width: 99%;
+    height: 100%;
+    float: left;
+    background-color: #d9e7ff;
+    border-color: #c1d8fe;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#chairman_nav_root{
+    position: relative;
+    width: 150px;
+    float: left;
+    background-color: #c9dcfd;
+    border-color: #a8c8fe;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 15px;
+}
+
+#chairman_menu li a.ui-state-focus,
+#chairman_links li a.ui-state-focus
+{
+    background: #c3d6f5;
+}
+
+#chairman_main{
+    position: relative;
+    background-color: #e6effe;
+    margin-left: 160px;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #c1d8fa;
+    border-width: 1px;
+}
+
+.chairman_container{
+    padding: 5px;
+}
+
+.chairman_nav_container{
+    
+}
+
+.chairman_menu_container{
+    
+}
+
+.chairman_links_container{
+    
+}
+
+#chairman_menu_collapse{
+    
+}
+
+#chairman_menu_collapse_root{
+    padding-bottom: 3px;
+    
+}
+
+#chairman_menu_collapse_button
+{
+    padding: 0px;
+    width: 20px;
+    float: right;
+}
+
+#chairman_link_name_label, #chairman_link_name,
+#chairman_link_label, #chairman_link { 
+    display:block; 
+}
+
+.chairman_bordered {
+    border-color: #ff3d00;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 15px;
+}
+
+.TL { top: 0; left: 0; background-position: 0 0; }
+.TR { top: 0; right: 0; background-position: -10px 0; }
+.BL { bottom: 0; left: 0; background-position: 0 -10px; }
+.BR { bottom: 0; right: 0; background-position: -10px -10px; }
+
+.content { font-size: 12px; }
+.title {font-weight: bold; border-bottom: 1px solid black; margin-bottom:10px; }
+.add {font-size: 12px; font-weight:0; color:black;}
+.addentrylink:link {color:black; }
+.addentrylink:hover {color:black; }
+
+.file { border: 1px solid black; margin:10px;}
+
+#image_cell{ margin-right:3px; }
+#icon { margin:10px; }
+#back { margin-left:10px; }
+
+#datepicker{
+ font-size:10px;
+}
+
+#list .ui-selecting{
+ 	background: #FECA40; 
+ }
+
+ #list .ui-selected{ 
+ 	background: #F39814; 
+ 	color: white;
+ }
+
+ #list{ 
+ 	list-style-type: none; 
+ 	margin: 0; padding: 0; 
+ 	width: 60%;
+ }
+ 
+ #list li{
+ 	border:1px solid grey;
+ 	margin-top: 1px;
+ 	
+ }
+

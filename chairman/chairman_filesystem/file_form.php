@@ -30,7 +30,6 @@ require_once('files_edit_form.php');
 
 $id = required_param('id', PARAM_INT);    // chairman id
 
-echo '<link rel="stylesheet" type="text/css" href="'.$CFG->wwwroot.'/mod/chairman/style.php">';
 chairman_check($id);
 chairman_header($id, 'filesview', 'chairman_filesystem/file_form.php?id=' . $id);
 
