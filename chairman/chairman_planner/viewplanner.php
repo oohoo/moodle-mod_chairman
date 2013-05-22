@@ -30,7 +30,7 @@ $planner = $DB->get_record('chairman_planner', array('id'=>$id));
 
 // print header
 chairman_check($planner->chairman_id);
-chairman_header($planner->chairman_id,'planner','viewplanner.php?id='.$id);
+chairman_header($planner->chairman_id,'viewplanner','viewplanner.php?id='.$id);
 
 //content
 echo '<form method="POST" action="responses.php">';

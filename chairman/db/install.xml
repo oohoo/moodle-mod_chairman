@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/chairman/db" VERSION="20130521" COMMENT="XMLDB file for Moodle mod/chairman"
+<XMLDB PATH="mod/chairman/db" VERSION="20130522" COMMENT="XMLDB file for Moodle mod/chairman"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -54,10 +54,10 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="chairman_links" COMMENT="External Links" PREVIOUS="chairman_files" NEXT="chairman_events">
+    <TABLE NAME="chairman_links" COMMENT="External Links" PREVIOUS="chairman_files" NEXT="chairman_menu_state">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="chairman_id"/>
-        <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="The course module id for chairman" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="" PREVIOUS="id" NEXT="name"/>
         <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="name displayed for link" PREVIOUS="chairman_id" NEXT="link"/>
         <FIELD NAME="link" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="link" PREVIOUS="name"/>
       </FIELDS>
@@ -65,7 +65,18 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="chairman_events" COMMENT="events for chairman module" PREVIOUS="chairman_links" NEXT="chairman_planner">
+    <TABLE NAME="chairman_menu_state" COMMENT="Default comment for the table, please edit me" PREVIOUS="chairman_links" NEXT="chairman_events">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="chairman_id"/>
+        <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="THIS IS THE ACTUAL CHAIRMAN ID - NOT THE CM ID LIKE THE REST OF THE DB" PREVIOUS="id" NEXT="page_code"/>
+        <FIELD NAME="page_code" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="chairman_id" NEXT="state"/>
+        <FIELD NAME="state" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="1 = menu expanded by default, 0 = menu collapsed by default" PREVIOUS="page_code"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="chairman_events" COMMENT="events for chairman module" PREVIOUS="chairman_menu_state" NEXT="chairman_planner">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="chairman_id"/>
         <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="id" NEXT="user_id"/>

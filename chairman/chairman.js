@@ -69,7 +69,7 @@ function add_link_ajax(name, link)
 {
     $.ajax({
         type: "POST",
-        url: "link_controller.php",
+        url: php_strings['ajax_url'],
         beforeSend: function() {
             update_form_info(php_strings["link_ajax_sending"])
         },
@@ -104,7 +104,7 @@ function remove_link_ajax(id)
 {
     $.ajax({
         type: "POST",
-        url: "link_controller.php",
+        url: php_strings['ajax_url'],
         beforeSend: function() {
             update_form_info(php_strings["link_ajax_sending"])
         },
@@ -117,12 +117,93 @@ function remove_link_ajax(id)
 }
 
 /**
+ * Hide contents of the menu in the given timeframe
+ * 
+ * @param {type} time
+ * @returns {undefined}
+ */
+function hide_menu(time)
+{
+    $("#menu_title").hide(time);
+    $("#chairman_menu_container").hide(time);
+    $("#nav_title").hide(time);
+    $("#chairman_links_container").hide(time);
+    $("#link_title").hide(time);
+    $("#chairman_nav_root").addClass("collapsed_menu");
+    $("#chairman_menu_collapse").removeClass("ui-icon-arrowthickstop-1-w");
+    $("#chairman_menu_collapse").addClass("ui-icon-arrowthickstop-1-e");
+}
+
+/**
+ * Animated process of hiding the navigation menu
+ * 
+ * @param {type} animate_time
+ * @param {type} content_time
+ * @returns {undefined}
+ */
+function hide_menu_animated(animate_time, content_time)
+{
+    $("#chairman_main").animate({'margin-left': '45px'}, animate_time);
+    hide_menu(content_time);
+
+    $("#chairman_nav_root").animate({'width': '30px', 'overflow': 'hidden'}, animate_time, function() {
+    });
+}
+
+/**
+ * Animated process of showing a collapsed navigation menu.
+ * 
+ * 
+ * @param {type} animate_time
+ * @param {type} content_time
+ * @returns {undefined}
+ */
+function show_menu_animated(animate_time, content_time)
+{
+    $("#chairman_main").animate({'margin-left': '160px'}, animate_time);
+    $("#chairman_nav_root").effect("size", {to: {width: '150px'}}, animate_time, function() {
+        show_menu(content_time);
+    });
+}
+
+/**
+ * Shows the contents of the menu
+ * 
+ * @param {type} time
+ * @returns {undefined}
+ */
+function show_menu(time)
+{
+    $("#chairman_nav_root").css("width", "150px");
+    $("#chairman_main").css("margin-left", "160px");
+    $("#menu_title").show(time);
+    $("#chairman_menu_container").show(time);
+    $("#nav_title").show(time);
+    $("#chairman_links_container").show(time);
+    $("#link_title").show(time);
+    $("#chairman_nav_root").removeClass("collapsed_menu");
+    $("#chairman_menu_collapse").removeClass("ui-icon-arrowthickstop-1-e");
+    $("#chairman_menu_collapse").addClass("ui-icon-arrowthickstop-1-w");
+}
+
+
+
+/**
  * Global Initalization
  */
 $(function() {
+    
+  $(function()
+    {
+        if (menu_state_default === 0)
+        {
+            hide_menu_animated(0, 0);
+        }
+    });
+    
     $("#chairman_menu").menu();//generate nav menu
     $("#chairman_links").menu();//generate links menu
-    
+
     //setup hover css
     $("#chairman_menu_collapse_button").hover(
             function() {
@@ -132,52 +213,17 @@ $(function() {
                 $(this).removeClass("ui-state-hover");
             }
     );
-    
+
     //menu shrink/expand on click of collapse button
     $("#chairman_menu_collapse_button").click(
             function() {
                 if ($("#chairman_nav_root").hasClass("collapsed_menu"))//already colapsed - expand
                 {
-                    $("#chairman_main").animate({'margin-left': '160px'}, 1000);
-                    $("#chairman_nav_root").effect("size", {to: {width: '150px'}}, 1000, function() {
-
-                        $("#chairman_nav_root").css("width", "150px");
-
-                        $("#chairman_main").css("margin-left", "160px");
-
-                        $("#menu_title").show(800);
-                        $("#chairman_menu_container").show(800);
-                        $("#nav_title").show(800);
-                        $("#chairman_links_container").show(800);
-                        $("#link_title").show(800);
-                        $("#chairman_nav_root").removeClass("collapsed_menu");
-
-                        $("#chairman_menu_collapse").removeClass("ui-icon-arrowthickstop-1-e");
-                        $("#chairman_menu_collapse").addClass("ui-icon-arrowthickstop-1-w");
-                    });
-
+                    show_menu_animated(1000, 800);
                 }
                 else //collapse menu
                 {
-                    $("#chairman_main").animate({'margin-left': '45px'}, 1000);
-
-                    $("#menu_title").hide(800);
-                    $("#chairman_menu_container").hide(800);
-                    $("#nav_title").hide(800);
-                    $("#chairman_links_container").hide(800);
-                    $("#link_title").hide(800);
-
-                    $("#chairman_nav_root").animate({'width': '30px', 'overflow': 'hidden'}, 1000, function() {
-
-
-
-                        $(this).addClass("collapsed_menu");
-
-                        $("#chairman_menu_collapse").removeClass("ui-icon-arrowthickstop-1-w");
-                        $("#chairman_menu_collapse").addClass("ui-icon-arrowthickstop-1-e");
-
-                    });
-
+                    hide_menu_animated(1000, 800);
                 }
             });
 

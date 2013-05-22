@@ -68,9 +68,51 @@ function chairman_add_instance($chairman) {
         }
     }
     
+    chairman_update_menu_state($chairman);
+    
     return $chairman->id;
 }
 
+/**
+ * 
+ * Traverses all the menu states(expanded or collapsed) from a chairman mod_form
+ * data object, and inserts or updates the table as required.
+ * 
+ * @global moodle_database $DB
+ * @param type $chairman
+ */
+function chairman_update_menu_state($chairman)
+{
+    global $DB;
+    
+    $prepend = 'col_menu_';
+    $cm = get_coursemodule_from_instance('chairman', $chairman->id);
+    $chairman_properties =  (array) $chairman;
+
+    foreach ($chairman_properties as $identifier => $value) {
+        if(strpos($identifier, $prepend) !== 0) continue;
+        
+        $clean_page_code = str_replace($prepend, '', $identifier);
+
+        $select = "chairman_id = ? and ".$DB->sql_compare_text('page_code')." = ?";
+        $record = $DB->get_record_select('chairman_menu_state', $select, array($chairman->id,$clean_page_code));
+        
+        if(!$record)
+        {
+           $newrecord = new stdClass();
+           $newrecord->page_code = $clean_page_code;
+           $newrecord->chairman_id = $chairman->id;
+           $newrecord->state = $value;
+           $DB->insert_record('chairman_menu_state', $newrecord);
+        }
+          else
+        {
+           $record->state = $value;
+           $DB->update_record('chairman_menu_state', $record);
+        }
+        
+    } 
+}
 
 function chairman_update_instance($chairman, $mform=null) {
 /// Given an object containing all the necessary data, 
@@ -121,11 +163,13 @@ function chairman_update_instance($chairman, $mform=null) {
             $DB->update_record('chairman', array('id'=>$chairman->id, 'wiki'=>$chairman->wiki));
         }
     } else {
-        if ($chairman->questionnaire > 0){
+        if (isset($chairman->questionnaire) && $chairman->questionnaire > 0){
             chairman_add_module('questionnaire', $chairman->course, $chairman->name, $chairman->id, 'del',$chairman->questionnaire);
         }
         $chairman->use_questionnaire = 0;
     }
+    
+    chairman_update_menu_state($chairman);
 
     return $DB->update_record("chairman", $chairman);
 }

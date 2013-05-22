@@ -105,6 +105,7 @@ $string['root'] = 'Root';
 $string['search'] = 'Search';
 
 $string['planner'] = 'Meeting Scheduler';
+$string['viewplanner'] = 'Meeting Scheduler';
 $string['pluginname'] = 'Chairman';
 $string['newplanner'] = 'New Meeting Scheduler';
 $string['details'] = 'Details';
@@ -324,6 +325,29 @@ $string['link_ajax_failed']="Unable to add external link";
 $string['link_ajax_sending']="Updating...";
 $string['unknown_ajax_type_link']="Unknown Type provided to controller.";
 
+$string['collaps_menu_label']="Collapsible Menu Defaults";
+
+$string['collaps_menu_desc']="The navigation menu in chairman can be collapsed in order to maximize space. The follow settings determine whether the menu will be expanded by default.";
+
+$string['collaps_menu_members']="Members ";
+$string['collaps_menu_addmembers']="Add Members ";
+$string['collaps_menu_sched']="Meeting Scheduler ";
+$string['collaps_menu_newsched']="New Meeting Scheduler ";
+$string['collaps_menu_sched_respon']="Scheduler Responding ";
+
+$string['collaps_menu_events']="Meetings ";
+$string['collaps_menu_editevents']="Edit Meetings ";
+$string['collaps_menu_newevents']="New Meetings ";
+
+$string['collaps_menu_agenda']="Agenda ";
+$string['collaps_menu_agendalist']="Agenda List ";
+$string['collaps_menu_minutes']="Agenda Minutes ";
+$string['collaps_menu_agenda_ba']="Agenda Business Arising ";
+$string['collaps_menu_archives']="Agenda Archives ";
+$string['collaps_menu_files']="Files View ";
 
 
+$string['collaps_menu_delmembers']="Delete Members ";
+$string['collaps_menu_delplanner']="Delete Planner ";
+$string['collaps_menu_delevents']="Delete Event ";
 ?>

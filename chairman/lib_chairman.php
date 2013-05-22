@@ -64,7 +64,7 @@ function chairman_header($cmid,$pagename,$pagelink)
     
     
     chairman_global_js($cmid);
-    chairman_structure($chairman, $cmid);
+    chairman_structure($chairman,$pagename, $cmid);
     
 }
 
@@ -75,6 +75,7 @@ function chairman_header($cmid,$pagename,$pagelink)
  */
 function chairman_global_js($cmid)
 {
+    global $CFG;
     echo '<script>';
     echo 'var php_strings = new Array();';
     echo 'php_strings = new Array();';
@@ -87,7 +88,7 @@ function chairman_global_js($cmid)
     echo 'php_strings["remove_link"] = "'.get_string('remove_link','chairman').'";';
     echo 'php_strings["link_ajax_sending"] = "'.get_string('link_ajax_sending','chairman').'";';
     echo 'php_strings["link_ajax_failed"] = "'.get_string('link_ajax_failed','chairman').'";';
-    
+    echo "php_strings['ajax_url'] = '$CFG->wwwroot/mod/chairman/link_controller.php';"; 
     
     
     echo '</script>';
@@ -101,7 +102,7 @@ function chairman_global_js($cmid)
  * @param type $chairman
  * @param type $cmid
  */
-function chairman_structure($chairman, $cmid)
+function chairman_structure($chairman,$pagename, $cmid)
 {
     echo "<div id='chairman_root' class='chairman_container'>";
     echo "<div id='chairman_root_container' class='chairman_container'>";
@@ -109,7 +110,7 @@ function chairman_structure($chairman, $cmid)
     
     
     echo "<div id='chairman_nav_root' class='chairman_container chairman_nav_container'>";
-    chairman_menu($chairman, $cmid);
+    chairman_menu($chairman,$pagename, $cmid);
     chairman_links($chairman, $cmid);
     echo "</div>";
     
@@ -139,12 +140,22 @@ function chairman_footer()
  * Generate and output the overall menu for the application.
  * 
  * @global type $CFG
+ * @global moodle_database $DB
  * @param type $chairman
  * @param type $id
  */
-function chairman_menu($chairman, $id)
+function chairman_menu($chairman,$pagename, $id)
 {
-    global $CFG;
+    global $CFG, $DB;
+    
+    $select = "chairman_id = ? and ".$DB->sql_compare_text('page_code')." = ?";
+    $menu_state = $DB->get_record_select('chairman_menu_state', $select, array($chairman->id,$pagename));
+    
+    $state = 0;
+    if($menu_state && $menu_state->state == 1)
+        $state = 1;
+    
+    echo "<script>var menu_state_default = $state;</script>";
     
     
     //collapsable icon
