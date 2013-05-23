@@ -255,10 +255,11 @@ $(function() {
     //create add link dialog
     $("#link_dialog_form").dialog({
         autoOpen: false,
-        height: 300,
-        width: 350,
+        height: 236,
+        width: 245,
         modal: true,
         buttons: buttons,
+        resizable: false,
         close: function() {
             $("#chairman_link_name").removeClass("ui-state-error");
             $("#chairman_link").removeClass("ui-state-error");

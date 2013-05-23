@@ -126,5 +126,9 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
      padding-right: 5px;
  }
  
+ .ui-dialog {
+     z-index: 9000;
+ }
+ 
  
  
