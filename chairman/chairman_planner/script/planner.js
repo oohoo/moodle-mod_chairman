@@ -132,10 +132,10 @@ function planner_submit(){
     //<input type="hidden name="rule[<memberid>]" value="0/1"....
     //...
     //Note: if not required - they must be optional
-    $.each($('#list_members_required li'), function(index, item) {
+    $.each($('#list_members_required option'), function(index, item) {
         
         var value = 0;
-        if($(item).hasClass('ui-selected'))
+        if ( $(item).prop("selected") )
             value = 1;
         
         var element = $('<input/>', {

@@ -90,6 +90,18 @@ function chairman_global_js($cmid)
     echo 'php_strings["link_ajax_failed"] = "'.get_string('link_ajax_failed','chairman').'";';
     echo "php_strings['ajax_url'] = '$CFG->wwwroot/mod/chairman/link_controller.php';"; 
     
+    echo 'php_strings["itemsSelected_nil"] = "'.get_string('itemsSelected_nil','chairman').'";';
+    echo 'php_strings["itemsSelected"] = "'.get_string('itemsSelected','chairman').'";';
+    echo 'php_strings["itemsSelected_plural"] = "'.get_string('itemsSelected_plural','chairman').'";';
+    echo 'php_strings["itemsAvailable_nil"] = "'.get_string('itemsAvailable_nil','chairman').'";';
+    echo 'php_strings["itemsAvailable"] = "'.get_string('itemsAvailable','chairman').'";';
+    echo 'php_strings["itemsAvailable_plural"] = "'.get_string('itemsAvailable_plural','chairman').'";';
+    echo 'php_strings["itemsFiltered_nil"] = "'.get_string('itemsFiltered_nil','chairman').'";';
+    echo 'php_strings["itemsFiltered"] = "'.get_string('itemsFiltered','chairman').'";';
+    echo 'php_strings["itemsFiltered_plural"] = "'.get_string('itemsFiltered_plural','chairman').'";';
+    echo 'php_strings["selectAll"] = "'.get_string('selectAll','chairman').'";';
+    echo 'php_strings["deselectAll"] = "'.get_string('deselectAll','chairman').'";';
+    echo 'php_strings["search"] = "'.get_string('search','chairman').'";';
     
     echo '</script>';
     

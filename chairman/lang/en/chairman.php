@@ -350,4 +350,26 @@ $string['collaps_menu_files']="Files View ";
 $string['collaps_menu_delmembers']="Delete Members ";
 $string['collaps_menu_delplanner']="Delete Planner ";
 $string['collaps_menu_delevents']="Delete Event ";
+
+
+/**
+ * Multiselect JQuery Plugin
+ * //globally defined js in lib_chairman in chairman_global_js function
+ * //plugin interface in /mod/chairman/jquery/multiselect/js/locales/jquery.uix.multiselect_es.js 
+ * 
+ */
+$string['itemsSelected_nil']= "No Required Members";
+$string['itemsSelected'] = "Required Members: {count}";
+$string['itemsSelected_plural'] = $string['itemsSelected'];
+$string['itemsAvailable_nil'] = "No Optional Members";
+$string['itemsAvailable'] = "Optional Members: {count}";
+$string['itemsAvailable_plural'] = $string['itemsAvailable'];
+$string['itemsFiltered_nil'] = "No Matching Members";
+$string['itemsFiltered'] = "Matching Members: {count}";
+$string['itemsFiltered_plural'] = $string['itemsFiltered'];
+$string['selectAll'] = "Require All Members";
+$string['deselectAll'] = "All Members Optional";
+$string['search'] = "Search Members";
+
+
 ?>

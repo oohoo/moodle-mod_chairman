@@ -50,6 +50,9 @@ $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->css('/mod/chairman/chairman_planner/css/planner.css');
 $PAGE->requires->js('/mod/chairman/chairman_planner/script/planner.js');
+$PAGE->requires->js('/mod/chairman/jquery/plugins/multiselect/js/jquery.uix.multiselect.js');
+$PAGE->requires->js('/mod/chairman/jquery/plugins/multiselect/js/locales/jquery.uix.multiselect_en.js');
+$PAGE->requires->css('/mod/chairman/jquery/plugins/multiselect/css/jquery.uix.multiselect.css');
 $PAGE->requires->js('/mod/chairman/chairman_planner/script/planner_calendar.js');
 
 
@@ -87,26 +90,11 @@ echo '<tr>';
 echo '<td valign="top">'.get_string('members','chairman').':</td>';
 echo '<td>';
 
-
-echo '<table width="50%">';
-echo '<tr>';
-echo '<th class="selectable_title">'.get_string('required','chairman').'</th>';
-echo '<th class="selectable_title">'.get_string('optional','chairman').'</th>';
-echo '</tr>';
-
-echo '<tr>';
-echo '<td>';
+//member required/optional multiselect
+echo '<div class="ui-helper-clearfix">';
 get_member_list($id, $planner, 'list_members_required', 'list_members_required', 1);
-echo '</td>';
+echo '</div>';
 
-echo '<td>';
-get_member_list($id, $planner, 'list_members_optional', 'list_members_optional', 0);
-echo '</td>';
-
-echo '</tr>';
-
-
-echo '</table>';
 echo '</td>';
 echo '<tr>';
 echo '<td valign="top">'.get_string('timezone_used','mod_chairman').'</td>';
@@ -185,30 +173,46 @@ echo '</table></form>';
 //footer
 chairman_footer();
 
+/**
+ * A function to setup of the select html table for selecting which members
+ * are required and which are optional.
+ * 
+ * 
+ * @global type $DB
+ * @param type $id
+ * @param type $planner
+ * @param type $elementid
+ * @param type $class
+ * @param type $rule_type
+ */
 function get_member_list($id, $planner, $elementid, $class, $rule_type) {
     global $DB;
     $members = $DB->get_records('chairman_members', array('chairman_id' => $id));
 
-    echo "<ul id='$elementid' class='$class'>";
+    //select tag start
+    echo "<select name= '$elementid' id='$elementid' class='$class multiselect' multiple='multiple'>";
     
+    //add each member to select
     foreach ($members as $member) {
         if ($planner != 0) {
             $member_obj = $DB->get_record('chairman_planner_users', array('planner_id' => $planner, 'chairman_member_id' => $member->id));
         }
  
+        //get user's name from moodle user table
         $userobj = $DB->get_record('user', array('id' => $member->user_id));
         
+        //mark if selected
         $selected = "";
         if (isset($member_obj->rule) && $member_obj->rule == $rule_type) {
-            $selected = "class='ui-selected'";
+            $selected = "selected='selected'";
         }
         
-        
-        echo "<li value='$member->id' $selected >" . $userobj->firstname . ' ' . $userobj->lastname . '</li>';
+        //output member as option
+        echo "<option value='$member->id' $selected >" . $userobj->firstname . ' ' . $userobj->lastname . '</option>';
         
     }
     
-    echo "</ul>";
+    echo "</select>";
 }
 
 ?>

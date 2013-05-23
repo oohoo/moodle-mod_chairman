@@ -69,4 +69,11 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
      width:270px;
      height:160px;
  }
+ 
+ #list_members_required {
+     width: 500px;
+     min-height: 100px;
+     max-height: 150px;
+     
+ }
 
