@@ -111,7 +111,7 @@ if($chairman_members = $DB->get_records_sql($sql)) {
     foreach ($chairman_members as $chairman_member) {
         $email .= $chairman_member->email.';';
     }
-    $email_button = '<a href="mailto:'.$email.'"><img src="'.$CFG->wwwroot.'/mod/chairman/pix/switch_plus.gif'.'">'.get_string('sendto','chairman').'</a><br/>';
+    $email_button = '<a href="mailto:'.$email.'"><img src="'.$CFG->wwwroot.'/mod/chairman/img/email.png'.'">'.get_string('sendto','chairman').'</a><br/>';
 }
 else {
     $email_button = '';
