@@ -16,29 +16,57 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************/
 
 /**
- * Initalization for the planner calendar & the selections lists.
+ * CSS that is specific to the planner / scheduler page.
  * 
  */
 
-$(function() {
-    $( "#datepicker" ).datepicker({
-      changeMonth: true,
-      changeYear: true,
-      autoSize: true,
-      dateFormat: "dd/mm/yy"
-    });
-  });
+#datepicker{
+ font-size:10px;
+}
 
-$(function() {
-    $( "#selected_dates_list" ).bind("mousedown", function(e) {e.metaKey = true;}).selectable();
-    $( "#list_members_required" ).bind("mousedown", function(e) {e.metaKey = true;}).selectable();
-    $( "#list_members_optional" ).bind("mousedown", function(e) {e.metaKey = true;}).selectable();
-    
-    $( ".ui-selectable li" ).hover(
-            function() {$( this ).addClass("date_select_hover");},
-            function() {$( this ).removeClass("date_select_hover");}
-    
-  );
-    
-  });
+.selectable_title {
+    text-align: left;
+}
+
+.ui-selectable .ui-selecting{
+    background: #9be0fd; 
+ }
+
+.ui-selectable .ui-selected{ 
+     background: #81d8fd; 
+ 	color: white;
+ }
+ 
+ .ui-selectable{ 
+ 	list-style-type: none; 
+ 	margin: 0; padding: 0; 
+ }
+ 
+ .ui-selectable li{
+ 	margin-top: 1px;
+        border-style: dotted;
+        border-color: #010101;
+        border-width: 1px;
+ }
+ 
+ .date_select_hover {
+     background: #b3e3f9;
+ }
+ 
+ .date_selection_container {
+     border:1px solid black;
+     padding: 5px;
+     border-radius: 5px;
+ }
+ 
+ .date_selection_label {
+     margin-bottom: 5px;
+ }
+ 
+ .selected_dates_list {
+     overflow-x: hidden;
+     overflow-y: scroll;
+     width:270px;
+     height:160px;
+ }
 

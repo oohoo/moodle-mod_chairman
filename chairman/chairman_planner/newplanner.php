@@ -48,6 +48,7 @@ moodleMsgs = {
 $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
+$PAGE->requires->css('/mod/chairman/chairman_planner/css/planner.css');
 $PAGE->requires->js('/mod/chairman/chairman_planner/script/planner.js');
 $PAGE->requires->js('/mod/chairman/chairman_planner/script/planner_calendar.js');
 
@@ -85,25 +86,26 @@ echo '</tr>';
 echo '<tr>';
 echo '<td valign="top">'.get_string('members','chairman').':</td>';
 echo '<td>';
-$members = $DB->get_records('chairman_members', array('chairman_id'=>$id));
-echo '<table cellspacing="0" cellpadding="0" border="1">';
-foreach($members as $member){
-    if($planner != 0){
-        $member_obj = $DB->get_record('chairman_planner_users',array('planner_id'=>$planner,'chairman_member_id'=>$member->id));
-    }
-    echo '<tr>';
-    $userobj = $DB->get_record('user', array('id'=>$member->user_id));
-    echo '<td>'.$userobj->firstname.' '.$userobj->lastname.'</td>';
-    echo '<td><select name="rule['.$member->id.']">';
-    echo '<option value="0" ';
-    if(isset($member_obj->rule) && $member_obj->rule==0){ echo 'SELECTED'; }
-    echo '>'.get_string('optional','chairman').'</option>';
-    echo '<option value="1" ';
-    if(isset($member_obj->rule) && $member_obj->rule==1){ echo 'SELECTED'; }
-    echo '>'.get_string('required','chairman').'</option>';
-    echo '</select></td>';
-    echo '</tr>';
-}
+
+
+echo '<table width="50%">';
+echo '<tr>';
+echo '<th class="selectable_title">'.get_string('required','chairman').'</th>';
+echo '<th class="selectable_title">'.get_string('optional','chairman').'</th>';
+echo '</tr>';
+
+echo '<tr>';
+echo '<td>';
+get_member_list($id, $planner, 'list_members_required', 'list_members_required', 1);
+echo '</td>';
+
+echo '<td>';
+get_member_list($id, $planner, 'list_members_optional', 'list_members_optional', 0);
+echo '</td>';
+
+echo '</tr>';
+
+
 echo '</table>';
 echo '</td>';
 echo '<tr>';
@@ -131,11 +133,12 @@ echo '<tr>';
 echo '<td valign="top">'.get_string('dates','chairman').':</td>';
 echo '<td>';
 echo '<table><tr>';
-echo '<td style="border:1px solid black;" valign="top">';
+echo '<td valign="top">';
+echo '<div class="date_selection_container">';
 echo '<input type="hidden" name="dates[]" id="dates">';
 echo '<div style="display: table">';
 echo '<div style="width=180px;display: table-cell;">';
-echo '<b>'.get_string('day','chairman').'</b><br/>';
+echo '<b><div class="date_selection_label">'.get_string('day','chairman').'</div></b>';
 echo '<div id="datepicker"></div>';
 echo '</div>';
 
@@ -148,10 +151,12 @@ echo render_timepicker('to',(time()+(60*60)));
 echo '</div>';
 
 echo '</div>';
-
+echo '</div>';
 echo '</td>';
 echo '<td><button type="button" onclick="planner_add_date();"><img src="../pix/right.gif"></button><br/><button type="button" onclick="planner_remove_date();"><img src="../pix/garbage.gif"></button></td>';
-echo '<td style="border:1px solid black;"><div id="listerror" style="font-size:10px;color:red;"></div><ol id="list" style="overflow-x: hidden;overflow: scroll;width:300px;height:150px;">';
+echo '<td><div id="listerror" style="font-size:10px;color:red;"></div>';
+echo '<div class="date_selection_container">';    
+echo '<ol id="selected_dates_list" class="selected_dates_list">';
 if($planner != 0){
     $dates_obj = $DB->get_records('chairman_planner_dates',array('planner_id'=>$planner));
     foreach($dates_obj as $date_obj){
@@ -160,7 +165,9 @@ if($planner != 0){
         echo '<li value="'.$value.'">'.$text.'</li>';
     }
 }
-echo '</ol></td>';
+echo '</ol>';
+echo '</div>';    
+echo '</td>';
 echo '</tr></table>';
 echo '</td>';
 echo '</tr>';
@@ -177,5 +184,31 @@ echo '</table></form>';
 
 //footer
 chairman_footer();
+
+function get_member_list($id, $planner, $elementid, $class, $rule_type) {
+    global $DB;
+    $members = $DB->get_records('chairman_members', array('chairman_id' => $id));
+
+    echo "<ul id='$elementid' class='$class'>";
+    
+    foreach ($members as $member) {
+        if ($planner != 0) {
+            $member_obj = $DB->get_record('chairman_planner_users', array('planner_id' => $planner, 'chairman_member_id' => $member->id));
+        }
+ 
+        $userobj = $DB->get_record('user', array('id' => $member->user_id));
+        
+        $selected = "";
+        if (isset($member_obj->rule) && $member_obj->rule == $rule_type) {
+            $selected = "class='ui-selected'";
+        }
+        
+        
+        echo "<li value='$member->id' $selected >" . $userobj->firstname . ' ' . $userobj->lastname . '</li>';
+        
+    }
+    
+    echo "</ul>";
+}
 
 ?>

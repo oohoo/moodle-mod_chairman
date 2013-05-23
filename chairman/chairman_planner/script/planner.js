@@ -28,7 +28,7 @@ function planner_add_date(){
     var day = $("#datepicker");
     var from = $("#from_time").find(":selected").text();
     var to = $("#to_time").find(":selected").text();
-    var list = $("#list");
+    var list = $("#selected_dates_list");
 
     var from_array = from.split(":");
     var to_array = to.split(":");
@@ -57,6 +57,12 @@ function planner_add_date(){
             value: value,
             text: text
         }));
+        
+        $( "#selected_dates_list li" ).hover(
+            function() {$( this ).addClass("date_select_hover");},
+            function() {$( this ).removeClass("date_select_hover");}
+    
+  );
   
 }
 
@@ -67,7 +73,7 @@ function planner_add_date(){
  */
 function planner_remove_date()
 {
-	$("#list .ui-selected").remove();
+	$("#selected_dates_list .ui-selected").remove();
 }
 
 /**
@@ -83,7 +89,7 @@ function planner_submit(){
     var nameerror = $('#nameerror');
 
     //Check name
-    if(name.val() == ''){
+    if(name.val() === ''){
         nameerror.text(moodleMsgs.planner_empty_name);
         return false;
     }
@@ -92,12 +98,12 @@ function planner_submit(){
     }
 
     //Check dates
-    var list = $('#list');
-    var list_elements = $('#list li');
+    var list_elements = $('#selected_dates_list li');
     var listerror = $('#listerror');
     var dates = $('#dates');
+    var rules = $('#rule');
 
-    if(list_elements.length == 0){
+    if(list_elements.length === 0){
         listerror.text(moodleMsgs.planner_empty_dates);
         return false;
     }
@@ -105,6 +111,9 @@ function planner_submit(){
         listerror.text('');
     }
 
+    //convert dates into submission format 
+    //<input type="hidden name="date[1]" value="data"....
+    //...
     var lastElement = dates;
     $.each(list_elements, function(i, item) {
     	
@@ -116,9 +125,30 @@ function planner_submit(){
     	});
     	
         element.insertAfter(lastElement);
-        lastElement = element
+        lastElement = element;
+    });
+     
+    //convert members required/optional into
+    //<input type="hidden name="rule[<memberid>]" value="0/1"....
+    //...
+    //Note: if not required - they must be optional
+    $.each($('#list_members_required li'), function(index, item) {
+        
+        var value = 0;
+        if($(item).hasClass('ui-selected'))
+            value = 1;
+        
+        var element = $('<input/>', {
+    	    id: 'rule',
+    	    name: 'rule['+$(item).attr('value')+']',
+    	    type: 'hidden',
+    	    value: value
+    	});
+        
+        element.insertAfter(lastElement);
+        lastElement = element;
     });
     
-
+    //submit form
     $('#newplanner').submit();
 }

@@ -58,6 +58,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
     border-style: solid;
     border-color: #c1d8fa;
     border-width: 1px;
+    overflow-x: hidden;
 }
 
 .chairman_container{
@@ -121,31 +122,9 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 #icon { margin:10px; }
 #back { margin-left:10px; }
 
-#datepicker{
- font-size:10px;
-}
-
-#list .ui-selecting{
- 	background: #FECA40; 
- }
-
- #list .ui-selected{ 
- 	background: #F39814; 
- 	color: white;
- }
-
- #list{ 
- 	list-style-type: none; 
- 	margin: 0; padding: 0; 
- 	width: 60%;
- }
- 
- #list li{
- 	border:1px solid grey;
- 	margin-top: 1px;
- 	
- }
-
  .add a img {
      padding-right: 5px;
  }
+ 
+ 
+ 
