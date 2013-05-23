@@ -25,6 +25,8 @@ require_once('../../../config.php');
 require_once('../lib.php');
 require_once('../lib_chairman.php');
 
+global $CFG, $USER;
+
 $id = required_param('id',PARAM_INT);    // Course Module ID
 $edit = optional_param('edit',0,PARAM_INT);   //If editing, this points to the planner id
 
@@ -127,12 +129,12 @@ if($edit != 0){
 
 //send email notification
 if ($notify_now == 1){
-    $president = $DB->get_record('chairman_members', array('chairman_id' => $id, 'role_id' => 1));
     //email information
-    $from = $DB->get_record('user', array('id' => $president->user_id));
+    $from = $DB->get_record('user', array('id' => $USER->id));
     $subject = get_string('plannernotificationsubject', 'chairman');
-	$subject = str_replace('{c}', $planner->name, $subject);
-    $emailmessage = get_string('plannernotificationmessage', 'chairman');
+    $subject = str_replace('{c}', $planner->name, $subject);
+        
+        $emailmessage = get_string('plannernotificationmessage', 'chairman');
 	$emailmessage = str_replace('{link}', "$CFG->wwwroot/mod/chairman/chairman_planner/planner.php?id=$id", $emailmessage);
 	$emailmessage = str_replace('{c}', $planner->name, $emailmessage);
 	$emailmessage = str_replace('{p}', "$from->firstname $from->lastname", $emailmessage);
@@ -144,7 +146,6 @@ if ($notify_now == 1){
     foreach ($members as $member){
         $user = $DB->get_record('user',array('id' => $member->user_id));
         $message[$i] = str_replace('{a}', "$user->firstname $user->lastname", $emailmessage);
-		echo $message[$i]."<br>";
         email_to_user($user, $from, $subject, $message[$i]);
 		$i++;
 		
