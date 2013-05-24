@@ -372,4 +372,9 @@ $string['deselectAll'] = "All Members Optional";
 $string['search'] = "Search Members";
 
 
+$string['loading'] = 'Loading...';
+
+$string['event_search_error'] = 'Unable to search meetings. Previous meetings shown.';
+
+
 ?>

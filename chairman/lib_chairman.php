@@ -99,7 +99,10 @@ function chairman_global_js($cmid) {
     echo 'php_strings["selectAll"] = "' . get_string('selectAll', 'chairman') . '";';
     echo 'php_strings["deselectAll"] = "' . get_string('deselectAll', 'chairman') . '";';
     echo 'php_strings["search"] = "' . get_string('search', 'chairman') . '";';
-
+    echo 'php_strings["event_search_error"] = "' . get_string('event_search_error', 'chairman') . '";';
+    
+    echo "php_strings['ajax_event_search_url'] = '$CFG->wwwroot/mod/chairman/chairman_events/events.php';";
+    
     echo '</script>';
 }
 
@@ -606,98 +609,6 @@ function chairman_get_month($month_num) {
     }
 }
 
-/**
- * Prints out a given array of event records
- * 
- * @global moodle_database $DB
- * @param type $id
- * @param type $month
- * @param type $year
- */
-function chairman_print_events($id, $now, $event_records) {
-    global $USER, $CFG;
 
-    foreach ($event_records as $event) {
-        //needed to calculate the proper timestamp values for thebackground color
-        $eventstart = $event->day . '-' . $event->month . '-' . $event->year . ' ' . $event->starthour . ':' . $event->startminutes;
-        $eventtimestamp = strtotime($eventstart);
-
-        //Find out if event is the next one in line. If so change background color
-        if (($eventtimestamp >= $now) && ($nextevent == 0)) {
-            $eventstyle = 'style=background-color:#FFFFC7';
-            $nextevent = 1;
-        }
-        else
-            $eventstyle = '';
-
-        echo '<div class="file" ' . $eventstyle . '>';
-        echo '<table><tr><td>';
-        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/export_event.php?event_id=' . $event->id . '"><img id="icon" src="' . $CFG->wwwroot . '/mod/chairman/pix/cal.png"></a>';
-        echo '</td>';
-        echo '<td style="padding:6px;">';
-        echo '<b>' . get_string('summary', 'chairman') . ' : </b>';
-        echo $event->summary;
-        if (chairman_isadmin($id)) {
-            echo ' - <a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/delete_event_script.php?id=' . $id . '&event_id=' . $event->id . '" onClick="return confirm(\'' . get_string('deleteeventquestion', 'chairman') . '\');"><img src="' . $CFG->wwwroot . '/mod/chairman/pix/delete.gif"></a>';
-            echo '<a href="edit_event.php?id=' . $id . '&event_id=' . $event->id . '"><img src="' . $CFG->wwwroot . '/mod/chairman/pix/edit.gif"></a>';
-        }
-
-
-        //Timezone adjustments
-        //convert string into timestamp
-        $event_start_str = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->starthour, $event->startminutes);
-        $event_end_str = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->endhour, $event->endminutes);
-        //echo "Event year = $event->year-$event->day-$event->month event start str = $event_start_str";
-
-
-        $user_timezone = $USER->timezone;
-        if ($user_timezone == '99') {
-            $region_tz = $CFG->timezone;
-        } else {
-            $region_tz = $USER->timezone;
-        }
-
-        $offset = chairman_get_timezone_offset($event->timezone, $region_tz);
-
-        //Calculate offset
-        $local_user_starttime = $event_start_str + $offset;
-        $local_user_endtime = $event_end_str + $offset;
-        //Convert timestamp back to string
-        $event->day = date('d', $local_user_starttime);
-        $event->month = date('m', $local_user_starttime);
-        $event->year = date('Y', $local_user_starttime);
-        $event->starthour = date('H', $local_user_starttime);
-        $event->startminutes = date('i', $local_user_starttime);
-        $event->endhour = date('H', $local_user_endtime);
-        $event->endminutes = date('i', $local_user_endtime);
-
-        echo '<br/>';
-        echo '<b>' . get_string('date', 'chairman') . ' : </b>';
-        echo $event->day . ' ';
-
-        echo chairman_get_month($event->month);
-
-        echo ', ' . $event->year . '<br/>';
-
-        echo '<b>' . get_string('starttime', 'chairman') . ' : </b>';
-        echo $event->starthour . ':';
-        echo $event->startminutes . '<br/>';
-
-        echo '<b>' . get_string('endtime', 'chairman') . ' : </b>';
-
-        echo $event->endhour . ':';
-        echo $event->endminutes . '<br/>';
-
-        echo '<b>' . get_string('description', 'chairman') . ' : </b>';
-        echo $event->description . '<br/>';
-
-        echo '<br/>';
-        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/add_event_moodle_cal.php?event_id=' . $event->id . '">' . get_string('addtomoodlecalendar', 'chairman') . '</a></br>';
-        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/export_event.php?event_id=' . $event->id . '">' . get_string('addtocalendar', 'chairman') . '</a></br>';
-        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event->id . '">' . get_string('meeting_agenda', 'chairman') . '</a>';
-        echo '</td></tr></table>';
-        echo '</div>';
-    }
-}
 
 ?>

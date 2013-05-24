@@ -130,5 +130,9 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
      z-index: 9000;
  }
  
+ #meeting_search_container {
+     float: right;
+ }
+ 
  
  

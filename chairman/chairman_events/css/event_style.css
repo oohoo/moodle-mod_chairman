@@ -28,3 +28,16 @@
     background: #c6d8e6;
     border-color: #719ec5;
 }
+
+#ajax_loading {
+    display: none;
+    text-align: center;
+}
+
+#ajax_loading img {
+    padding-right: 10px;
+}
+
+#ajax_loading span {
+
+}
