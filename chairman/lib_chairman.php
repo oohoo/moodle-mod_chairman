@@ -29,43 +29,41 @@
  * @param type $pagelink
  * @param type $cmid
  */
-function chairman_header($cmid,$pagename,$pagelink)
-{
+function chairman_header($cmid, $pagename, $pagelink) {
     global $PAGE, $OUTPUT, $DB, $CFG;
-    
-    $course_mod = $DB->get_record('course_modules', array('id'=>$cmid));
-    $chairman = $DB->get_record('chairman', array('id'=>$course_mod->instance));
+
+    $course_mod = $DB->get_record('course_modules', array('id' => $cmid));
+    $chairman = $DB->get_record('chairman', array('id' => $course_mod->instance));
     $context = get_context_instance(CONTEXT_MODULE, $course_mod->id);
-    
+
     require_course_login($course_mod->course, true, $course_mod);
-    
+
     $chairman_name = $chairman->name;
-    
+
     $navlinks = array(
-            array('name' => get_string($pagename,'chairman'), 'link' => $CFG->wwwroot.'/mod/chairman/'.$pagelink, 'type' => 'misc')
+        array('name' => get_string($pagename, 'chairman'), 'link' => $CFG->wwwroot . '/mod/chairman/' . $pagelink, 'type' => 'misc')
     );
     build_navigation($navlinks);
-    
+
     $page = get_string($pagename, 'chairman');
     $title = $chairman_name . ': ' . $page;
-    
+
     $PAGE->requires->jquery();
     $PAGE->requires->jquery_plugin('ui');
     $PAGE->requires->jquery_plugin('ui-css');
     $PAGE->requires->js('/mod/chairman/chairman.js');
     $PAGE->requires->css("/mod/chairman/style.css");
-    
-    $PAGE->set_url('/mod/chairman/'.$pagelink);
+
+    $PAGE->set_url('/mod/chairman/' . $pagelink);
     $PAGE->set_title($chairman_name);
     $PAGE->set_heading($title);
     $PAGE->set_context($context);
-    
+
     echo $OUTPUT->header();
-    
-    
+
+
     chairman_global_js($cmid);
-    chairman_structure($chairman,$pagename, $cmid);
-    
+    chairman_structure($chairman, $pagename, $cmid);
 }
 
 /**
@@ -73,38 +71,36 @@ function chairman_header($cmid,$pagename,$pagelink)
  * 
  * @param type $cmid
  */
-function chairman_global_js($cmid)
-{
+function chairman_global_js($cmid) {
     global $CFG;
     echo '<script>';
     echo 'var php_strings = new Array();';
     echo 'php_strings = new Array();';
-    echo 'php_strings["addlink"] = "'.get_string('addlink','chairman').'";';
-    echo 'php_strings["emptyname"] = "'.get_string('emptyname','chairman').'";';
-    echo 'php_strings["emptylink"] = "'.get_string('emptylink','chairman').'";';
-    echo 'php_strings["form_info_default"] = "'.get_string('form_info_default','chairman').'";';
-    echo 'php_strings["cancel"] = "'.get_string('cancel').'";';
-    echo 'php_strings["id"] = "'.$cmid.'";';
-    echo 'php_strings["remove_link"] = "'.get_string('remove_link','chairman').'";';
-    echo 'php_strings["link_ajax_sending"] = "'.get_string('link_ajax_sending','chairman').'";';
-    echo 'php_strings["link_ajax_failed"] = "'.get_string('link_ajax_failed','chairman').'";';
-    echo "php_strings['ajax_url'] = '$CFG->wwwroot/mod/chairman/link_controller.php';"; 
-    
-    echo 'php_strings["itemsSelected_nil"] = "'.get_string('itemsSelected_nil','chairman').'";';
-    echo 'php_strings["itemsSelected"] = "'.get_string('itemsSelected','chairman').'";';
-    echo 'php_strings["itemsSelected_plural"] = "'.get_string('itemsSelected_plural','chairman').'";';
-    echo 'php_strings["itemsAvailable_nil"] = "'.get_string('itemsAvailable_nil','chairman').'";';
-    echo 'php_strings["itemsAvailable"] = "'.get_string('itemsAvailable','chairman').'";';
-    echo 'php_strings["itemsAvailable_plural"] = "'.get_string('itemsAvailable_plural','chairman').'";';
-    echo 'php_strings["itemsFiltered_nil"] = "'.get_string('itemsFiltered_nil','chairman').'";';
-    echo 'php_strings["itemsFiltered"] = "'.get_string('itemsFiltered','chairman').'";';
-    echo 'php_strings["itemsFiltered_plural"] = "'.get_string('itemsFiltered_plural','chairman').'";';
-    echo 'php_strings["selectAll"] = "'.get_string('selectAll','chairman').'";';
-    echo 'php_strings["deselectAll"] = "'.get_string('deselectAll','chairman').'";';
-    echo 'php_strings["search"] = "'.get_string('search','chairman').'";';
-    
+    echo 'php_strings["addlink"] = "' . get_string('addlink', 'chairman') . '";';
+    echo 'php_strings["emptyname"] = "' . get_string('emptyname', 'chairman') . '";';
+    echo 'php_strings["emptylink"] = "' . get_string('emptylink', 'chairman') . '";';
+    echo 'php_strings["form_info_default"] = "' . get_string('form_info_default', 'chairman') . '";';
+    echo 'php_strings["cancel"] = "' . get_string('cancel') . '";';
+    echo 'php_strings["id"] = "' . $cmid . '";';
+    echo 'php_strings["remove_link"] = "' . get_string('remove_link', 'chairman') . '";';
+    echo 'php_strings["link_ajax_sending"] = "' . get_string('link_ajax_sending', 'chairman') . '";';
+    echo 'php_strings["link_ajax_failed"] = "' . get_string('link_ajax_failed', 'chairman') . '";';
+    echo "php_strings['ajax_url'] = '$CFG->wwwroot/mod/chairman/link_controller.php';";
+
+    echo 'php_strings["itemsSelected_nil"] = "' . get_string('itemsSelected_nil', 'chairman') . '";';
+    echo 'php_strings["itemsSelected"] = "' . get_string('itemsSelected', 'chairman') . '";';
+    echo 'php_strings["itemsSelected_plural"] = "' . get_string('itemsSelected_plural', 'chairman') . '";';
+    echo 'php_strings["itemsAvailable_nil"] = "' . get_string('itemsAvailable_nil', 'chairman') . '";';
+    echo 'php_strings["itemsAvailable"] = "' . get_string('itemsAvailable', 'chairman') . '";';
+    echo 'php_strings["itemsAvailable_plural"] = "' . get_string('itemsAvailable_plural', 'chairman') . '";';
+    echo 'php_strings["itemsFiltered_nil"] = "' . get_string('itemsFiltered_nil', 'chairman') . '";';
+    echo 'php_strings["itemsFiltered"] = "' . get_string('itemsFiltered', 'chairman') . '";';
+    echo 'php_strings["itemsFiltered_plural"] = "' . get_string('itemsFiltered_plural', 'chairman') . '";';
+    echo 'php_strings["selectAll"] = "' . get_string('selectAll', 'chairman') . '";';
+    echo 'php_strings["deselectAll"] = "' . get_string('deselectAll', 'chairman') . '";';
+    echo 'php_strings["search"] = "' . get_string('search', 'chairman') . '";';
+
     echo '</script>';
-    
 }
 
 /**
@@ -114,20 +110,18 @@ function chairman_global_js($cmid)
  * @param type $chairman
  * @param type $cmid
  */
-function chairman_structure($chairman,$pagename, $cmid)
-{
+function chairman_structure($chairman, $pagename, $cmid) {
     echo "<div id='chairman_root' class='chairman_container'>";
     echo "<div id='chairman_root_container' class='chairman_container'>";
     echo "<h1>$chairman->name</h1>";
-    
-    
+
+
     echo "<div id='chairman_nav_root' class='chairman_container chairman_nav_container'>";
-    chairman_menu($chairman,$pagename, $cmid);
+    chairman_menu($chairman, $pagename, $cmid);
     chairman_links($chairman, $cmid);
     echo "</div>";
-    
+
     chairman_main();
-    
 }
 
 /**
@@ -135,16 +129,15 @@ function chairman_structure($chairman,$pagename, $cmid)
  * 
  * @global type $OUTPUT
  */
-function chairman_footer()
-{
+function chairman_footer() {
     global $OUTPUT;
-    
-    echo "</div>";//end main area
-    echo "</div>";//end root container
-    echo "</div>";//end root
-    
+
+    echo "</div>"; //end main area
+    echo "</div>"; //end root container
+    echo "</div>"; //end root
+
     add_link_dialogs();
-    
+
     echo $OUTPUT->footer();
 }
 
@@ -156,58 +149,53 @@ function chairman_footer()
  * @param type $chairman
  * @param type $id
  */
-function chairman_menu($chairman,$pagename, $id)
-{
+function chairman_menu($chairman, $pagename, $id) {
     global $CFG, $DB;
-    
-    $select = "chairman_id = ? and ".$DB->sql_compare_text('page_code')." = ?";
-    $menu_state = $DB->get_record_select('chairman_menu_state', $select, array($chairman->id,$pagename));
-    
+
+    $select = "chairman_id = ? and " . $DB->sql_compare_text('page_code') . " = ?";
+    $menu_state = $DB->get_record_select('chairman_menu_state', $select, array($chairman->id, $pagename));
+
     $state = 0;
-    if($menu_state && $menu_state->state == 1)
+    if ($menu_state && $menu_state->state == 1)
         $state = 1;
-    
+
     echo "<script>var menu_state_default = $state;</script>";
-    
-    
+
+
     //collapsable icon
     echo "<div id='chairman_menu_collapse_root' class='chairman_container chairman_menu_container'>";
-    echo "<span id='menu_title' class='nav_title'>".get_string("navigation", 'chairman')."</span>";
+    echo "<span id='menu_title' class='nav_title'>" . get_string("navigation", 'chairman') . "</span>";
     echo "<div id='chairman_menu_collapse_button' class='ui-state-default ui-corner-all'>";
     echo "<span id='chairman_menu_collapse' class='ui-icon ui-icon-arrowthickstop-1-w'/>";
     echo "</div>";
     echo "</div>";
-    
+
     echo "<div id='chairman_menu_container' class='chairman_container chairman_menu_container'>";
-    
+
     echo "<ul id='chairman_menu'>";
-    
-    echo '<li><a href="'.$CFG->wwwroot.'/mod/chairman/view.php?id='.$id.'">'.get_string('members', 'chairman').'</a></li>';
-    echo '<li><a href="'.$CFG->wwwroot.'/mod/chairman/chairman_planner/planner.php?id='.$id.'">'.get_string('planner', 'chairman').'</a></li>';
-    echo '<li><a href="'.$CFG->wwwroot.'/mod/chairman/chairman_events/events.php?id='.$id.'">'.get_string('events', 'chairman').'</a></li>';
-    echo '<li><a href="'.$CFG->wwwroot.'/mod/chairman/chairman_meetingagenda/viewer.php?chairman_id='.$id.'">'.get_string('agendas', 'chairman').'</a></li>';
-    echo '<li><a href="'.$CFG->wwwroot.'/mod/chairman/chairman_filesystem/file_form.php?id='.$id.'">'.get_string('files', 'chairman').'</a></li>';
-    
+
+    echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/view.php?id=' . $id . '">' . get_string('members', 'chairman') . '</a></li>';
+    echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/chairman_planner/planner.php?id=' . $id . '">' . get_string('planner', 'chairman') . '</a></li>';
+    echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/events.php?id=' . $id . '">' . get_string('events', 'chairman') . '</a></li>';
+    echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/viewer.php?chairman_id=' . $id . '">' . get_string('agendas', 'chairman') . '</a></li>';
+    echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/chairman_filesystem/file_form.php?id=' . $id . '">' . get_string('files', 'chairman') . '</a></li>';
+
     if ($chairman->use_forum == 1) {
 
-        echo '<li><a href="'.$CFG->wwwroot.'/mod/forum/view.php?id='.$chairman->forum.'" target="_blank">'.get_string('menu_forum', 'chairman').'</a></li>';
-
+        echo '<li><a href="' . $CFG->wwwroot . '/mod/forum/view.php?id=' . $chairman->forum . '" target="_blank">' . get_string('menu_forum', 'chairman') . '</a></li>';
     }
     if ($chairman->use_wiki == 1) {
 
-        echo '<li><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$chairman->wiki.'" target="_blank">'.get_string('menu_wiki', 'chairman').'</a></li>';
-
+        echo '<li><a href="' . $CFG->wwwroot . '/mod/wiki/view.php?id=' . $chairman->wiki . '" target="_blank">' . get_string('menu_wiki', 'chairman') . '</a></li>';
     }
     if (isset($chairman->use_questionnaire) && $chairman->use_questionnaire == 1) {
 
-        echo '<li><a href="'.$CFG->wwwroot.'/mod/questionnaire/view.php?id='.$chairman->questionnaire.'" target="_blank">'.get_string('menu_questionnaire', 'chairman').'</a></li>';
-
+        echo '<li><a href="' . $CFG->wwwroot . '/mod/questionnaire/view.php?id=' . $chairman->questionnaire . '" target="_blank">' . get_string('menu_questionnaire', 'chairman') . '</a></li>';
     }
-    
+
     echo "</ul>";
-    
+
     echo "</div>";
-    
 }
 
 /**
@@ -218,47 +206,43 @@ function chairman_menu($chairman,$pagename, $id)
  * @param type $chairman
  * @param type $cmid
  */
-function chairman_links($chairman, $cmid)
-{
+function chairman_links($chairman, $cmid) {
     global $USER, $DB;
     //if links exist
-    
-    $link_records = $DB->get_records('chairman_links', array("chairman_id"=>$cmid), "name ASC");
-    
+
+    $link_records = $DB->get_records('chairman_links', array("chairman_id" => $cmid), "name ASC");
+
     echo "<div id='chairman_links_container' class='chairman_container chairman_links_container'>";
-    
-    echo "<span id='link_title' class='nav_title'>".get_string("external_link_label", 'chairman')."</span>";
-    
+
+    echo "<span id='link_title' class='nav_title'>" . get_string("external_link_label", 'chairman') . "</span>";
+
     echo "<ul id='chairman_links'>";
-    
-    foreach ($link_records as $link)
-    {
-     $URL = $link->link;
-    
-    //For case when user only adds: www.asdf.com
-    if (!(strpos($URL, 'http') === 0)) {
-      $URL = "http://". $URL; 
+
+    foreach ($link_records as $link) {
+        $URL = $link->link;
+
+        //For case when user only adds: www.asdf.com
+        if (!(strpos($URL, 'http') === 0)) {
+            $URL = "http://" . $URL;
+        }
+
+        echo "<li id='link_$link->id'><a target='_blank' href='$URL'>$link->name<span style='float:left' name='delete_link_" . $link->id . "' class='ui-icon ui-icon-minusthick'/></a></li>";
     }
-     
-        echo "<li id='link_$link->id'><a target='_blank' href='$URL'>$link->name<span style='float:left' name='delete_link_".$link->id."' class='ui-icon ui-icon-minusthick'/></a></li>";
-    }
-    
-    
+
+
     //if admin
-    echo '<li><a id="chairman_add_link" href="javascript:void(0)"/>'.get_string('new_external_link','chairman' ).'<span class="ui-icon ui-icon-plusthick"/></a></li>';
-    
+    echo '<li><a id="chairman_add_link" href="javascript:void(0)"/>' . get_string('new_external_link', 'chairman') . '<span class="ui-icon ui-icon-plusthick"/></a></li>';
+
     echo "</ul>";
-    
+
     echo "</div>";
-    
 }
 
 /**
  * Generate and output the start of the main content area.
  * 
  */
-function chairman_main()
-{
+function chairman_main() {
     echo "<div id='chairman_main_container' class='chairman_container chairman_main_container'>";
     echo "<div id='chairman_main' class='chairman_container chairman_main_container'>";
 }
@@ -267,27 +251,24 @@ function chairman_main()
  * Generates and outputs the required dialogs for adding and removing dialogs.
  * 
  */
-function add_link_dialogs()
-{
-    
-  echo "<div id='link_dialog_form' title='".get_string('addlinklabel','chairman')."'>";
-  echo "<p class='form_information'>".get_string('form_info_default','chairman')."</p>";
-  echo "<form>";
-  echo "<fieldset>";
-  echo "<label id='chairman_link_name_label' for='chairman_link_name'>".get_string('linknamelabel','chairman')."</label>";
-  echo "<input type='text' name='chairman_link_name' id='chairman_link_name' class='text ui-widget-content ui-corner-all' />";
-  echo "<label id='chairman_link_label' for='chairman_link'>".get_string('linklabel','chairman')."</label>";
-  echo "<input type='text' name='chairman_link' id='chairman_link' value='' class='text ui-widget-content ui-corner-all' />";
-  echo "</fieldset>";
-  echo "</form>";
-  echo "</div>";
-    
-  echo '<div id="link_delete_confirm" title="'.get_string('delete_link','chairman').'">';
-  echo '<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>'.get_string('delete_link_msg','chairman').'</p>';
-  echo '</div>';
-  
-}
+function add_link_dialogs() {
 
+    echo "<div id='link_dialog_form' title='" . get_string('addlinklabel', 'chairman') . "'>";
+    echo "<p class='form_information'>" . get_string('form_info_default', 'chairman') . "</p>";
+    echo "<form>";
+    echo "<fieldset>";
+    echo "<label id='chairman_link_name_label' for='chairman_link_name'>" . get_string('linknamelabel', 'chairman') . "</label>";
+    echo "<input type='text' name='chairman_link_name' id='chairman_link_name' class='text ui-widget-content ui-corner-all' />";
+    echo "<label id='chairman_link_label' for='chairman_link'>" . get_string('linklabel', 'chairman') . "</label>";
+    echo "<input type='text' name='chairman_link' id='chairman_link' value='' class='text ui-widget-content ui-corner-all' />";
+    echo "</fieldset>";
+    echo "</form>";
+    echo "</div>";
+
+    echo '<div id="link_delete_confirm" title="' . get_string('delete_link', 'chairman') . '">';
+    echo '<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>' . get_string('delete_link_msg', 'chairman') . '</p>';
+    echo '</div>';
+}
 
 /**
  * Gets Firstname Lastname and email of chairman members.
@@ -570,6 +551,153 @@ function chairman_convert_strdate_time($year, $day, $month, $hour, $minute) {
     $date_string = "$year-$month-$day" . " " . "$hour:$minute:00";
     $date = strtotime($date_string);
     return $date;
+}
+
+/**
+ * Determines  the start / end dates for the current year as specified by start
+ * month & day of each year. (To accomidate for academic or custom year definitions.
+ */
+function chairman_get_year_definition() {
+    $now = new DateTime();
+
+    $start_time = mktime(0, 0, 0, 01, 01, $now->format("Y"));
+    $start_year = new DateTime();
+    $start_year->setTimestamp($start_time);
+
+    $interval = $now->diff($start_year, false);
+
+    //If current date is less than start date then subtract a year for the start date
+    //invert specifies if its a negative comparision (before now) && d > 0 ensures that if
+    //start day is today - it restarts
+    if (!$interval || ($interval->invert === 0 && $interval->d !== 0))
+        $start_year->sub(new DateInterval("P1Y"));
+
+    $end_year = new DateTime();
+    $end_year->setTimestamp($start_year->getTimestamp());
+    $end_year->add(new DateInterval("P1Y"));
+
+
+    return array($start_year, $now, $end_year);
+}
+
+/**
+ * Based on a given month, where jan = 1, feb = 2, ...
+ * This function will return the string representation of that month.
+ * 
+ * @param int $month_num
+ * @return string string representation of month
+ */
+function chairman_get_month($month_num) {
+    switch ($month_num) {
+        case 1: return get_string('january', 'chairman');
+        case 2: return get_string('february', 'chairman');
+        case 3: return get_string('march', 'chairman');
+        case 4: return get_string('april', 'chairman');
+        case 5: return get_string('may', 'chairman');
+        case 6: return get_string('june', 'chairman');
+        case 7: return get_string('july', 'chairman');
+        case 8: return get_string('august', 'chairman');
+        case 9: return get_string('september', 'chairman');
+        case 10: return get_string('october', 'chairman');
+        case 11: return get_string('november', 'chairman');
+        case 12: return get_string('december', 'chairman');
+
+        default: return "";
+    }
+}
+
+/**
+ * Prints out a given array of event records
+ * 
+ * @global moodle_database $DB
+ * @param type $id
+ * @param type $month
+ * @param type $year
+ */
+function chairman_print_events($id, $now, $event_records) {
+    global $USER, $CFG;
+
+    foreach ($event_records as $event) {
+        //needed to calculate the proper timestamp values for thebackground color
+        $eventstart = $event->day . '-' . $event->month . '-' . $event->year . ' ' . $event->starthour . ':' . $event->startminutes;
+        $eventtimestamp = strtotime($eventstart);
+
+        //Find out if event is the next one in line. If so change background color
+        if (($eventtimestamp >= $now) && ($nextevent == 0)) {
+            $eventstyle = 'style=background-color:#FFFFC7';
+            $nextevent = 1;
+        }
+        else
+            $eventstyle = '';
+
+        echo '<div class="file" ' . $eventstyle . '>';
+        echo '<table><tr><td>';
+        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/export_event.php?event_id=' . $event->id . '"><img id="icon" src="' . $CFG->wwwroot . '/mod/chairman/pix/cal.png"></a>';
+        echo '</td>';
+        echo '<td style="padding:6px;">';
+        echo '<b>' . get_string('summary', 'chairman') . ' : </b>';
+        echo $event->summary;
+        if (chairman_isadmin($id)) {
+            echo ' - <a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/delete_event_script.php?id=' . $id . '&event_id=' . $event->id . '" onClick="return confirm(\'' . get_string('deleteeventquestion', 'chairman') . '\');"><img src="' . $CFG->wwwroot . '/mod/chairman/pix/delete.gif"></a>';
+            echo '<a href="edit_event.php?id=' . $id . '&event_id=' . $event->id . '"><img src="' . $CFG->wwwroot . '/mod/chairman/pix/edit.gif"></a>';
+        }
+
+
+        //Timezone adjustments
+        //convert string into timestamp
+        $event_start_str = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->starthour, $event->startminutes);
+        $event_end_str = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->endhour, $event->endminutes);
+        //echo "Event year = $event->year-$event->day-$event->month event start str = $event_start_str";
+
+
+        $user_timezone = $USER->timezone;
+        if ($user_timezone == '99') {
+            $region_tz = $CFG->timezone;
+        } else {
+            $region_tz = $USER->timezone;
+        }
+
+        $offset = chairman_get_timezone_offset($event->timezone, $region_tz);
+
+        //Calculate offset
+        $local_user_starttime = $event_start_str + $offset;
+        $local_user_endtime = $event_end_str + $offset;
+        //Convert timestamp back to string
+        $event->day = date('d', $local_user_starttime);
+        $event->month = date('m', $local_user_starttime);
+        $event->year = date('Y', $local_user_starttime);
+        $event->starthour = date('H', $local_user_starttime);
+        $event->startminutes = date('i', $local_user_starttime);
+        $event->endhour = date('H', $local_user_endtime);
+        $event->endminutes = date('i', $local_user_endtime);
+
+        echo '<br/>';
+        echo '<b>' . get_string('date', 'chairman') . ' : </b>';
+        echo $event->day . ' ';
+
+        echo chairman_get_month($event->month);
+
+        echo ', ' . $event->year . '<br/>';
+
+        echo '<b>' . get_string('starttime', 'chairman') . ' : </b>';
+        echo $event->starthour . ':';
+        echo $event->startminutes . '<br/>';
+
+        echo '<b>' . get_string('endtime', 'chairman') . ' : </b>';
+
+        echo $event->endhour . ':';
+        echo $event->endminutes . '<br/>';
+
+        echo '<b>' . get_string('description', 'chairman') . ' : </b>';
+        echo $event->description . '<br/>';
+
+        echo '<br/>';
+        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/add_event_moodle_cal.php?event_id=' . $event->id . '">' . get_string('addtomoodlecalendar', 'chairman') . '</a></br>';
+        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/export_event.php?event_id=' . $event->id . '">' . get_string('addtocalendar', 'chairman') . '</a></br>';
+        echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event->id . '">' . get_string('meeting_agenda', 'chairman') . '</a>';
+        echo '</td></tr></table>';
+        echo '</div>';
+    }
 }
 
 ?>

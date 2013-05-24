@@ -1,0 +1,30 @@
+/* 
+    Document   : event_style
+    Created on : 24-May-2013, 10:11:22 AM
+    Author     : dddurand
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.add_link {
+   padding: 10px;
+}
+
+.add_link img{
+   padding-right: 3px;
+}
+
+.ui-accordion-content {
+    background: #e6effe;
+    border-color: #719ec5;
+}
+
+.ui-state-active {
+    background: #c3dcf1;
+    border-color: #719ec5;
+}
+
+.ui-accordion-header {
+    background: #c6d8e6;
+    border-color: #719ec5;
+}
