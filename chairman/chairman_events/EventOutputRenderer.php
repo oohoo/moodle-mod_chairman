@@ -119,9 +119,11 @@ class EventOutputRenderer {
         if($clean_search && !empty($clean_search))
         {
             $clean_search = "%".$clean_search."%";
-            $sql.= "and (summary LIKE ? or description LIKE ?)";
+            $sql.= "and (summary LIKE ? or description LIKE ?) ";
             array_push($params,$clean_search,$clean_search);
         }
+        
+        $sql.= " ORDER BY stamp_start DESC ";
         
        return $DB->get_records_sql($sql, $params);
         
