@@ -41,3 +41,13 @@
 #ajax_loading span {
 
 }
+
+.title_link {
+    float:right;
+    font-weight:normal;
+}
+
+.title a:link {color:#0000FF;}      /* unvisited link */
+.title a:visited {color:#800080;}  /* visited link */
+.title a:hover {color:#FF00FF;}  /* mouse over link */
+.title a:active {color:#FF0000;}  /* selected link */

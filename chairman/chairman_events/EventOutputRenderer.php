@@ -1,20 +1,21 @@
 <?php
+
 /**
-**************************************************************************
-**                                Chairman                              **
-**************************************************************************
-* @package mod                                                          **
-* @subpackage chairman                                                  **
-* @name Chairman                                                        **
-* @copyright oohoo.biz                                                  **
-* @link http://oohoo.biz                                                **
-* @author Raymond Wainman                                               **
-* @author Patrick Thibaudeau                                            **
-* @author Dustin Durand                                                 **
-* @license                                                              **
-http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
-**************************************************************************
-**************************************************************************/
+ * *************************************************************************
+ * *                                Chairman                              **
+ * *************************************************************************
+ * @package mod                                                          **
+ * @subpackage chairman                                                  **
+ * @name Chairman                                                        **
+ * @copyright oohoo.biz                                                  **
+ * @link http://oohoo.biz                                                **
+ * @author Raymond Wainman                                               **
+ * @author Patrick Thibaudeau                                            **
+ * @author Dustin Durand                                                 **
+ * @license                                                              **
+  http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
+ * *************************************************************************
+ * ************************************************************************ */
 
 /**
  * Handles the output of the event/meetings. Each year of events, seperated by month,
@@ -22,10 +23,10 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
  *
  */
 class EventOutputRenderer {
-
     /*
      * cmid
      */
+
     private $id;
 
     /**
@@ -41,12 +42,56 @@ class EventOutputRenderer {
      * 
      * @param string $search A search criteria to filter events based on name/description.
      */
-    public function output_current_year($search)
-    {
-        time();
-        return $this->output_year(time(),new DateTime(),$search);
+    public function output_current_year($search) {
+        return $this->output_year(time(), new DateTime(), $search);
     }
-    
+
+    public function output_archive($search) {
+        global $DB;
+
+        $date_time = new DateTime();
+
+        $sql = "SELECT MIN(year) as year from {chairman_events} " .
+                "WHERE chairman_id=? ";
+
+        $min_years_events = $DB->get_records_sql($sql, array($this->id));
+
+        if (empty($min_years_events))
+            $min_year = $date_time->format('Y');
+        else {
+            $years = array_keys($min_years_events);
+            $min_year = $years[0];
+        }
+
+        list($itteration_date) = chairman_get_year_definition();
+
+        $end_year = new DateTime();
+        $end_year->setDate($min_year, $date_time->format('m'), $date_time->format('d'));
+
+        $interval = $itteration_date->diff($end_year, false);
+
+        echo '<div id="archive_container" class="events_container">';
+        while (($interval->invert === 1) ||
+        ($interval->invert === 0 && ($interval->y === 0))) {
+
+            $count = $this->get_year_event_records_count($itteration_date, $search);
+
+            if ($count == 0) {
+                $interval = $itteration_date->sub(new DateInterval("P1Y"))->diff($end_year, false);
+                continue;
+            }
+
+            echo '<h3>' . $itteration_date->format('Y') . " - " . ($itteration_date->format('Y') - 1) . '</h3>';
+            echo '<div>';
+            $this->output_year($itteration_date->getTimestamp(), clone $itteration_date, $search, false);
+            echo '</div>';
+
+            $interval = $itteration_date->sub(new DateInterval("P1Y"))->diff($end_year, false);
+        }
+
+        echo '</div>';
+    }
+
     /**
      * Output a specific year of events based on the unix time timestamp & provided date.
      * The events are seperated by month, and can be filtered by a provided search string.
@@ -57,18 +102,19 @@ class EventOutputRenderer {
      * @param DateTime $itteration_date
      * @param string $search
      */
-    public function output_year($unixnow,$itteration_date,$search) {
-        echo '<div id="events_container">';
+    public function output_year($unixnow, $itteration_date, $search, $force_first = true) {
+        echo '<div class="events_container">';
 
-        list($start_date) = chairman_get_year_definition();
+        list($start_date) = chairman_get_year_definition($itteration_date);
 
-        //always display current month
-        echo '<h3>' . chairman_get_month($itteration_date->format('m')) . ' ' . $itteration_date->format('Y') . '</h3>';
-
-        echo '<div>';
         $records = $this->get_month_event_records($itteration_date, $search);
-        $this->chairman_print_events($unixnow, $records);
-        echo "</div>";
+
+        if (!empty($records) || $force_first) {
+            echo '<h3>' . chairman_get_month($itteration_date->format('m')) . ' ' . $itteration_date->format('Y') . '</h3>';
+            echo '<div>';
+            $this->chairman_print_events($unixnow, $records);
+            echo "</div>";
+        }
 
         $itteration_date->sub(new DateInterval("P1M"));
         $interval = $itteration_date->diff($start_date, false);
@@ -76,7 +122,7 @@ class EventOutputRenderer {
         while (($interval->invert === 1) ||
         ($interval->invert === 0 && $interval->d == 0 && ($interval->y === 0 || $interval->y === 1 && $interval->m === 1))) {
 
-            $records = $records = $this->get_month_event_records($itteration_date, $search);
+            $records = $this->get_month_event_records($itteration_date, $search);
             if (empty($records)) {
                 $interval = $itteration_date->sub(new DateInterval("P1M"))->diff($start_date, false);
                 continue;
@@ -92,7 +138,7 @@ class EventOutputRenderer {
 
         echo '</div>'; //container
     }
-    
+
     /**
      * Retrieve all events for a particular moth and year based on the given
      * DateTime. The events are further filtered by the search parameter against the
@@ -103,30 +149,58 @@ class EventOutputRenderer {
      * @param DateTime $date
      * @param string $search
      */
-    private function get_month_event_records($date, $search)
-    {
+    private function get_month_event_records($date, $search) {
         global $DB;
         //$records = $DB->get_records("chairman_events", array('chairman_id' => $this->id, 'month' => $itteration_date->format('m'), 'year' => $itteration_date->format('Y')), 'stamp_start DESC');
-        
+
         $clean_search = trim(clean_param($search, PARAM_TEXT));
-        
+
         $params = array();
-        $sql = "SELECT * FROM {chairman_events} ".
-               "WHERE chairman_id=? and month=? and year=? ";
-        
-        array_push($params, $this->id, $date->format('m'),$date->format('Y'));
-        
-        if($clean_search && !empty($clean_search))
-        {
-            $clean_search = "%".$clean_search."%";
+        $sql = "SELECT * FROM {chairman_events} " .
+                "WHERE chairman_id=? and month=? and year=? ";
+
+        array_push($params, $this->id, $date->format('m'), $date->format('Y'));
+
+        if ($clean_search && !empty($clean_search)) {
+            $clean_search = "%" . $clean_search . "%";
             $sql.= "and (summary LIKE ? or description LIKE ?) ";
-            array_push($params,$clean_search,$clean_search);
+            array_push($params, $clean_search, $clean_search);
         }
-        
+
         $sql.= " ORDER BY stamp_start DESC ";
-        
-       return $DB->get_records_sql($sql, $params);
-        
+
+        return $DB->get_records_sql($sql, $params);
+    }
+
+    /**
+     * Retrieve all events for a particular moth and year based on the given
+     * DateTime. The events are further filtered by the search parameter against the
+     * name & description of the events.
+     * 
+     * 
+     * @global moodle_database $DB
+     * @param DateTime $date
+     * @param string $search
+     */
+    private function get_year_event_records_count($date, $search) {
+        global $DB;
+        //$records = $DB->get_records("chairman_events", array('chairman_id' => $this->id, 'month' => $itteration_date->format('m'), 'year' => $itteration_date->format('Y')), 'stamp_start DESC');
+
+        $clean_search = trim(clean_param($search, PARAM_TEXT));
+
+        $params = array();
+        $sql = "SELECT count(DISTINCT id) FROM {chairman_events} " .
+                "WHERE chairman_id=? and ((year=? and month>=?) or (year=? and month<=?) )";
+
+        array_push($params, $this->id, $date->format('Y') - 1, $date->format('m'), $date->format('Y'), $date->format('m'));
+
+        if ($clean_search && !empty($clean_search)) {
+            $clean_search = "%" . $clean_search . "%";
+            $sql.= "and (summary LIKE ? or description LIKE ?) ";
+            array_push($params, $clean_search, $clean_search);
+        }
+
+        return $DB->count_records_sql($sql, $params);
     }
 
     /**
@@ -140,9 +214,10 @@ class EventOutputRenderer {
     private function chairman_print_events($now, $event_records) {
         global $USER, $CFG;
         $nextevent = 0;
-        
-        if(!$event_records) return;
-        
+
+        if (!$event_records)
+            return;
+
         foreach ($event_records as $event) {
             //needed to calculate the proper timestamp values for thebackground color
             $eventstart = $event->day . '-' . $event->month . '-' . $event->year . ' ' . $event->starthour . ':' . $event->startminutes;

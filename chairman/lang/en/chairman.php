@@ -373,6 +373,8 @@ $string['search'] = "Search Members";
 
 
 $string['loading'] = 'Loading...';
+$string['archive'] = 'Archive';
+$string['events_archive'] = 'Meeting Archive';
 
 $string['event_search_error'] = 'Unable to search meetings. Previous meetings shown.';
 

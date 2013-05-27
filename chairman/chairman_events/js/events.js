@@ -37,11 +37,11 @@ function ajax_search_events()
             ajax_loading(true);
             $("#events_container").text("")
         },
-        data: {ajax_request: 1, search: search, id: php_strings["id"]}
+        data: {ajax_request: 1, search: search, id: php_strings["id"], archive: is_archive}
     })
             .done(function(data) {
-        $("#events_container").accordion("destroy");
-        $("#events_container").remove();
+        $(".events_container").accordion("destroy");
+        $(".events_container").remove();
         $("#events_root").append(data);
         create_accordian();
         ajax_loading(false)
@@ -85,7 +85,7 @@ function ajax_loading(isloading)
 function show_ajax_loading()
 {
     var loading = $("#ajax_loading");
-    var result = $("#events_container");
+    var result = $(".events_container");
 
     $(loading).show(500);
     $(result).hide(500);
@@ -97,7 +97,7 @@ function show_ajax_loading()
 function hide_ajax_loading()
 {
     var loading = $("#ajax_loading");
-    var result = $("#events_container");
+    var result = $(".events_container");
 
     $(loading).hide(500);
     $(result).show(500);
@@ -108,7 +108,7 @@ function hide_ajax_loading()
  */
 function create_accordian()
 {
-    $("#events_container").accordion({
+    $(".events_container").accordion({
         collapsible: true,
         active: 0,
         heightStyle: "content"

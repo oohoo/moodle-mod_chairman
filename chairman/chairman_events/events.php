@@ -25,9 +25,10 @@ require_once('../lib.php');
 require_once('../lib_chairman.php');
 require_once('./EventOutputRenderer.php');
 
-global $PAGE, $DB;
+global $PAGE, $CFG;
 
 $id = optional_param('id', 0, PARAM_INT);    // Course Module ID
+$archive = optional_param('archive', 0, PARAM_INT);    // Course Module ID
 
 $PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
 $PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
@@ -38,15 +39,25 @@ chairman_check($id);
 $is_ajax = optional_param('ajax_request', 0, PARAM_INT);    // Course Module ID
 if($is_ajax)
 {
-    ajax_request($id);
+    ajax_request($id, $archive);
     return;
 }
 
 //Normal page load
 chairman_header($id, 'events', 'events.php?id=' . $id);
 
+echo "<script> var is_archive = $archive; </script>";
+
+$archive_flipped = 1 - $archive;
 //title
-echo '<div><div class="title">' . get_string('events', 'chairman') . '</div>';
+$title = ( $archive == 1 ? get_string('events_archive', 'chairman') : get_string('events', 'chairman'));
+$title_link = ( $archive_flipped == 1 ? get_string('events_archive', 'chairman') : get_string('events', 'chairman'));
+
+$link =  "$CFG->wwwroot/mod/chairman/chairman_events/events.php?id=$id&archive=".$archive_flipped;
+
+echo '<div><div class="title">' . $title;
+echo "<a class='title_link' href='$link'>" . $title_link;
+echo '</a></div>';
 
 //search
 echo '<div id="meeting_search_container">';
@@ -61,7 +72,11 @@ add_event_link($id);
 echo '<div id="events_root">';
 echo '<span id="search_error" class="error"/>';
 $renderer = new EventOutputRenderer($id);
-$renderer->output_current_year(null);
+
+if($archive)
+ $renderer->output_archive(null);
+else
+ $renderer->output_current_year(null);
 
 //hidden ajax loading message
 echo '<div id="ajax_loading" style="display:none">';
@@ -101,11 +116,16 @@ chairman_footer();
      * @global type $CFG
      * @param type $id
      */
-    function ajax_request($id) {
+    function ajax_request($id, $archive) {
         $search = optional_param('search', null, PARAM_TEXT);
 
         $renderer = new EventOutputRenderer($id);
-        $renderer->output_current_year($search);
+        
+        if($archive)
+            $renderer->output_archive($search);
+        else
+            $renderer->output_current_year($search);
+        
     }
 
 ?>
