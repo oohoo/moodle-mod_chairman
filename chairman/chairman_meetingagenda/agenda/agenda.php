@@ -263,6 +263,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
             }
         }
 
+        chairman_basic_footer();
         //Anytime a parital submit button is pressed, ultimatly you are redirected back to agenda
         redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 
@@ -274,6 +275,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
 //---------------------------------------------------------------------------
 		} elseif ($mform->is_cancelled()) {
 		//Simply reload the page -- effectively killing all changes they made
+        chairman_basic_footer();
         redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 //---------------------------------------------------------------------------
 
@@ -419,10 +421,11 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
 //--------COMPLETE AGENDA BUTTON PRESSED----------------------------------------
         //Redirect to event page
         if(isset($_REQUEST['complete_agenda'])){
+        chairman_basic_footer();
         redirect($CFG->wwwroot . '/mod/chairman/chairman_events/events.php?id=' . $chairman_id);
 
         }
-
+        chairman_basic_footer();
         redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 
 
@@ -578,6 +581,7 @@ pdf_version($event_id);
 
     //Is set when the refresh button is pressed (from repeater form elements) -- want to do full refresh
     if (isset($_REQUEST['refresh_page'])) {
+        chairman_basic_footer();
     redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 
     }
@@ -819,6 +823,7 @@ document.write('<center><img src="img/loading14.gif" alt="Loading..." /></center
 </script>
 HERE;
 
+chairman_basic_footer();
             redirect("$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=".$event_id);
 }
 ?>

@@ -53,7 +53,7 @@ print '<script type="text/javascript">';
 print 'if(document.location.href=="';
 print $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php"){';
 print<<<HERE
-document.write('<center><img src="img/loading14.gif" alt="Loading..." /></center>');
+$("#chairman_main").append('<center><img src="img/loading14.gif" alt="Loading..." /></center>');
 
 }
 </script>

@@ -46,6 +46,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/agenda/css/agenda_viewer.css");
+require_once("$CFG->dirroot/mod/chairman/chairman_events/EventOutputRenderer.php");
 
 global $DB;
 
@@ -82,10 +83,14 @@ $agendas = $DB->get_records_sql($sql, array($chairman_id,$event_id), $limitfrom=
 
 print '<h3 class="headerbar">'.get_string('events','chairman').'</h3><ul>';
 
-foreach($agendas as $agenda){
-$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $agenda->id . "&selected_tab=" . 1;
- print '<li><a href="'.$url.'" >'.toMonth($agenda->month) ." ".$agenda->day.", ".$agenda->year.'</a></li>';
-}
+
+$renderer = new EventOutputRenderer($chairman_id);
+$renderer->output_year_events();
+
+//foreach($agendas as $agenda){
+//$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $agenda->id . "&selected_tab=" . 1;
+// print '<li><a href="'.$url.'" >'.toMonth($agenda->month) ." ".$agenda->day.", ".$agenda->year.'</a></li>';
+//}
 
 print '</div>';
 }

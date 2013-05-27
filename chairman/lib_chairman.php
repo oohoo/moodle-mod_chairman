@@ -135,13 +135,24 @@ function chairman_structure($chairman, $pagename, $cmid) {
 function chairman_footer() {
     global $OUTPUT;
 
+    chairman_basic_footer();
+
+    echo $OUTPUT->footer();
+}
+
+/**
+ * Display the footer details for the chairman module.
+ * Doesn't actually call the output. This can be used before a redirect.
+ * 
+ * @global type $OUTPUT
+ */
+function chairman_basic_footer() {
+
     echo "</div>"; //end main area
     echo "</div>"; //end root container
     echo "</div>"; //end root
 
     add_link_dialogs();
-
-    echo $OUTPUT->footer();
 }
 
 /**
@@ -564,23 +575,22 @@ function chairman_get_year_definition($now=null) {
     
     if(!$now)
         $now = new DateTime();
-
+    
     $start_time = mktime(0, 0, 0, 01, 01, $now->format("Y"));
     $start_year = new DateTime();
     $start_year->setTimestamp($start_time);
 
     $interval = $now->diff($start_year, false);
-
+    
     //If current date is less than start date then subtract a year for the start date
     //invert specifies if its a negative comparision (before now) && d > 0 ensures that if
     //start day is today - it restarts
-    if (!$interval || ($interval->invert === 0 && $interval->d !== 0))
+    if (!$interval || $interval->invert === 0 || ($interval->y == 1 && $interval->m === 0 && $interval->d === 0) )
         $start_year->sub(new DateInterval("P1Y"));
 
     $end_year = new DateTime();
     $end_year->setTimestamp($start_year->getTimestamp());
     $end_year->add(new DateInterval("P1Y"));
-
 
     return array($start_year, $now, $end_year);
 }
@@ -610,6 +620,7 @@ function chairman_get_month($month_num) {
         default: return "";
     }
 }
+
 
 
 

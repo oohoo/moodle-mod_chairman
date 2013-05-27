@@ -46,7 +46,66 @@ class EventOutputRenderer {
         return $this->output_year(time(), new DateTime(), $search);
     }
 
+    /**
+     * 
+     * Outputs all events grouped by year and then month.
+     * The current year's event's are skipped.
+     * 
+     * @param string @search A search criteria to filter events
+     */
     public function output_archive($search) {
+        $self = $this;
+        $this->output_yearly_itteration($search, true, function($date, $search) use ($self) {
+                    echo '<h3>' . chairman_get_month($date->format('m')) . " " . ($date->format('Y') - 1) . " - " .
+                    chairman_get_month($date->format('m')) . " " . ($date->format('Y')) . '</h3>';
+
+                    echo '<div>';
+                    $self->output_year($date->getTimestamp(), clone $date, $search, false);
+                    echo '</div>';
+                });
+    }
+
+    /**
+     * Outputs all events based on year year - grouped only by month.
+     * 
+     */
+    public function output_year_events() {
+
+        $self = $this;
+        $this->output_yearly_itteration(null, false, function($date, $search) use ($self) {
+                    global $CFG;
+
+                    $records = $self->get_year_event_records($date, null);
+
+                    echo '<h3>' . chairman_get_month($date->format('m')) . " " . ($date->format('Y') - 1) . " - " .
+                    chairman_get_month($date->format('m')) . " " . ($date->format('Y')) . '</h3>';
+                    echo '<div>';
+
+                    echo "<ul>";
+                    foreach ($records as $record) {
+                        $url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $record->id . "&selected_tab=" . 1;
+                        print '<li><a href="' . $url . '" >' . toMonth($record->month) . " " . $record->day . ", " . $record->year . '</a></li>';
+                    }
+                    echo "</ul>";
+
+                    echo '</div>';
+                });
+    }
+
+
+    /**
+     * Functions that itterates through all the events from the current date,
+     * to the events with the oldest date.
+     * 
+     * The function requires a display lamdba (anon function) to determine how
+     * to display each year's events.
+     * 
+     * @global moodle_database $DB
+     * @param string $search
+     * @param bool $skip_first
+     * @param function $display_function
+     */
+    public function output_yearly_itteration($search, $skip_first, $display_function) {
         global $DB;
 
         $date_time = new DateTime();
@@ -63,7 +122,10 @@ class EventOutputRenderer {
             $min_year = $years[0];
         }
 
-        list($itteration_date) = chairman_get_year_definition();
+        if ($skip_first)
+            list($itteration_date) = chairman_get_year_definition();
+        else
+            list($a, $b, $itteration_date) = chairman_get_year_definition();
 
         $end_year = new DateTime();
         $end_year->setDate($min_year, $date_time->format('m'), $date_time->format('d'));
@@ -76,15 +138,14 @@ class EventOutputRenderer {
 
             $count = $this->get_year_event_records_count($itteration_date, $search);
 
+            //echo $itteration_date->format("Y") . " " . $itteration_date->format("m") . "</br>";
+
             if ($count == 0) {
                 $interval = $itteration_date->sub(new DateInterval("P1Y"))->diff($end_year, false);
                 continue;
             }
 
-            echo '<h3>' . $itteration_date->format('Y') . " - " . ($itteration_date->format('Y') - 1) . '</h3>';
-            echo '<div>';
-            $this->output_year($itteration_date->getTimestamp(), clone $itteration_date, $search, false);
-            echo '</div>';
+            $display_function($itteration_date, $search);
 
             $interval = $itteration_date->sub(new DateInterval("P1Y"))->diff($end_year, false);
         }
@@ -119,8 +180,9 @@ class EventOutputRenderer {
         $itteration_date->sub(new DateInterval("P1M"));
         $interval = $itteration_date->diff($start_date, false);
 
-        while (($interval->invert === 1) ||
-        ($interval->invert === 0 && $interval->d == 0 && ($interval->y === 0 || $interval->y === 1 && $interval->m === 1))) {
+        while ($interval && (($interval->invert === 1) || ($interval->invert === 0 && $interval->m === 0 && $interval->y === 0 && $interval->d === 0))) {
+
+            //echo chairman_get_month($itteration_date->format('m'))."<br/>";
 
             $records = $this->get_month_event_records($itteration_date, $search);
             if (empty($records)) {
@@ -149,7 +211,7 @@ class EventOutputRenderer {
      * @param DateTime $date
      * @param string $search
      */
-    private function get_month_event_records($date, $search) {
+    public function get_month_event_records($date, $search) {
         global $DB;
         //$records = $DB->get_records("chairman_events", array('chairman_id' => $this->id, 'month' => $itteration_date->format('m'), 'year' => $itteration_date->format('Y')), 'stamp_start DESC');
 
@@ -173,24 +235,50 @@ class EventOutputRenderer {
     }
 
     /**
-     * Retrieve all events for a particular moth and year based on the given
-     * DateTime. The events are further filtered by the search parameter against the
-     * name & description of the events.
+     * Returns the number of events that have occured in a given year. The date
+     * provided is seen as the start of the last day in the year.
      * 
+     * Ex: date Jan 2013 ->
+     * 
+     *  Jan 2012 -> Jan 2013
      * 
      * @global moodle_database $DB
-     * @param DateTime $date
+     * @param Datetime $date
      * @param string $search
      */
     private function get_year_event_records_count($date, $search) {
         global $DB;
-        //$records = $DB->get_records("chairman_events", array('chairman_id' => $this->id, 'month' => $itteration_date->format('m'), 'year' => $itteration_date->format('Y')), 'stamp_start DESC');
 
+        //get sql in first position, params in second
+        $sql_query = $this->get_yearly_sql($date, $search, true);
+
+        return $DB->count_records_sql($sql_query[0], $sql_query[1]);
+    }
+
+    /**
+     * This function builds the sql query needed to retrieve either the events in
+     * a year, or the number of events that occured in a year.
+     *
+     * Returns the number of events that have occured in a given year. The date
+     * provided is seen as the start of the last day in the year.
+     * 
+     * Ex: date Jan 2013 ->
+     * 
+     *  Jan 2012 -> Jan 2013
+     *
+     * @param Datetime $date
+     * @param string $search
+     * @param bool $is_count
+     */
+    private function get_yearly_sql($date, $search, $is_count = false) {
         $clean_search = trim(clean_param($search, PARAM_TEXT));
 
+        $fields = ($is_count ? "count(DISTINCT id)" : "*");
+
         $params = array();
-        $sql = "SELECT count(DISTINCT id) FROM {chairman_events} " .
+        $sql = "SELECT $fields FROM {chairman_events} " .
                 "WHERE chairman_id=? and ((year=? and month>=?) or (year=? and month<=?) )";
+        $sql.= " ORDER BY stamp_start DESC ";
 
         array_push($params, $this->id, $date->format('Y') - 1, $date->format('m'), $date->format('Y'), $date->format('m'));
 
@@ -200,7 +288,24 @@ class EventOutputRenderer {
             array_push($params, $clean_search, $clean_search);
         }
 
-        return $DB->count_records_sql($sql, $params);
+        return array($sql, $params);
+    }
+
+    /**
+     * Retrieves an array of records for a given year that is based on the given
+     * Datetime object.
+     * 
+     * @global moodle_database $DB
+     * @param Datetime $date
+     * @param string $search
+     */
+    public function get_year_event_records($date, $search) {
+        global $DB;
+
+        //get sql in first position, params in second
+        $sql_query = $this->get_yearly_sql($date, $search);
+
+        return $DB->get_records_sql($sql_query[0], $sql_query[1]);
     }
 
     /**
