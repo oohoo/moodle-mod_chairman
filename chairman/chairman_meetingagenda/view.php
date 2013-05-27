@@ -79,32 +79,8 @@ if ($current_user_record = $DB->get_record("chairman_members", array("chairman_i
 $user_role = $current_user_record->role_id;
 }
 
+$url = '/mod/chairman/chairman_meetingagenda/view.php?event_id='.$event_id;
 
-//DEBUGGING
-//print "CommiteeID/Instance?: ".$cm->instance . '</br>';
-//print "EventID: ".$event_id . '</br>';
-//print "CommiteeID as in tables: ".$chairman_id . '</br>';
-
-//if(isset($agenda_id)){
-//print "Agenda: " . $agenda_id .  '</br>';
-//}
-
-//if($current_user_record){
-//print "Role: " . $user_role .  '</br>';
-//}
-$PAGE->requires->jquery();
-$PAGE->set_url('/mod/chairman/chairman_meetingagenda/view.php?event_id='.$event_id);
-$PAGE->set_title("$chairman->name");
-$PAGE->set_heading("$chairman->name");
-
- $navlinks = array(
-     array('name' => get_string('modulename','chairman'), 'link' => $CFG->wwwroot.'/mod/chairman/view.php?id='.$chairman_id, 'type' => 'misc'),
-     array('name' => get_string('event','chairman'), 'link' => $CFG->wwwroot.'/mod/chairman/chairman_events/events.php?id='.$chairman_id, 'type' => 'misc')
-    );
-    $navigation = build_navigation($navlinks);
-
-// Output starts here
-echo $OUTPUT->header();
 
 $thispageurl = $CFG->wwwroot;
 
@@ -117,51 +93,33 @@ $selected_tab = optional_param('selected_tab', -1, PARAM_INT);
 //Minutes for the meeting
 if ($selected_tab==3) {
 	$currenttab = 'arising_issues';
-	$thispageurl = $PAGE->url;
+	$thispageurl = $url;
 	$contents = 'business/business.php';
-
-
-//Detailed business Arising List (Disabled -- Not Used)
-/*
- } elseif ($selected_tab==2) {
-    $currenttab = 'open_topics';
-	$thispageurl = $PAGE->url;
-	$contents = 'topics/open_topics.php';
-*/
-
-//Detailed Topic by year (Disabled -- Not Used)
-/*
-} elseif ($selected_tab==4) {
-	$currenttab = 'topics_by_year';
-	$thispageurl = $PAGE->url;
-	$contents = 'topics/topics_by_year.php';
-
-*/
 
 //Topics by year list
 } elseif ($selected_tab==7) {
 	$currenttab = 'topics_by_year_list';
-	$thispageurl = $PAGE->url;
+	$thispageurl = $url;
 	$contents = 'topics/topics_by_year_list.php';
 
 
 //Motions By Year
 } elseif ($selected_tab==5) {
         $currenttab = 'motions_by_year';
-        $thispageurl = $PAGE->url;
+        $thispageurl = $url;
         $contents = 'motions/motions_by_year.php';
 
 //Business Arising List
 } elseif ($selected_tab==6) {
         $currenttab = 'open_topic_list';
-        $thispageurl = $PAGE->url;
+        $thispageurl = $url;
         $contents = 'topics/open_topic_list.php';        
 
 //Agenda
 } else {
 
     $currenttab = 'agenda';
-	$thispageurl = $PAGE->url;
+	$thispageurl = $url;
 	$contents = 'agenda/agenda.php';
 	$selected_tab = 1;
 }
@@ -170,14 +128,15 @@ if ($selected_tab==3) {
 $tabs = array(array(
     new tabobject('agenda', new moodle_url($thispageurl, array('selected_tab' => 1)), get_string('agenda_tab', 'chairman')),
     new tabobject('arising_issues', new moodle_url($thispageurl, array('selected_tab' => 3)), get_string('minutes_tab', 'chairman')),
-   // new tabobject('open_topics', new moodle_url($thispageurl, array('selected_tab' => 2)), get_string('open_topics_tab', 'chairman')),
    new tabobject('open_topic_list', new moodle_url($thispageurl, array('selected_tab' => 6)), get_string('open_topic_list_tab', 'chairman')),
-   //new tabobject('topics_by_year', new moodle_url($thispageurl, array('selected_tab' => 4)), get_string('topics_by_year_tab', 'chairman')),
-    new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 7)), get_string('topics_by_year_list_tab', 'chairman')),
+   
+    //new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 7)), get_string('topics_by_year_list_tab', 'chairman')),
 
-    new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman')),
+    //new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman')),
 
 ));
+
+chairman_header($cm->id, $currenttab, "/chairman_meetingagenda/view.php?event_id='.$event_id");
 
 //Print Tabs
 print_tabs($tabs, $currenttab);
@@ -185,4 +144,4 @@ print_tabs($tabs, $currenttab);
 //Include tab content
 require($contents);
 
-echo $OUTPUT->footer();
+chairman_footer();

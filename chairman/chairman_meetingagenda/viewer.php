@@ -67,54 +67,42 @@ $user_role = $current_user_record->role_id;
 }
 
 
-$PAGE->set_url('/mod/chairman/chairman_meetingagenda/viewer.php?chairman_id='.$chairman_id);
-    $PAGE->set_title("$chairman->name");
-    $PAGE->set_heading("$chairman->name");
-
-    $navlinks = array(
-     array('name' => get_string('modulename','chairman'), 'link' => $CFG->wwwroot.'/mod/chairman/view.php?id='.$chairman_id, 'type' => 'misc'),
-     array('name' => get_string('event','chairman'), 'link' => $CFG->wwwroot.'/mod/chairman/chairman_events/events.php?id='.$chairman_id, 'type' => 'misc')
-    );
-    $navigation = build_navigation($navlinks);
-// Output starts here
-echo $OUTPUT->header();
 
 $thispageurl = $CFG->wwwroot;
 
 //Attempt to get current tab param
 $selected_tab = optional_param('selected_tab', -1, PARAM_INT);
 
+$url = "viewer.php?chairman_id=$cm->id&selected_tab=$selected_tab";
 
 // Print the tabs to switch modes.
-if ($selected_tab==6) {
-	$currenttab = 'topics_by_year_list';
-	$thispageurl = $PAGE->url;
-	$contents = 'topics/topics_by_year_list.php';
-/*
-  DISABLED--TOPICS BE YEAR
-} elseif ($selected_tab==4) {
-      $currenttab = 'topics_by_year';
-	$thispageurl = $PAGE->url;
-	$contents = 'topics/topics_by_year.php';
- */
-
-
-} elseif ($selected_tab==5) {
-
-        $currenttab = 'motions_by_year';
-        $thispageurl = $PAGE->url;
-        $contents = 'motions/motions_by_year.php';
-} elseif($selected_tab==3) {
+//if ($selected_tab==6) {
+//	$currenttab = 'topics_by_year_list';
+//	$thispageurl = $url;
+//	$contents = 'topics/topics_by_year_list.php';
+//
+//} 
+//elseif ($selected_tab==5) {
+//
+//        $currenttab = 'motions_by_year';
+//        $thispageurl = $url;
+//        $contents = 'motions/motions_by_year.php';
+//} 
+//else
+    if($selected_tab==3) {
     $currenttab = 'open_topics';
-	$thispageurl = $PAGE->url;
+	$thispageurl = $url;
 	$contents = 'topics/open_topics.php';
-} elseif($selected_tab==2) {
+} 
+elseif($selected_tab==2) {
     $currenttab = 'open_topics_list';
-	$thispageurl = $PAGE->url;
+	$thispageurl = $url;
 	$contents = 'topics/open_topic_list.php';
-} else {
+} 
+
+else {
     $currenttab = 'viewer_events';
-	$thispageurl = $PAGE->url;
+	$thispageurl = $url;
 	$contents = 'viewer_events.php';
 
 }
@@ -122,15 +110,12 @@ if ($selected_tab==6) {
 //Create Tab Objects
 $tabs = array(array(
     new tabobject('viewer_events', new moodle_url($thispageurl, array('selected_tab' => 1)), get_string('events', 'chairman')),
-    //new tabobject('open_topics', new moodle_url($thispageurl, array('selected_tab' => 3)), get_string('open_topics_tab', 'chairman')),
     new tabobject('open_topics_list', new moodle_url($thispageurl, array('selected_tab' => 2)), get_string('open_topic_list_tab', 'chairman')),
-   // new tabobject('topics_by_year', new moodle_url($thispageurl, array('selected_tab' => 4)), get_string('topics_by_year_tab', 'chairman')),
-    new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 6)), get_string('topics_by_year_list_tab', 'chairman')),
-    new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman'))
-    
-
-
+    //new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 6)), get_string('topics_by_year_list_tab', 'chairman')),
+    //new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman'))
 ));
+
+chairman_header($cm->id, $currenttab, "chairman_meetingagenda/viewer.php?chairman_id=$cm->id&selected_tab=$selected_tab");
 
 //Print Tabs
 print_tabs($tabs, $currenttab);
@@ -138,4 +123,4 @@ print_tabs($tabs, $currenttab);
 //Include tab content
 require($contents);
 
-echo $OUTPUT->footer();
+echo chairman_footer();

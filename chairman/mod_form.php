@@ -16,11 +16,6 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************
 **************************************************************************/
 
-/**
- * @package   chairman
- * @copyright 2010 Raymond Wainman, Patrick Thibaudeau (Campus St. Jean, University of Alberta)
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 
 
@@ -74,10 +69,13 @@ class mod_chairman_mod_form extends moodleform_mod {
         $this->add_collapseable_chkbox('addevent', 'collaps_menu_newevents', 1);
         $this->add_collapseable_chkbox('deleteevent', 'collaps_menu_delevents', 1);
         $this->add_collapseable_chkbox('agenda', 'collaps_menu_agenda', 0);
-        $this->add_collapseable_chkbox('agendalist', 'collaps_menu_agendalist', 0);
-        $this->add_collapseable_chkbox('minutes', 'collaps_menu_minutes', 0);
-        $this->add_collapseable_chkbox('agendaba', 'collaps_menu_agenda_ba', 0);
-        $this->add_collapseable_chkbox('archives', 'collaps_menu_archives', 0);
+        $this->add_collapseable_chkbox('arising_issues', 'collaps_menu_minutes', 0);
+        $this->add_collapseable_chkbox('viewer_events', 'collaps_menu_viewer_events', 0);
+        $this->add_collapseable_chkbox('open_topic_list', 'collaps_menu_agenda_ba', 0);
+        
+        $this->add_collapseable_chkbox('agenda_archives', 'collaps_menu_agenda_archives', 0);
+        
+        
         $this->add_collapseable_chkbox('filesview', 'collaps_menu_files', 1);
         
         
