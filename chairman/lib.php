@@ -273,18 +273,67 @@ function chairman_supports($feature) {
     }
 }
 
-function chairman_pluginfile($course, $cminfo, $context, $filearea, $args, $forcedownload) {
-    global $CFG, $DB;
+/**
+ * Serves the chairman images or files. Implements needed access control ;-)
+ *
+ * @global stdClass $CFG
+ * @global moodle_database $DB
+ * @param object $course
+ * @param object $cm
+ * @param object $context
+ * @param string $filearea
+ * @param array $args
+ * @param bool $forcedownload
+ * @return bool false if file not found, does not return if found - justsend the file
+ */
+function chairman_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload)
+{
+    global $CFG, $DB, $USER;
 
+    //The following code is for security
+    require_course_login($course, true, $cm);
+
+    if ($context->contextlevel != CONTEXT_MODULE)
+    {
+        return false;
+    }
+
+    $fileareas = array('chairman', 'attachment',"chairman_private");
+    if (!in_array($filearea, $fileareas))
+    {
+        return false;
+    }
+    //id of the content row
+    $chairmancontentid = (int) array_shift($args);
+
+    if (!$tab = $DB->get_record('chairman', array('id' => $cm->instance)))
+    {
+        return false;
+    }
+
+    //Now gather file information
     $fs = get_file_storage();
-    $relativepath = '/'.implode('/', $args);
-    
-    $hash = $fs->get_pathname_hash($context->id, 'mod_chairman', 'chairman', 0, $relativepath, '');
+    $relativepath = implode('/', $args);
+    $fullpath = "/$context->id/mod_chairman/$filearea/$chairmancontentid/$relativepath";
 
-    $file = $fs->get_file_by_hash($hash);
+    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory())
+    {
+        return false;
+    }
+    
+    if($filearea === "chairman_private")
+    {
+        $cuser = $DB->get_record('chairman_members', array('user_id'=>$USER->id, 'chairman_id'=>$cm->id));
+        
+        if(!$cuser)
+        {
+            return false;  
+        }
+            
+    }
 
     // finally send the file
-    send_stored_file($file, 86400, 0, true);
+    send_stored_file($file, 0, 0, $forcedownload);
 }
 
 function chairman_cron(){

@@ -28,7 +28,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once('../lib_chairman.php');
-
+require_once('lib.php');
 
 $event_id = optional_param('event_id', 0, PARAM_INT); // event ID
 
@@ -136,12 +136,13 @@ $tabs = array(array(
 
 ));
 
+$PAGE->requires->js('/mod/chairman/chairman_meetingagenda/init.js');
 chairman_header($cm->id, $currenttab, "/chairman_meetingagenda/view.php?event_id='.$event_id");
 
 //Print Tabs
 print_tabs($tabs, $currenttab);
 
 //Include tab content
-require($contents);
+require_once($contents);
 
 chairman_footer();

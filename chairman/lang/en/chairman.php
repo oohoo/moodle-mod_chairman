@@ -236,7 +236,7 @@ $string['topics_by_year_list_tab'] = "Topics List By Year";
 $string['pdf_version'] = "PDF Version";
 $string['agenda_for'] = "Agenda For ";
 $string['room_scheduler'] = "Room Scheduler";
-$string['save_pdf'] = "Save as PDF";
+$string['save_pdf'] = "Export PDF";
 $string['bookroom'] = 'Book Room: ';
 
 //Added to version 20120705++
@@ -383,6 +383,25 @@ $string['archive'] = 'Archive';
 $string['events_archive'] = 'Meeting Archive';
 
 $string['event_search_error'] = 'Unable to search meetings. Previous meetings shown.';
+$string['save_pdf_local'] = 'Save to Chairman Files: ';
+
+$string['public_export_pdf'] = 'Save as Public';
+$string['private_export_pdf'] = 'Save as Private';
+
+$string['export_pdf_type'] = 'Export PDF as: ';
+
+$string['export_pdf_download'] = 'Download';
+$string['export_pdf_email'] = 'Group Email';
+
+$string['export_pdf_email_private'] = 'Members Only Link';
+$string['export_pdf_email_public'] = 'Public Link';
+
+$string['export'] = 'Export';
+
+$string['no_pdf_file_to_export'] = 'No PDF avaliable to export. An admin for the committee is needed to export & save the PDF first.';
+
+$string['export_pdf_email_public_warning'] = 'Note: For this link to be public to non-moodle users, the \'Auto-login Guests\' setting in Moodle must be enabled and the course must allow guest users.';
+
 
 
 ?>

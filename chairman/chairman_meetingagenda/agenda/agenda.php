@@ -85,6 +85,7 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
     
 }
 
+export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 1);
 
 //-------------------FUNCTIONS--------------------------------------------------
 //------------------------------------------------------------------------------
@@ -103,26 +104,8 @@ $url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/util/pdf_script.php?ev
 $url .= '&plain_pdf=1';
 
 
-print<<<HERE
-<style type='text/css'>
-#chairman_save_pdf {
-float: right;
-vertical-align:top;
-}
-</style>
-HERE;
-
 //-------------------DOWNLOAD PDF VERSION OF AGENDA-----------------------------
-print '<div id="chairman_save_pdf">';
-print '<form action="'.$url.'">';
-print '<span style="display:inline-block; vertical-align:top; text-align: center;">'.get_string('save_pdf','chairman').":<br>";
-print '<input type="image" id="save_image" SRC="../pix/pdf_icon.gif" VALUE="Submit now"/></span>';
-print '<input type="hidden" name="event_id" value="'.$event_id.'"/>';
-print '<input type="hidden" name="plain_pdf" value="1"/>';
-
-
-print '</form>';
-print '</div>';
+output_export_pdf_image();
 //------------------------------------------------------------------------------
 }
 

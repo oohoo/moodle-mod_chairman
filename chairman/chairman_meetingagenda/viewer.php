@@ -125,6 +125,6 @@ chairman_header($cm->id, $currenttab, "chairman_meetingagenda/viewer.php?chairma
 print_tabs($tabs, $currenttab);
 
 //Include tab content
-require($contents);
+require_once($contents);
 
 echo chairman_footer();

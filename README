@@ -10,22 +10,25 @@ This repository contains the chairman module for moodle. The module allows the m
 committees through the the control of current members, creation and viewing of agendas, scheduling
 and organizing of meetings, central file storage for the committee, and much more. 
 
-This version of the chairman module is compatible with Moodle 2.4.X.
+This version of the chairman module is compatible with Moodle 2.5.X.
 
 --------------------------------------------------------------------------------
 Prerequisites
 --------------------------------------------------------------------------------
 
-Moodle Installed - Version 2.4.X
+Moodle Installed - Version 2.5.X
 
 --------------------------------------------------------------------------------
 Installation
 --------------------------------------------------------------------------------
+ Note: Installation of the chairman module will automatically migrate all data from the legacy 
+       committee manager to the chairman module, and uninstall the legacy module.
 
- 1. Copy comity folder into the <MoodleDirectory>/mod/
+ 1. Copy chairman folder into the <MoodleDirectory>/mod/
  2. Login as Administrator
  3. Install the new module in the standard plugin process
 
+  If you have an old version of committee manager installed, then remove the comity folder after installation has completed.
 
 --------------------------------------------------------------------------------
 

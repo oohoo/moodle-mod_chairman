@@ -87,11 +87,6 @@ print '<h3 class="headerbar">'.get_string('events','chairman').'</h3><ul>';
 $renderer = new EventOutputRenderer($chairman_id);
 $renderer->output_year_events();
 
-//foreach($agendas as $agenda){
-//$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $agenda->id . "&selected_tab=" . 1;
-// print '<li><a href="'.$url.'" >'.toMonth($agenda->month) ." ".$agenda->day.", ".$agenda->year.'</a></li>';
-//}
-
 print '</div>';
 }
 

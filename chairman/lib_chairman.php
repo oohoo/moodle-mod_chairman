@@ -81,6 +81,7 @@ function chairman_global_js($cmid) {
     echo 'php_strings["emptylink"] = "' . get_string('emptylink', 'chairman') . '";';
     echo 'php_strings["form_info_default"] = "' . get_string('form_info_default', 'chairman') . '";';
     echo 'php_strings["cancel"] = "' . get_string('cancel') . '";';
+    echo 'php_strings["export"] = "' . get_string('export','chairman') . '";';
     echo 'php_strings["id"] = "' . $cmid . '";';
     echo 'php_strings["remove_link"] = "' . get_string('remove_link', 'chairman') . '";';
     echo 'php_strings["link_ajax_sending"] = "' . get_string('link_ajax_sending', 'chairman') . '";';
@@ -100,8 +101,14 @@ function chairman_global_js($cmid) {
     echo 'php_strings["deselectAll"] = "' . get_string('deselectAll', 'chairman') . '";';
     echo 'php_strings["search"] = "' . get_string('search', 'chairman') . '";';
     echo 'php_strings["event_search_error"] = "' . get_string('event_search_error', 'chairman') . '";';
-    
+    echo 'php_strings["export_pdf_email"] = "' . get_string('export_pdf_email', 'chairman') . '";';
     echo "php_strings['ajax_event_search_url'] = '$CFG->wwwroot/mod/chairman/chairman_events/events.php';";
+    echo 'php_strings["export_pdf_email_public"] = "' . get_string('export_pdf_email_public', 'chairman') . '";';
+    echo 'php_strings["export_pdf_email_public_warning"] = "' . get_string('export_pdf_email_public_warning', 'chairman') . '";';
+    echo 'php_strings["export_pdf_email_private"] = "' . get_string('export_pdf_email_private', 'chairman') . '";';
+    
+    
+    
     
     echo '</script>';
 }
