@@ -115,7 +115,7 @@ $tabs = array(array(
     //new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman'))
 ));
 
-
+$PAGE->requires->css('/mod/chairman/chairman_meetingagenda/meetingagenda.css');
 $PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
 $PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
 

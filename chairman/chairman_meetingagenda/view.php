@@ -136,7 +136,11 @@ $tabs = array(array(
 
 ));
 
+$PAGE->requires->css('/mod/chairman/chairman_meetingagenda/meetingagenda.css');
 $PAGE->requires->js('/mod/chairman/chairman_meetingagenda/init.js');
+$PAGE->requires->js('/mod/chairman/jquery/plugins/multipane_transfer/js/jquery.oohoo.multipaneTransfer.js');
+$PAGE->requires->css('/mod/chairman/jquery/plugins/multipane_transfer/css/jquery.oohoo.multipaneTransfer.css');
+
 chairman_header($cm->id, $currenttab, "/chairman_meetingagenda/view.php?event_id='.$event_id");
 
 //Print Tabs

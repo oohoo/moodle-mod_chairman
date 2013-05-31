@@ -1,0 +1,68 @@
+/**
+ **************************************************************************
+ **                                Chairman                              **
+ **************************************************************************
+ * @package mod                                                          **
+ * @subpackage chairman                                                  **
+ * @name Chairman                                                        **
+ * @copyright oohoo.biz                                                  **
+ * @link http://oohoo.biz                                                **                                           **
+ * @author Dustin Durand                                                 **
+ * @license                                                              **
+ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
+ **************************************************************************
+ **************************************************************************/
+
+.multipanetransfer .multipanetransfer_table {
+    width: 100%;
+    height: 100%;
+}
+
+.multipanetransfer li {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right:0;
+    width: 100%;
+    margin-top: 5px;
+
+}
+
+.mpt-div-header {
+    text-align: center;
+}
+
+
+.mpt-div-container {
+    float: left;
+    height: 95%;
+    display: block;
+    padding: 3px;
+    border-style: solid;
+    border-color: #d7d7d7;
+    background: #ececec;
+}
+
+.mpt-div-header {
+    border-radius: 2px;
+}
+
+.multipanetransfer {
+    overflow: hidden;
+    padding: 5px;
+}
+
+.mpt-acceptor {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 80%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right:0;
+    list-style-type: none; 
+}
+
+.mpt-acceptor li {
+    width: 95%
+}

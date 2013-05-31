@@ -22,6 +22,8 @@ require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/css/business.css");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 
+echo "<script type='text/javascript' src='business/js/business.js'/>";
+
 global $DB;
 
 //Access to the content of this tab is valid only if an agenda is created
@@ -827,6 +829,7 @@ redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id
         print '<div class="form">';
         $mform->display(false);
         print '</div>';
+        
         }
 
 

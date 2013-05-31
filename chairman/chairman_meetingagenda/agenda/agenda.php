@@ -98,11 +98,6 @@ export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 1);
  *
  */
 function pdf_version($event_id){
-    global $CFG;
-
-$url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/util/pdf_script.php?event_id=" . $event_id;
-$url .= '&plain_pdf=1';
-
 
 //-------------------DOWNLOAD PDF VERSION OF AGENDA-----------------------------
 output_export_pdf_image();
@@ -361,31 +356,6 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
 
 
                 $DB->update_record('chairman_agenda', $agenda_object, $bulk = false);
-            }
-
-            //send email notification
-            if (isset($fromform->notify_now) && $fromform->notify_now == 1){
-                //get meeting
-                $meeting = $DB->get_record('chairman_events',array('id' => $event_id));
-                //get president
-                $president = $DB->get_record('chairman_members', array('chairman_id' => $chairman_id, 'role_id' => 1));
-                //email information
-                $from = $DB->get_record('user', array('id' => $president->user_id));
-                $subject = get_string('notify_reminder', 'chairman').$meeting->summary;
-                $emailmessage = get_string('notify_week_message', 'chairman').'<p>'.$meeting->description.'</p>';
-                //get all member emails.
-                $members = $DB->get_records('chairman_members', array('chairman_id' => $chairman_id));
-
-                $i=0;
-
-                foreach ($members as $member){
-                    $user = $DB->get_record('user',array('id' => $member->user_id));
-                    $message[$i] = str_replace('{a}', "$user->firstname", $emailmessage);
-                    $message[$i] = str_replace('{c}', "$meeting->summary", $message[$i]);
-                    $message[$i] = str_replace('{b}', "$meeting->day/$meeting->month/$meeting->year", $message[$i]);
-                    $i++;
-                    email_to_user($user, $from, $subject, $message[$i]);
-                }
             }
 
         //agenda exists -- update information
@@ -682,10 +652,6 @@ require_once('agenda_mod_form_view.php'); //Form for users that can view
 
 print '<input type="hidden" name="base_url" value="'.$CFG->wwwroot.'"/>';
 print '<input type="hidden" name="courseid" value="'.$chairman->course.'"/>';
-
-//Temp fix for moodle bug - see file for details
-//@TODO Remove once moodle bug has been fixed.
-echo "<script type='text/javascript' src='agenda/js/agenda_form.js'/>";
 
 
 }

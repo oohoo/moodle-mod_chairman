@@ -132,16 +132,8 @@ $mform->setType('selected_tab', PARAM_RAW);
 $mform->addElement('hidden', 'delete_requested', 'no');
 $mform->setType('delete_requested', PARAM_RAW);
 
-
-
-
 $mform->addElement('html', '<br>');
 
-//Add send email to members
-$mform->addElement('checkbox','notify_now', get_string('sendnotificationnow', 'chairman'));
-$mform->addHelpButton('notify_now','sendnotificationnow','chairman');
-$mform->addElement('html', '<br>');
-//$this->add_action_buttons();
 $buttonarray=array();
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] =& $mform->createElement('submit', 'complete_agenda', get_string('complete_agenda','chairman'));

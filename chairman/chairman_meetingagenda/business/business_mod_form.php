@@ -24,6 +24,7 @@ require_once("$CFG->libdir/formslib.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
+require_once("$CFG->dirroot/lib/form/selectgroups.php");
 
 class mod_business_mod_form extends moodleform {
 
@@ -144,112 +145,14 @@ $toform->location = $agenda->location;
 $mform->addElement('header', 'mod-committee-participants_header', get_string('participants_header', 'chairman'));
 
 //Current Records
-$commityRecords = $DB->get_records('chairman_agenda_members', array('chairman_id' => $chairman_id,'agenda_id'=>$agenda_id), '', '*', $ignoremultiple = false);
-
-//print_object($commityRecords);
+$commity_members = $DB->get_records('chairman_agenda_members', array('chairman_id' => $chairman_id,'agenda_id'=>$agenda_id), '', '*', $ignoremultiple = false);
 
 //--------Comittee Members------------------------------------------------------
         $chairmanmembers = array();//Used to store commitee members in an array
 
-        if ($commityRecords) {//If any committee members present
-            $mform->addElement('static', "", '&nbsp;', "<h4>" . get_string('committee_header', 'chairman') . '</h4>');
-            $FORUM_TYPES = array(
-                '-1' => '---------------',
-                '0' => get_string('agenda_present', 'chairman'),
-                '1' => get_string('agenda_absent', 'chairman'),
-                '2' => get_string('agenda_uabsent', 'chairman'));
-
-            $mform->addElement('static',"","&nbsp;",'<table id="attend_table">');
-            $index = 0;
-            //For each committee member print Name, Status, Notes
-            foreach ($commityRecords as $member) {
-                $count_label = $index + 1;
-
-                $participant = array();
-
-                    $participant[] = & $mform->createElement('static',"","","<tr><td>");
-                    $participant[] = & $mform->createElement('static', "participant_num[$index]", '', "$count_label.&nbsp;");
-                    $participant[] = & $mform->createElement('static', "participant_name[$index]", '', "");
-
-                    $participant[] = & $mform->createElement('static',"","","</td><td>");
-
-                    $participant[] = & $mform->createElement('select', "participant_status[$index]", '', $FORUM_TYPES, $attributes = null);
-
-                    $participant[] = & $mform->createElement('static',"","", "</td><td>");
-
-                    $participant[] = & $mform->createElement('text', "participant_status_notes[$index]", '', array('size' => '30'));
-                    $mform->setType('participant_status_notes', PARAM_TEXT);
-                        
-                    $participant[] = & $mform->createElement('static',"","", "</td></tr>");
-
-                $group = &$mform->addGroup($participant, "participant[$index]", '', array(' '), false);
-
-
-//----Disable participant_status_notes if present-------------------------------
-                $mform->disabledIf("participant_status_notes[$index]", "participant_status[$index]", 'eq', 0);
-                $mform->disabledIf("participant_status_notes[$index]", "participant_status[$index]", 'eq', -1);
-                $mform->addElement('hidden', "participant_id[$index]", $member->id);
-                $mform->setType('participant_id', PARAM_INT);
-
-//--------------DEFAULT VALUES--------------------------------------------------
-//------------------------------------------------------------------------------
-
-
-//---------------Get Real name from moodle--------------------------------------
-                $name = $this->getUserName($member->user_id);
-                $toform->participant_name[$index] = $name;
-
-                //USED LATER IN TOPIC MOTIONS FOR SELECTION OF MEMBERS
-                $chairmanmembers[$member->id] = $name;
-
-                $exclusion_id[] = $member->user_id;
-
-$attendance = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id,'chairman_members'=>$member->id));
-
-
-        if($attendance){//Check if attendance exists
-
-            $toform->participant_status[$index] = '-1';
-
-            //print_object($attendance);
-
-            //Some redudent checks, but included anyway
-
-                if($attendance->absent == 0){ //present
-                $toform->participant_status[$index] = 0;
-                } elseif($attendance->absent == 1) { //absent
-                $toform->participant_status[$index] = 1;
-                $toform->participant_status_notes[$index] = $attendance->notes;
-                }
-            
-
-
-            if($attendance->unexcused_absence == 1){//Unexcused absent
-              $toform->participant_status[$index] = 2;
-              $toform->participant_status_notes[$index] = $attendance->notes;
-            }
-
-        }
-
-        
-          
-        
-       
-
-                $index++; //Increase committee member count
-            }
-             $mform->addElement('static',"","",'</table>');
-             
-        }
-
-
-
-
-
-
-
-
-
+ if ($commity_members) {//If any committee members present
+     $this->generate_participants_multiselect($mform, $agenda_id, $commity_members);
+ }
 
 
 //------------MOODLE USERS------------------------------------------------------
@@ -404,34 +307,34 @@ $submit->setLabel('&nbsp;');
 $mform->registerNoSubmitButton('add_new_guest');
 
 
-// add some JS to delete div block created by the group of the committee members
-             $mform->addElement('static',"","", "<script type='text/javascript'>
-                 function deleteRows_attend_table(){
-                    var table = document.getElementById('attend_table');
-                    var divTable = table.parentNode;
-                    var divs = divTable.childNodes;
-                    var nb = divs.length;
-                    for(var i = 0; i<= nb; i++ )
-                    {
-                        if (divs[i] != undefined && divs[i].tagName == 'DIV')
-                        {
-                            divTable.removeChild(divs[i] );
-                            i--;
-                        }
-                    }
-                    divs = table.childNodes[1].childNodes;
-                    nb = divs.length;
-                    for(var i = 0; i<= nb; i++ )
-                    {
-                        if (divs[i] != undefined && divs[i].tagName != 'TR')
-                        {
-                            table.childNodes[1].removeChild(divs[i] );
-                            i--;
-                        }
-                    }
-                }
-                deleteRows_attend_table();
-                </script>");
+//// add some JS to delete div block created by the group of the committee members
+//             $mform->addElement('static',"","", "<script type='text/javascript'>
+//                 function deleteRows_attend_table(){
+//                    var table = document.getElementById('attend_table');
+//                    var divTable = table.parentNode;
+//                    var divs = divTable.childNodes;
+//                    var nb = divs.length;
+//                    for(var i = 0; i<= nb; i++ )
+//                    {
+//                        if (divs[i] != undefined && divs[i].tagName == 'DIV')
+//                        {
+//                            divTable.removeChild(divs[i] );
+//                            i--;
+//                        }
+//                    }
+//                    divs = table.childNodes[1].childNodes;
+//                    nb = divs.length;
+//                    for(var i = 0; i<= nb; i++ )
+//                    {
+//                        if (divs[i] != undefined && divs[i].tagName != 'TR')
+//                        {
+//                            table.childNodes[1].removeChild(divs[i] );
+//                            i--;
+//                        }
+//                    }
+//                }
+//                deleteRows_attend_table();
+//                </script>");
 
 //---------TOPICS---------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -703,6 +606,70 @@ $index++;
  */
     function getIndexToNamesArray(){
         return $this->topicNames;
+    }
+    
+    /**
+     * Prints out the multiselect for participants based on moodle forms.
+     * 
+     * @global type $DB
+     * @param MoodleQuickForm $mform
+     * @param type $agenda_id
+     * @param type $commity_members
+     */
+    function generate_participants_multiselect($mform, $agenda_id, $commity_members) {
+        global $DB;
+
+        //Label Strings
+        $present = get_string('agenda_present', 'chairman');
+        $absent = get_string('agenda_absent', 'chairman');
+        $unabsent = get_string('agenda_uabsent', 'chairman');
+
+        /**
+         * We are generating the element manually, since some of the attr fields are hidden from the
+         * automatic building methods (for groups & option elements)
+         */
+        $select_element = new MoodleQuickForm_selectgroups('participants_attendance', '', array(), array());
+        $select_element->setMultiple(true);
+
+        $options = array();
+        $options[$present]['present'] = array("__BLANK__1"=>"__BLANK__");
+        $options[$absent]['absent'] = array("__BLANK__2"=>"__BLANK__");
+        $options[$unabsent]['unexcused'] = array("__BLANK__3"=>"__BLANK__");
+
+        //itterating through all members and generate each option (the member) under the label of
+        //present, absent, or unexcused absent. If not attendance is saved they are put into present,
+        //until they can be sorted.
+        foreach ($commity_members as $member) {
+            $attendance = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $member->id));
+            $name = $this->getUserName($member->user_id);
+
+            if ($attendance) {
+
+                if ($attendance->absent == 0) { //present
+                    $options[$present]['present'][$member->id] = $name;
+                } elseif ($attendance->absent == 1) { //absent
+                    $options[$absent]['absent'][$member->id] = $name;
+                } elseif ($attendance->unexcused_absence == 1) {//Unexcused absent
+                    $options[$unabsent]['unexcused'][$member->id] = $name;
+                } else {//invalid data
+                    $options[$present]['present'][$member->id] = $name;
+                }
+            } else { //no attendance - assume present
+                $options[$present]['present'][$member->id] = $name;
+            }
+        }
+
+        print_object($options);
+        //itterate through all the optgroups labels - present,absent,uabsent
+        foreach ($options as $optgroup => $optgroupvalues) {
+            //itterate through all optgroup value->
+            foreach ($optgroupvalues as $optgroupvalue => $opt_options) {
+                echo $optgroupvalue;
+                $select_element->addOptGroup($optgroup, $opt_options, array('value' => $optgroupvalue));
+            }
+        }
+
+        $mform->addElement($select_element);
     }
 
   

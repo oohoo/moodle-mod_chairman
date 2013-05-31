@@ -236,4 +236,119 @@ $(function() {
 });
 
 
+/**
+ * Moodle Forms (Agenda/Minutes) Manipulation
+ */
+
+
+function convert_moodle_field_to_accordian_textfields(container_selector_start)
+{
+      $("[id^="+container_selector_start+"]").each(function(index, element) {
+          var container_id = $(element).attr("id");
+          var position = find_repeated_field_num(container_id);
+          var textfield = $("#"+container_selector_start+position);
+          var value = $.trim(textfield.val());
+          
+          var active = false;
+          if(value && value !== "")
+              active = 0;
+          
+          convert_moodle_field_to_accordian("#"+container_id, active);
+        
+      });
+}
+
+function convert_moodle_field_to_accordian_filemanagers(container_selector_start)
+{
+      $("[id^="+container_selector_start+"]").each(function(index, element) {
+          var container_id = $(element).attr("id");
+          var position = find_repeated_field_num(container_id);
+          
+          convert_moodle_field_to_accordian("#"+container_selector_start+position+" div.filemanager", false);
+        
+          //Not a pretty method, but since the file manager is using ajax to pull the information (through YUI), we cannot
+          //detect when its updated in any practical way that is pratical for performance - (polling or watching dom tree changes).
+          //We are waiting for a couple seconds(to let YUI finish init and make its ajax calls) and then updating the whether the 
+          //attachment should be opened or closed.
+          setTimeout(function()
+            {
+                 var filemanagercontent_child = $("#"+container_selector_start+position+" div.fp-content div.fp-iconview");
+                
+                var active = false;
+                if(filemanagercontent_child.length > 0)
+                    active = 0;
+                
+                console.log(active);
+                $("#"+container_selector_start+position+" div.filemanager").parent().parent().accordion("option", "active", active);
+            }, 3500);
+        
+      });
+}
+
+function convert_moodle_field_to_accordian(container_selector, active)
+{
+        var element = $(container_selector);
+        
+        var div = $("<div/>");
+        var parent = element.parent();
+        var children = element.parent().children();
+        
+        $(parent).prepend("<h3/>");
+        $(parent).append($(div));
+        
+        div.append($(children)); 
+        
+        $(parent).accordion({
+            heightStyle: "content",
+            collapsible: true,
+            active: active
+        });
+        
+        collapsables.push(parent);
+}
+
+var collapsables = new Array();
+
+ function setup_collapseall_listener() 
+ {
+         $(".collapseexpand").click(function(){
+        
+        var is_expand = false;
+        if($(this).hasClass("collapse-all"))
+            is_expand = 0;
+        
+        $(collapsables).each(function(index, element) {
+            console.log(element);
+           $(element).accordion("option", "active", is_expand );
+        });
+    });
+ }
+ 
+ function expand_topic_fields(selector)
+ {
+    var position = find_repeated_field_num($(selector).attr("id"));
+     
+     $("#id_topic_description_"+position).parent().parent().accordion("option", "active", 0 );
+     $("#fitem_id_attachments_"+position+" div.filemanager").parent().parent().accordion("option", "active", 0 );
+ }
+ 
+ function find_repeated_field_num(field_id)
+ {
+     if(!field_id) return;
+     var pieces = field_id.split("_");
+     if(pieces.length === 0) return -1;
+     var position = pieces[pieces.length-1];
+     return position;
+ }
+ 
+
+$(function() {
+    convert_moodle_field_to_accordian_textfields("id_topic_description_");
+    convert_moodle_field_to_accordian_filemanagers("fitem_id_attachments_");
+    
+    var last_topic_id = $("[id^=id_mod_committee_create_topics_]").last().attr("id");
+    expand_topic_fields("#"+last_topic_id);
+    
+    setup_collapseall_listener();
+});
 

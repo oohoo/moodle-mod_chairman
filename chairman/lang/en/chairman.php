@@ -402,6 +402,6 @@ $string['no_pdf_file_to_export'] = 'No PDF avaliable to export. An admin for the
 
 $string['export_pdf_email_public_warning'] = 'Note: For this link to be public to non-moodle users, the \'Auto-login Guests\' setting in Moodle must be enabled and the course must allow guest users.';
 
-
+$string['invalid_participants_error'] = "Programmer Error: Unexpected error generating participants attendance. "
 
 ?>

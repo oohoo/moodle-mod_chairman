@@ -73,13 +73,13 @@ conditionally_add_static($mform, $event_record->description, 'description', get_
 
 //---------Agenda Topics--------------------------------------------------------
 //------------------------------------------------------------------------------
-$mform->addElement('header', 'create_topics', get_string('create_topics', 'chairman'));
 
 
 //-----Repeating Topic Elements-------------------------------------------------
 $repeatno = $this->repeat_count;
 
 $repeatarray=array();
+$repeatarray[] = $mform->createElement('header', 'mod_committee_create_topics', get_string('create_topic', 'chairman').' {no}');
     $repeatarray[] = $mform->createElement('static', 'topic_title', get_string('title_agenda', 'chairman'),"");
     $repeatarray[] = $mform->createElement('static', 'duration_topic', get_string('duration_agenda', 'chairman'),"");
     $repeatarray[] = $mform->createElement('static', 'topic_description', get_string('desc_agenda', 'chairman'));
