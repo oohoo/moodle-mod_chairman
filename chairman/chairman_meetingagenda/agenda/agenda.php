@@ -772,7 +772,7 @@ document.write('<center><img src="img/loading14.gif" alt="Loading..." /></center
 </script>
 HERE;
 
-chairman_basic_footer();
+            chairman_basic_footer();
             redirect("$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=".$event_id);
 }
 ?>

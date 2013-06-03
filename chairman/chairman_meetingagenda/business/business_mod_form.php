@@ -24,7 +24,6 @@ require_once("$CFG->libdir/formslib.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
-require_once("$CFG->dirroot/lib/form/selectgroups.php");
 
 class mod_business_mod_form extends moodleform {
 
@@ -151,7 +150,7 @@ $commity_members = $DB->get_records('chairman_agenda_members', array('chairman_i
         $chairmanmembers = array();//Used to store commitee members in an array
 
  if ($commity_members) {//If any committee members present
-     $this->generate_participants_multiselect($mform, $agenda_id, $commity_members);
+     generate_participants_multiselect($mform, $agenda_id, $commity_members);
  }
 
 
@@ -185,7 +184,7 @@ $moodle_members = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $l
             $mform->addGroup($participant, "participant_moodle[$index]", '&nbsp;', array(' '), false);
 
 //----------DEFAULT VALUES------------------------------------------------------
-            $name = $this->getUserName($moodle_user->moodleid);
+            $name = getUserName($moodle_user->moodleid);
             $toform->participant_moodle_name[$index] = $name;
  //-----------------------------------------------------------------------------
 
@@ -584,21 +583,6 @@ $index++;
         return $this->default_toform;
     }
 
-/*
- * Converts a given moodle ID into a FirstName LastName String.
- *
- *  @param $int $userID An unique moodle ID for a moodle user.
- */
-    function getUserName($userID){
-    Global $DB;
-
-    $user = $DB->get_record('user', array('id' => $userID), '*', $ignoremultiple = false);
-    $name = null;
-    if($user){
-    $name = $user->firstname . " " . $user->lastname;
-    }
-    return $name;
-    }
 
 /*
  * Returns An array of topic names with array keys being the index that the topic
@@ -608,69 +592,7 @@ $index++;
         return $this->topicNames;
     }
     
-    /**
-     * Prints out the multiselect for participants based on moodle forms.
-     * 
-     * @global type $DB
-     * @param MoodleQuickForm $mform
-     * @param type $agenda_id
-     * @param type $commity_members
-     */
-    function generate_participants_multiselect($mform, $agenda_id, $commity_members) {
-        global $DB;
-
-        //Label Strings
-        $present = get_string('agenda_present', 'chairman');
-        $absent = get_string('agenda_absent', 'chairman');
-        $unabsent = get_string('agenda_uabsent', 'chairman');
-
-        /**
-         * We are generating the element manually, since some of the attr fields are hidden from the
-         * automatic building methods (for groups & option elements)
-         */
-        $select_element = new MoodleQuickForm_selectgroups('participants_attendance', '', array(), array());
-        $select_element->setMultiple(true);
-
-        $options = array();
-        $options[$present]['present'] = array("__BLANK__1"=>"__BLANK__");
-        $options[$absent]['absent'] = array("__BLANK__2"=>"__BLANK__");
-        $options[$unabsent]['unexcused'] = array("__BLANK__3"=>"__BLANK__");
-
-        //itterating through all members and generate each option (the member) under the label of
-        //present, absent, or unexcused absent. If not attendance is saved they are put into present,
-        //until they can be sorted.
-        foreach ($commity_members as $member) {
-            $attendance = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $member->id));
-            $name = $this->getUserName($member->user_id);
-
-            if ($attendance) {
-
-                if ($attendance->absent == 0) { //present
-                    $options[$present]['present'][$member->id] = $name;
-                } elseif ($attendance->absent == 1) { //absent
-                    $options[$absent]['absent'][$member->id] = $name;
-                } elseif ($attendance->unexcused_absence == 1) {//Unexcused absent
-                    $options[$unabsent]['unexcused'][$member->id] = $name;
-                } else {//invalid data
-                    $options[$present]['present'][$member->id] = $name;
-                }
-            } else { //no attendance - assume present
-                $options[$present]['present'][$member->id] = $name;
-            }
-        }
-
-        print_object($options);
-        //itterate through all the optgroups labels - present,absent,uabsent
-        foreach ($options as $optgroup => $optgroupvalues) {
-            //itterate through all optgroup value->
-            foreach ($optgroupvalues as $optgroupvalue => $opt_options) {
-                echo $optgroupvalue;
-                $select_element->addOptGroup($optgroup, $opt_options, array('value' => $optgroupvalue));
-            }
-        }
-
-        $mform->addElement($select_element);
-    }
+   
 
   
 

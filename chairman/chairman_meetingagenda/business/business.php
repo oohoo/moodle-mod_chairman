@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/moodle_user_selector.php");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/css/business.css");
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
+require_once("$CFG->dirroot/lib/form/selectgroups.php");
 
 echo "<script type='text/javascript' src='business/js/business.js'/>";
 
@@ -94,51 +95,50 @@ export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 0);
 function attendance_toobject_conversion($key, $attendance) {
     $dataobject = new stdClass();
 
-
-    $note = null;
-    if (isset($_REQUEST["participant_status_notes"])) {
-        $notes = $_REQUEST["participant_status_notes"];
-
-
-        if (isset($notes[$key])) {
-            $note = $notes[$key];
-        }
-    }
+//    $note = null;
+//    if (isset($_REQUEST["participant_status_notes"])) {
+//        $notes = $_REQUEST["participant_status_notes"];
+//
+//
+//        if (isset($notes[$key])) {
+//            $note = $notes[$key];
+//        }
+//    }
 
     switch ($attendance) {
-        case 0://Present
+        case 'present'://Present
             $dataobject->absent = 0;
             $dataobject->unexcused_absence = NULL;
-            $dataobject->notes = NULL;
+            //$dataobject->notes = NULL;
 
             break;
 
-        case 1://absent
+        case 'absent'://absent
             $dataobject->absent = 1;
             $dataobject->unexcused_absence = NULL;
-            $dataobject->notes = $note;
+            //$dataobject->notes = $note;
 
-            if ($dataobject->notes == "") {
-                $dataobject->notes = NULL;
-            }
+            //if ($dataobject->notes == "") {
+                //$dataobject->notes = NULL;
+            //}
 
             break;
 
-        case 2://unexcused absent
+        case 'unexcused'://unexcused absent
             $dataobject->absent = NULL;
             $dataobject->unexcused_absence = 1;
-            $dataobject->notes = $note;
+            //$dataobject->notes = $note;
 
-            if ($dataobject->notes == "") {
-                $dataobject->notes = NULL;
-            }
+            //if ($dataobject->notes == "") {
+               // $dataobject->notes = NULL;
+            //}
 
             break;
 
         default://Should never happen
             $dataobject->absent = NULL;
             $dataobject->unexcused_absence = NULL;
-            $dataobject->notes = NULL;
+            //$dataobject->notes = NULL;
 
             break;
     }
@@ -155,30 +155,20 @@ function attendance_toobject_conversion($key, $attendance) {
 function update_attendance($agenda_id) {
 
     global $DB; //Global Database Variable
-
+    
     //Arrays of submitted data from form
-    $chairman_ids = $_REQUEST['participant_id'];
-    $attendance = $_REQUEST["participant_status"];
-    //$chairman_member_id = $_REQUEST["participant_id"];
-
+    if(!isset($_REQUEST["participants_attendance"])) return;
+    $participants_attend = $_REQUEST["participants_attendance"];
+    
     //Foreach of the committtee ID(committee members)
-    foreach ($chairman_ids as $key => $chairman_member_id) {
+    foreach ($participants_attend as $part_id => $attendance) {
 
-        //If member's attendance exists for this agenda, update record
-
-        //No attendance
-            if($attendance[$key]==-1){
-              $DB->delete_records('chairman_agenda_attendance', array('chairman_agenda'=>$agenda_id, 'chairman_members'=>$chairman_member_id));
-            continue;
-
-            }
-
-        if ($DB->record_exists('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $chairman_member_id))) {
+        if ($DB->record_exists('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $part_id))) {
             //update record
 
-            $old_record = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $chairman_member_id));
+            $old_record = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $part_id));
 
-            $dataobject = attendance_toobject_conversion($key, $attendance[$key]);
+            $dataobject = attendance_toobject_conversion($part_id, $attendance);
             $dataobject->id = $old_record->id;
 
 
@@ -190,9 +180,9 @@ function update_attendance($agenda_id) {
             
 
             //create attendance record
-            $dataobject = attendance_toobject_conversion($key, $attendance[$key]);
+            $dataobject = attendance_toobject_conversion($part_id, $attendance);
             $dataobject->chairman_agenda = $agenda_id;
-            $dataobject->chairman_members = $chairman_member_id;
+            $dataobject->chairman_members = $part_id;
 
             $DB->insert_record('chairman_agenda_attendance', $dataobject, $returnid = false, $bulk = false);
 
@@ -405,6 +395,8 @@ function addAndUpdate_Motion($event_id, $selected_tab,$agenda_id) {
             }//End topics
         
     }
+    
+    chairman_basic_footer();
    //Redirect back to topic achor point on page("#topic_" . $topic_return)
    redirect("$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $event_id . "&selected_tab=" . $selected_tab . "#topic_" . $topic_return);
 }
@@ -655,6 +647,7 @@ pdf_version($event_id);
 //------------------------------------------------------------------------------
     if ($mform->is_cancelled()) {
         //Do nothing
+  chairman_basic_footer();
   redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 
 
@@ -741,6 +734,7 @@ pdf_version($event_id);
         //Function to update current status, and status notes of committee members
         update_attendance($agenda_id);
 
+        chairman_basic_footer();
         //Every Submit ultimatley causes a redirection to refresh page
         redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 //----------END PARTIAL SUBMIT--------------------------------------------------
@@ -807,6 +801,7 @@ pdf_version($event_id);
 
         addAndUpdate_Motions($event_id, $selected_tab,$agenda_id);
 
+chairman_basic_footer();
 //Submit ultimatly ends up redirecting the user back to tab
 redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
 

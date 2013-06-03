@@ -54,6 +54,7 @@ $mform = new files_edit_form($PRIVATE, $ADMIN, $COURSE_MODULE->id); //name of th
 
 if ($mform->is_cancelled()) {
     
+    chairman_basic_footer();
     redirect("$CFG->wwwroot/mod/chairman/chairman_filesystem/file_form.php?id=$id", null, 0);
     
 } else if ($data = $mform->get_data()) {
@@ -68,6 +69,7 @@ if ($mform->is_cancelled()) {
                    0, array('subdirs' => 1, 'maxfiles' => 50));
     }
     
+    chairman_basic_footer();
     //redirect back to page
     redirect("$CFG->wwwroot/mod/chairman/chairman_filesystem/file_form.php?id=$id", null, 0);
     

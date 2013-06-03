@@ -311,4 +311,82 @@ function output_export_pdf_image() {
     print '</div>';
 }
 
+ /**
+     * Prints out the multiselect for participants based on moodle forms.
+     * 
+     * @global type $DB
+     * @param MoodleQuickForm $mform
+     * @param type $agenda_id
+     * @param type $commity_members
+     */
+    function generate_participants_multiselect($mform, $agenda_id, $commity_members) {
+        global $DB;
+
+        //Label Strings
+        $present = get_string('agenda_present', 'chairman');
+        $absent = get_string('agenda_absent', 'chairman');
+        $unabsent = get_string('agenda_uabsent', 'chairman');
+
+        /**
+         * We are generating the element manually, since some of the attr fields are hidden from the
+         * automatic building methods (for groups & option elements)
+         */
+        $select_element = new MoodleQuickForm_selectgroups('participants_attendance', '', array(), array());
+        $select_element->setMultiple(true);
+
+        $options = array();
+        $options[$present]['present'] = array("__BLANK__1"=>"__BLANK__");
+        $options[$absent]['absent'] = array("__BLANK__2"=>"__BLANK__");
+        $options[$unabsent]['unexcused'] = array("__BLANK__3"=>"__BLANK__");
+
+        //itterating through all members and generate each option (the member) under the label of
+        //present, absent, or unexcused absent. If not attendance is saved they are put into present,
+        //until they can be sorted.
+        foreach ($commity_members as $member) {
+            $attendance = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id, 'chairman_members' => $member->id));
+            $name = getUserName($member->user_id);
+            
+            if ($attendance) {
+
+                if ($attendance->absent!= null && $attendance->absent == 0) { //present
+                    $options[$present]['present'][$member->id] = $name;
+                } elseif ($attendance->absent!= null && $attendance->absent == 1) { //absent
+                    $options[$absent]['absent'][$member->id] = $name;
+                } elseif ($attendance->unexcused_absence == 1) {//Unexcused absent
+                    $options[$unabsent]['unexcused'][$member->id] = $name;
+                } else {//invalid data
+                    $options[$present]['present'][$member->id] = $name;
+                }
+            } else { //no attendance - assume present
+                $options[$present]['present'][$member->id] = $name;
+            }
+        }
+        
+        //itterate through all the optgroups labels - present,absent,uabsent
+        foreach ($options as $optgroup => $optgroupvalues) {
+            //itterate through all optgroup value->
+            foreach ($optgroupvalues as $optgroupvalue => $opt_options) {
+                $select_element->addOptGroup($optgroup, $opt_options, array('value' => $optgroupvalue));
+            }
+        }
+
+        $mform->addElement($select_element);
+    }
+    
+    /*
+ * Converts a given moodle ID into a FirstName LastName String.
+ *
+ *  @param $int $userID An unique moodle ID for a moodle user.
+ */
+    function getUserName($userID){
+    Global $DB;
+
+    $user = $DB->get_record('user', array('id' => $userID), '*', $ignoremultiple = false);
+    $name = null;
+    if($user){
+    $name = $user->firstname . " " . $user->lastname;
+    }
+    return $name;
+    }
+
 ?>

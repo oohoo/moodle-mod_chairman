@@ -121,68 +121,9 @@ $mform->addElement('header', 'participants_header', get_string('participants_hea
 $chairmanMemberRecords = $DB->get_records('chairman_agenda_members', array('chairman_id' => $chairman_id,'agenda_id'=>$agenda_id), '', '*', $ignoremultiple = false);
 
 //--------Comittee Members------------------------------------------------------
-        $chairmanmembers = array();//Used to store commitee members in an array
-
-        if ($chairmanMemberRecords) {
-            $mform->addElement('static', "", '', "<h4>" . get_string('committee_header', 'chairman') . '</h4>');
-            $FORUM_TYPES = array(
-                '0' => get_string('agenda_present', 'chairman'),
-                '1' => get_string('agenda_absent', 'chairman'),
-                '2' => get_string('agenda_uabsent', 'chairman'));
-
-            $index = 0;
-            foreach ($chairmanMemberRecords as $member) {
-                $count_label = $index + 1;
-
-                $participant = array();
-                    $participant[] = & $mform->createElement('static', "participant_num[$index]", '', "$count_label.&nbsp;");
-                    $participant[] = & $mform->createElement('static', "participant_name[$index]", '', "");
-                    $participant[] = & $mform->createElement('static', "participant_status[$index]","","");
-                    $participant[] = & $mform->createElement('static', "participant_status_notes[$index]","","");
-                $mform->addGroup($participant, "participant[$index]", '', array(' '), false);
-
-
-//----Disable participant_status_notes if present-------------------------------
-                $mform->disabledIf("participant_status_notes[$index]", "participant_status[$index]", 'eq', 0);
-                $mform->disabledIf("participant_status_notes[$index]", "participant_status[$index]", 'eq', -1);
-                $mform->addElement('hidden', "participant_id[$index]", $member->id);
-                $mform->setType('participant_id', PARAM_INT);
-//--DEFAULT VALUES--------------------------------------------------------------
-//------------------------------------------------------------------------------
-                //Get Real name from moodle
-                $name = $this->getUserName($member->user_id);
-                $toform->participant_name[$index] = $name.": ";
-
-                //USED LATER IN TOPIC MOTIONS FOR SELECTION OF MEMBERS
-                $chairmanmembers[$member->id] = $name;
-
-                $exclusion_id[] = $member->user_id;
-
-$attendance = $DB->get_record('chairman_agenda_attendance', array('chairman_agenda' => $agenda_id,'chairman_members'=>$member->id), '*', $ignoremultiple = false);
-
-        if($attendance){
-
-            if(isset($attendance->absent)){
-                if($attendance->absent == 0){ //present
-                $toform->participant_status[$index] = $FORUM_TYPES[0];
-                } elseif($attendance->absent == 1) { //absent
-                $toform->participant_status[$index] = $FORUM_TYPES[1];
-                $toform->participant_status_notes[$index] = $attendance->notes;
-                }
-            }
-            if($attendance->unexcused_absence == 1){
-              $toform->participant_status[$index] = $FORUM_TYPES[2];
-              $toform->participant_status_notes[$index] = $attendance->notes;
-            }
-
-        }
-
-
-                $index++;
-            }
-
-
-        }
+ if ($chairmanMemberRecords) {//If any committee members present
+     generate_participants_multiselect($mform, $agenda_id, $commity_members);
+ }
 
 //------------MOODLE USERS------------------------------------------------------
  
@@ -211,7 +152,7 @@ $moodle_members = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $l
             $mform->addGroup($participant, "participant_moodle[$index]", '', array(' '), false);
 
 //----------DEFAULT VALUES------------------------------------------------------
- $name = $this->getUserName($moodle_user->moodleid);
+ $name = getUserName($moodle_user->moodleid);
 $toform->participant_moodle_name[$index] = $name;
 //------------------------------------------------------------------------------
 
@@ -462,21 +403,6 @@ $index++;
         return $this->default_toform;
     }
 
-/*
- * Converts a given moodle ID into a FirstName LastName String.
- *
- *  @param $int $userID An unique moodle ID for a moodle user.
- */
-    function getUserName($userID){
-    Global $DB;
-
-    $user = $DB->get_record('user', array('id' => $userID), '*', $ignoremultiple = false);
-    $name = null;
-    if($user){
-    $name = $user->firstname . " " . $user->lastname;
-    }
-    return $name;
-    }
 /*
  * Returns An array of topic names with array keys being the index that the topic
  * is on the page. Used for menu sidebar creation.

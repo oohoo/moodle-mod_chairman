@@ -19,20 +19,51 @@
  * considered selected, and can be organized into different exclusive values
  * (or group values) as determined by the value present in the optgroup tag.
  * 
- * EX: 
- *  <select multiple name="multipane_transfer" id="multipane_transfer">
- <optgroup value="1" label="Swedish Car">
- <option>A</option>
- <option>B</option>
- </optgroup>
- <optgroup value="2" label="German Car">
- <option>Mercedes</option>
- <option>Audi</option>
- </optgroup>
- <optgroup value="3" label="Dustin's Car">
- <option>Bike</option>
- <option>Wheel On A Stick</option>
- </optgroup>
+ * The UNIQUE value of each option(has to be unique), is used as an identifier
+ * which will be the position in the array where the group value will be returned.
+ * For example if option value = 3 is in optgroup/pane with value 1 - the submission will be:
+ * 
+ * [multipane_transfer] => Array
+        (
+            [3] => 1
+        );
+ * 
+ * Full Example:
+ * NOTE: In group 3 the second option doesn't have an value - a plugin generated id is used. 
+<form name="oohoo" action="/exmaple.php">
+    <select multiple name="multipane_transfer" id="multipane_transfer">
+        <optgroup value="1" label="Swedish Car">
+            <option value="1">A</option>
+            <option value="2">B</option>
+        </optgroup>
+        <optgroup value="2" label="German Car">
+            <option value="A">Mercedes</option>
+            <option value="B">Audi</option>
+        </optgroup>
+        <optgroup value="3" label="Dustin's Car">
+            <option value="C">Bike</option>
+            <option>Wheel On A Stick</option>
+        </optgroup>
+        <optgroup value="4" label="Dustin's Cars2"/>
+    </select>
+<input type="submit" value="Submit">
+</form>
+ 
+$_REQUEST:
+Array
+(
+    [multipane_transfer] => Array
+        (
+            [mpt_5] => 3
+            [C] => 3
+            [B] => 2
+            [A] => 2
+            [2] => 1
+            [1] => 1
+        )
+)
+
+Note: Undefined options values(used for unique submission ids) will use a unique id generated in the plugin.
  
  * In this case there are three exclusive groups that each member can be sorted under.
  * They are either a Swedish car, German Car, or Dustin's Car. All options will be submitted
@@ -72,6 +103,9 @@ jQuery.widget("oohoo.multipanetransfer", {
 
         //map for connection new display panes to original selects - (done by mpt_id (from this.num_panes) )
         this.pane_map = new Array();
+        
+        //submission_map
+        this.submission_map = new Array();
 
         //convert all selects to new display
         this._process_panes(this.display);
@@ -224,6 +258,9 @@ jQuery.widget("oohoo.multipanetransfer", {
                 var original_item = self.map[item_id];//get li's corresponding option
                 var original_new_pane = self.pane_map[this_pane_id];//get new panes corresponding select
 
+                var sub_map = self.submission_map[item_id];
+                sub_map.attr("value", new_val);
+
                 //update value for display & move to proper new ul
                 jQuery(original_item).appendTo(original_new_pane);
                 jQuery(original_item).attr("value", new_val);
@@ -252,8 +289,30 @@ jQuery.widget("oohoo.multipanetransfer", {
      */
     _process_elements: function(element_li, pane, element) {
         var id = this.auto_inc_id++;//get new mpt-id for display li
+        var option_value = element.attr("value");//get value from pane
+        var el_name = pane.parent().attr("name");//get value from pane
+        var el_id = pane.parent().attr("id");//get value from pane
+        
         var value = pane.attr("value");//get value from pane
         var text = element.text();//get text from option
+
+        //If there isn't a valid option value to use as submission identifier, the unique
+        //id will be used.
+        if(!option_value || jQuery.trim(option_value) === "")
+            option_value = "mpt_" + id;
+
+        if(/^.*\[\]$/.test(el_name))//if name ends is [], it's removed
+            el_name = el_name.substring(0, el_name.length - 2);
+            
+        if(/^.*\[\]$/.test(el_id))//if id ends is [], it's removed
+            el_id = el_name.el_id(0, el_id.length - 2);
+
+        //we are generating a hidden array for submission
+        var submission_el = jQuery('<input/>', {type: "hidden", id: el_id+"["+option_value+"]", name:el_name+"["+option_value+"]", value:value});
+        this.submission_map[id] = submission_el;//map to unique id for easy access
+        pane.parent().after(submission_el);//attach after original select
+
+        element.removeAttr("selected");//don't want select to actually submit any data - we do it manually
 
         element_li.attr("value", value);//set value on display
         element.attr("value", value);//set value on option
