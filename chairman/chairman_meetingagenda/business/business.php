@@ -85,6 +85,184 @@ export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 0);
 
 //----------------------------------------------------------------------------
 
+
+
+
+/*
+ * Prints contents of the minutes tab, with the ability to edit content
+ *
+ * @param int $event_id The ID for the current event of the agenda.
+ * @param object $agenda The object representing the database entry for the current agenda.
+ * @param int $agenda_id The ID for the current agenda.
+ * @param int $chairman_id The ID for the current committee.
+ * @param object $cm The course module object.
+ * @param int $selected_tab The current tab for the minutes.
+ *
+ * 
+ */
+function minutes_editable($event_id, $agenda, $agenda_id, $chairman_id, $cm, $selected_tab){
+global $DB, $CFG;
+
+pdf_version($event_id);
+
+    $topic_count = 0; //initalize as having zero topics
+
+    if ($agenda) { // agenda already created
+        //get actual count of topics of topics
+        $topic_count = $DB->count_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), '*', $ignoremultiple = false);
+        $topic_count++; //Introducing one empty set of fields to add new topic
+        //If no topics exist, then the database returns null, and we replace with zero topic count
+        if (!$topic_count) {
+            $topic_count = 0; //if no database items(null return) make count zero
+        }
+    }
+
+//----------FORM OBJECT---------------------------------------------------------
+    require_once('business_mod_form.php'); //Form for users that can view
+    $mform = new mod_business_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
+
+
+
+//---------------CANCEL BUTTON PRESSED------------------------------------------
+//------------------------------------------------------------------------------
+    if ($mform->is_cancelled()) {
+        //Do nothing
+  chairman_basic_footer();
+  redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
+
+
+//---------------PARTIAL SUBMIT-------------------------------------------------
+//------------------------------------------------------------------------------
+    } elseif ($mform->no_submit_button_pressed()) {
+
+//--------------ADD MOODLE USER BUTTON PRESSED----------------------------------
+        update_moodle_users();
+        update_guest_users();
+        update_attendance($agenda_id); //update attendance
+
+//--------------ADD PREVIOUS GUEST BUTTON PRESSED-------------------------------
+//Within form a sql query is made to find all quests ever added in the current
+//committee, and the user can select from them in a select menu
+        if (isset($_REQUEST['add_prev_guest'])) {
+
+            $dataString = $_REQUEST['prev_guests']; // selected previous guest
+            $dataArray = explode("{x}", $dataString);//{x} delimites first/last names: firstname{x}lastname{x}email
+
+            //Parts of name
+            $firstname = $dataArray[0];
+            $lastname = $dataArray[1];
+            $email = $dataArray[2];
+
+            conditionally_add_guest($agenda_id, $firstname, $lastname, $email);
+
+
+
+//------------ADD NEW GUEST BUTTON PRESSED--------------------------------------
+        } elseif (isset($_REQUEST['add_new_guest'])) {
+
+            //Retrieve sent information
+            $guest_firstname = trim($_REQUEST['guest_firstname']);
+            $guest_lastname = trim($_REQUEST['guest_lastname']);
+            $guest_email = trim($_REQUEST['guest_email']);
+            
+            conditionally_add_guest($agenda_id, $guest_firstname, $guest_lastname, $guest_email);
+        }
+
+
+        //Function to update current status, and status notes of committee members
+        update_attendance($agenda_id);
+
+        chairman_basic_footer();
+        //Every Submit ultimatley causes a redirection to refresh page
+        redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
+//----------END PARTIAL SUBMIT--------------------------------------------------
+
+
+
+//--------------------FULL SUBMIT-----------------------------------------------
+//------------------------------------------------------------------------------
+    } elseif ($fromform = $mform->get_data()) {
+
+        //update moodle users
+        update_moodle_users();
+        update_guest_users();
+
+//-----------General Saving-----------------------------------------------------
+
+
+        //Save all topic updates
+        updatetopics($cm);
+        update_attendance($agenda_id); //update attendance
+
+//----ADD/UPADTE MOTION BUTTON PRESSED------------------------------------------
+        if (isset($_REQUEST['add_motion'])) { //If specific update button pressed
+            addAndUpdate_Motion($event_id, $selected_tab,$agenda_id);
+        }
+
+        addAndUpdate_Motions($event_id, $selected_tab,$agenda_id);
+
+chairman_basic_footer();
+//Submit ultimatly ends up redirecting the user back to tab
+redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
+
+
+//-----------LOAD FORM----------------------------------------------------------
+//------------------------------------------------------------------------------
+        } else { //FRESH LOAD OF PAGE
+
+        $toform = $mform->getDefault_toform();//Get Values
+        $toform->event_id = $event_id;
+        $toform->selected_tab = $selected_tab;
+
+
+        $mform->set_data($toform); //Set values
+
+        //Display Menu
+        require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");
+
+        //Display Form
+        print '<div class="form">';
+        $mform->display(false);
+        print '</div>';
+        
+        }
+
+
+}
+
+/*
+ * Prints contents of the minutes tab, with only viewing capabilities
+ *
+ * @param int $event_id The ID for the current event of the agenda.
+ * @param object $agenda The object representing the database entry for the current agenda.
+ * @param int $agenda_id The ID for the current agenda.
+ * @param int $chairman_id The ID for the current committee.
+ * @param object $cm The course module object.
+ * @param int $selected_tab The current tab for the minutes.
+ *
+ *
+ */
+function minutes_viewonly($event_id, $agenda, $agenda_id, $chairman_id, $cm, $selected_tab){
+global $DB, $CFG;
+
+pdf_version($event_id);
+require_once('business_mod_form_view.php'); //Form for users that can view
+$mform = new mod_business_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
+
+$toform = $mform->getDefault_toform();
+$toform->event_id = $event_id;
+$toform->selected_tab = $selected_tab;
+$mform->set_data($toform);
+
+//Display Menu
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");
+print '<div class="form">';
+$mform->display(false);
+print '</div>';
+
+}
+
+
 /*
  * The function converts the information subbmitted for attendance and creates
  * an object that is used to create a database entry.
@@ -607,258 +785,102 @@ output_export_pdf_image();
 //------------------------------------------------------------------------------
 }
 
-
-/*
- * Prints contents of the minutes tab, with the ability to edit content
- *
- * @param int $event_id The ID for the current event of the agenda.
- * @param object $agenda The object representing the database entry for the current agenda.
- * @param int $agenda_id The ID for the current agenda.
- * @param int $chairman_id The ID for the current committee.
- * @param object $cm The course module object.
- * @param int $selected_tab The current tab for the minutes.
- *
- * 
- */
-function minutes_editable($event_id, $agenda, $agenda_id, $chairman_id, $cm, $selected_tab){
-global $DB, $CFG;
-
-pdf_version($event_id);
-
-    $topic_count = 0; //initalize as having zero topics
-
-    if ($agenda) { // agenda already created
-        //get actual count of topics of topics
-        $topic_count = $DB->count_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), '*', $ignoremultiple = false);
-        $topic_count++; //Introducing one empty set of fields to add new topic
-        //If no topics exist, then the database returns null, and we replace with zero topic count
-        if (!$topic_count) {
-            $topic_count = 0; //if no database items(null return) make count zero
-        }
+function update_guest_users()
+{
+    global $DB, $agenda_id;
+    $guests_ids = optional_param('guest_members', NULL, PARAM_RAW);
+    
+    $guests_ids = ($guests_ids == NULL) ? array() : $guests_ids;
+    
+    $sql = "SELECT * FROM {chairman_agenda_guests} WHERE chairman_agenda = ? AND moodleid IS NULL";
+    $guest_members = $DB->get_records_sql($sql, array($agenda_id));
+    
+    //remove left out moodle users
+    foreach ( $guest_members as $guest_member )
+    {
+        if(!in_array($guest_member->id, $guests_ids))
+            $DB->delete_records('chairman_agenda_guests', array('id' => $guest_member->id));
     }
+}
 
-//----------FORM OBJECT---------------------------------------------------------
-    require_once('business_mod_form.php'); //Form for users that can view
-    $mform = new mod_business_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
-
-
-
-//---------------CANCEL BUTTON PRESSED------------------------------------------
-//------------------------------------------------------------------------------
-    if ($mform->is_cancelled()) {
-        //Do nothing
-  chairman_basic_footer();
-  redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
-
-
-//---------------PARTIAL SUBMIT-------------------------------------------------
-//------------------------------------------------------------------------------
-    } elseif ($mform->no_submit_button_pressed()) {
-
-//--------------ADD MOODLE USER BUTTON PRESSED----------------------------------
-        if (isset($_REQUEST['new_moodle_member'])) {
-            $userselector = new my_user_selector('myuserselector', 10, array('multiselect' => false));
-            $user = $userselector->get_selected_user();
-
-
-            if ($user) { //Check if any user was chosen
-
-                //If person isn't already part of agenda as a moodle user, create record
-                //A moodle user will use null firstname/lastname, but include a moodle id
-                //We use the moodle id to get information, the firstname/lastname fields are only for
-                //non-moodle users
-                if (!$DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'moodleid' => $user->id))) {
-
-                    $dataobject = new stdClass();
-                    $dataobject->chairman_agenda = $agenda_id;
-                    $dataobject->firstname = NULL; //NOT A GUESS, therefore null
-                    $dataobject->lastname = NULL;//NOT A GUESS, therefore null
-                    $dataobject->moodleid = $user->id;//NOT A GUESS, therefore CANNOT BE NULL
-
-                    $DB->insert_record('chairman_agenda_guests', $dataobject, $returnid = false, $bulk = false);
-                }
-            }
-        }
-
-//--------------ADD PREVIOUS GUEST BUTTON PRESSED-------------------------------
-//Within form a sql query is made to find all quests ever added in the current
-//committee, and the user can select from them in a select menu
-        elseif (isset($_REQUEST['add_prev_guest'])) {
-
-            $dataString = $_REQUEST['prev_guests']; // selected previous guest
-            $dataArray = explode("{x}", $dataString);//{x} delimites first/last names: firstname{x}lastname
-
-            //Parts of name
-            $firstname = $dataArray[0];
-            $lastname = $dataArray[1];
-
-            //If they are not already part of this agenda/meeting, add a new record
-            if (!$DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'firstname' => $firstname, 'lastname' => $lastname, 'moodleid' => NULL))) {
-
-                $dataobject = new stdClass();
-                $dataobject->chairman_agenda = $agenda_id;
-                $dataobject->firstname = trim($firstname);
-                $dataobject->lastname = trim($lastname);
-                $dataobject->moodleid = NULL; //GUESTS have no moodle id
-
-                $DB->insert_record('chairman_agenda_guests', $dataobject, $returnid = false, $bulk = false);
-            }
-
-
-
-//------------ADD NEW GUEST BUTTON PRESSED--------------------------------------
-        } elseif (isset($_REQUEST['add_new_guest'])) {
-
-            //Retrieve sent information
-            $guest_firstname = trim($_REQUEST['guest_firstname']);
-            $guest_lastname = trim($_REQUEST['guest_lastname']);
-
-            //Guest must have a non-empty first/last name
+/**
+ * 
+ * Adds a guest if they don't already exist - same firstname, lastname , and email.
+ * Will not add is username or lastname is empty
+ * 
+ * @param int $agenda_id
+ * @param string $guest_firstname Guest first name
+ * @param string $guest_lastname Guest last name
+ * @param string $guest_email guest email
+ */
+function conditionally_add_guest($agenda_id, $guest_firstname, $guest_lastname, $guest_email) {
+            global $DB;
+            
+                //Guest must have a non-empty first/last name
             if ($guest_firstname != "" && $guest_firstname != "") {
 
                 //If they don't exist for this agenda, add them
-                if (!$DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'firstname' => $guest_firstname, 'lastname' => $guest_lastname, 'moodleid' => NULL))) {
+                if (!$DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'firstname' => $guest_firstname, 'email' => $guest_email, 'lastname' => $guest_lastname, 'moodleid' => NULL))) {
 
                     $dataobject = new stdClass();
                     $dataobject->chairman_agenda = $agenda_id;
                     $dataobject->firstname = $guest_firstname;
                     $dataobject->lastname = $guest_lastname;
+                    $dataobject->email = $guest_email;
                     $dataobject->moodleid = NULL; //GUESTS have no moodle id
 
                     $DB->insert_record('chairman_agenda_guests', $dataobject, $returnid = false, $bulk = false);
                 }
             }
-        }
-
-
-        //Function to update current status, and status notes of committee members
-        update_attendance($agenda_id);
-
-        chairman_basic_footer();
-        //Every Submit ultimatley causes a redirection to refresh page
-        redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
-//----------END PARTIAL SUBMIT--------------------------------------------------
-
-
-
-//--------------------FULL SUBMIT-----------------------------------------------
-//------------------------------------------------------------------------------
-    } elseif ($fromform = $mform->get_data()) {
-
-
-//--------------REMOVE MOODLE USER PRESSED--------------------------------------
-        if (isset($_REQUEST['remove_moodle_user'])) {
-
-            $removed_buttons = $_REQUEST['remove_moodle_user']; //array containing pressed remove buttons
-            $moodle_user_ids = $_REQUEST['participant_moodle_id']; //array containing corresponding moodle user ids
-
-            //There should only be one button pressed, but its an easy way to get
-            //they key, and value of the array
-            foreach ($removed_buttons as $key => $moodleuser) {
-
-                $moodle_id = $moodle_user_ids[$key]; //get associated moodle user id
-                //if record exists, delete it!
-
-                //If the record exists -- delete it
-                if ($DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'moodleid' => $moodle_id))) {
-                    if ($moodle_id) {
-                        $DB->delete_records('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'moodleid' => $moodle_id));
-                    }
-                }
-            }
-
-//-------------REMOVE GUEST USER PRESSED----------------------------------------
-        } elseif (isset($_REQUEST['remove_guest'])) {
-
-            //Get required information
-            $guest_ids = $_REQUEST['participant_guest_id'];
-            $guest_remove_buttons = $_REQUEST['remove_guest'];
-
-            //There should only be one button pressed, but its an easy way to get
-            //they key, and value of the array
-            foreach ($guest_remove_buttons as $key => $guest) {
-                $guest_id = $guest_ids[$key]; //row id for instance in chairman_agenda_guests table
-
-                //If the record exists delete it
-                if ($DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'id' => $guest_id))) {
-                    $DB->delete_records('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'id' => $guest_id));
-                }
-            }
-        }
-
-
-//-----------General Saving-----------------------------------------------------
-
-
-        //Save all topic updates
-        updatetopics($cm);
-        update_attendance($agenda_id); //update attendance
-
-//----ADD/UPADTE MOTION BUTTON PRESSED------------------------------------------
-        if (isset($_REQUEST['add_motion'])) { //If specific update button pressed
-            addAndUpdate_Motion($event_id, $selected_tab,$agenda_id);
-        }
-
-        addAndUpdate_Motions($event_id, $selected_tab,$agenda_id);
-
-chairman_basic_footer();
-//Submit ultimatly ends up redirecting the user back to tab
-redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
-
-
-//-----------LOAD FORM----------------------------------------------------------
-//------------------------------------------------------------------------------
-        } else { //FRESH LOAD OF PAGE
-
-        $toform = $mform->getDefault_toform();//Get Values
-        $toform->event_id = $event_id;
-        $toform->selected_tab = $selected_tab;
-
-
-        $mform->set_data($toform); //Set values
-
-        //Display Menu
-        require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");
-
-        //Display Form
-        print '<div class="form">';
-        $mform->display(false);
-        print '</div>';
-        
-        }
-
-
 }
 
-/*
- * Prints contents of the minutes tab, with only viewing capabilities
- *
- * @param int $event_id The ID for the current event of the agenda.
- * @param object $agenda The object representing the database entry for the current agenda.
- * @param int $agenda_id The ID for the current agenda.
- * @param int $chairman_id The ID for the current committee.
- * @param object $cm The course module object.
- * @param int $selected_tab The current tab for the minutes.
- *
- *
+/**
+ * Update external moodle users that are part of this meeting.
+ * 
+ * @global moodle_database $DB
+ * @global int $agenda_id
+ * 
  */
-function minutes_viewonly($event_id, $agenda, $agenda_id, $chairman_id, $cm, $selected_tab){
-global $DB, $CFG;
+function update_moodle_users() {
+    global $DB, $agenda_id;
 
-pdf_version($event_id);
-require_once('business_mod_form_view.php'); //Form for users that can view
-$mform = new mod_business_mod_form($event_id, $agenda_id, $chairman_id, $cm->instance);
+    $user_list = optional_param('moodle_users', "", PARAM_SEQUENCE);
+    $user_ids = array();
 
-$toform = $mform->getDefault_toform();
-$toform->event_id = $event_id;
-$toform->selected_tab = $selected_tab;
-$mform->set_data($toform);
+    
+    //add new moodle users
+    if (strlen($user_list) > 0) {
 
-//Display Menu
-require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");
-print '<div class="form">';
-$mform->display(false);
-print '</div>';
+        $user_ids = explode(",", $user_list);
+        
+        foreach ($user_ids as $user_id) {
+            $user = $DB->get_record('user', array('id' => $user_id));
+            
+            if ($user) { //Check if any user was valid
+                if (!$DB->record_exists('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'moodleid' => $user->id))) {
+                    
+                    $dataobject = new stdClass();
+                    $dataobject->chairman_agenda = $agenda_id;
+                    $dataobject->firstname = NULL; //NOT A GUEST, therefore null
+                    $dataobject->lastname = NULL; //NOT A GUEST, therefore null
+                    $dataobject->moodleid = $user->id; //NOT A GUEST, therefore CANNOT BE NULL
 
+                    $DB->insert_record('chairman_agenda_guests', $dataobject, $returnid = false, $bulk = false);
+                } 
+            }
+        }        
+    }
+    
+    $sql = "SELECT * FROM {chairman_agenda_guests} WHERE chairman_agenda = ? AND moodleid IS NOT NULL";
+    $moodle_members = $DB->get_records_sql($sql, array($agenda_id));
+    
+    //remove left out moodle users
+    foreach ( $moodle_members as $moodle_member )
+    {
+        if(!in_array($moodle_member->moodleid, $user_ids))
+            $DB->delete_records('chairman_agenda_guests', array('chairman_agenda' => $agenda_id, 'moodleid' => $moodle_member->moodleid));
+    }
+    
+    
 }
 ?>

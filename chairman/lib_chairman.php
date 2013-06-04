@@ -87,7 +87,7 @@ function chairman_global_js($cmid) {
     echo 'php_strings["link_ajax_sending"] = "' . get_string('link_ajax_sending', 'chairman') . '";';
     echo 'php_strings["link_ajax_failed"] = "' . get_string('link_ajax_failed', 'chairman') . '";';
     echo "php_strings['ajax_url'] = '$CFG->wwwroot/mod/chairman/link_controller.php';";
-
+    echo "php_strings['wwwroot']  = '$CFG->wwwroot';";
     echo 'php_strings["itemsSelected_nil"] = "' . get_string('itemsSelected_nil', 'chairman') . '";';
     echo 'php_strings["itemsSelected"] = "' . get_string('itemsSelected', 'chairman') . '";';
     echo 'php_strings["itemsSelected_plural"] = "' . get_string('itemsSelected_plural', 'chairman') . '";';
@@ -107,7 +107,16 @@ function chairman_global_js($cmid) {
     echo 'php_strings["export_pdf_email_public_warning"] = "' . get_string('export_pdf_email_public_warning', 'chairman') . '";';
     echo 'php_strings["export_pdf_email_private"] = "' . get_string('export_pdf_email_private', 'chairman') . '";';
     
-    
+    echo "php_strings['select2_no_matches'] = 'No matches found';";
+    echo "php_strings['select2_plural_extension'] = 's';";
+    echo "php_strings['sselect2_enter'] = 'Please add ';";
+    echo "php_strings['select2_additional_chars'] = ' more character';";
+    echo "php_strings['select2_remove_chars'] = 'Please delete ';";
+    echo "php_strings['select2_chars'] = ' character';";
+    echo "php_strings['select2_only_select'] = 'You can only select ';";
+    echo "php_strings['select2_item'] = ' item';";
+    echo "php_strings['select2_loading_more'] = 'Loading more results...';";
+    echo "php_strings['select2_searching'] = 'Searching...';";
     
     
     echo '</script>';
@@ -310,35 +319,45 @@ function get_chairman_members($id) {
     return $members;
 }
 
-function chairman_check($id) {
+
+function chairman_ajax_check($id) {  
+    chairman_check($id, $silent = true, $redirect = false);
+}
+
+function chairman_check($id, $silent = false, $redirect = true) {
     global $USER, $DB, $CFG, $SESSION;
 
+    if($silent)
+        $error = function($message) { throw new Exception(); };
+    else
+        $error = function($message) { print_error($message); };
+    
     // checks
     if ($id) {
         if (!$cm = get_coursemodule_from_id('chairman', $id)) {
-            print_error("Course Module ID was incorrect");
+            $error("Course Module ID was incorrect");
         }
 
         if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
-            print_error("Course is misconfigured");
+            $error("Course is misconfigured");
         }
 
         if (!$chairman = $DB->get_record("chairman", array("id" => $cm->instance))) {
-            print_error("Course module is incorrect");
+            $error("Course module is incorrect");
         }
     } else {
         if (!$chairman = $DB->get_record("chairman", array("id" => $l))) {
-            print_error("Course module is incorrect");
+            $error("Course module is incorrect");
         }
         if (!$course = $DB->get_record("course", array("id" => $chairman->course))) {
-            print_error("Course is misconfigured");
+            $error("Course is misconfigured");
         }
         if (!$cm = get_coursemodule_from_instance("chairman", $chairman->id, $course->id)) {
-            print_error("Course Module ID was incorrect");
+            $error("Course Module ID was incorrect");
         }
     }
 
-    require_course_login($course, true, $cm);
+    require_course_login($course, true, $cm, !$redirect);
 
     //context needed for access rights
     $context = get_context_instance(CONTEXT_USER, $USER->id);
@@ -353,8 +372,12 @@ function chairman_check($id) {
     //If not a member, get out
     if ($chairman->secured == 1) {
         if ((!chairman_isMember($id)) AND (!chairman_isadmin($id))) {
+           if($redirect)
             redirect($CFG->wwwroot . '/course/view.php?id=' . $course->id, get_string('not_member', 'mod_chairman'), 10);
+        else 
+            $error("");
         }
+            
     }
 }
 

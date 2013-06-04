@@ -35,5 +35,13 @@ margin-bottom: 0;
 margin-left:0;
 }
 
+.mform .moodle_users_selector {
+    width: 100%;
+}
+
+.mform .guest_members {
+    width: 100%;
+}
+
 
 </style>

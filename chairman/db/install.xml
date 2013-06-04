@@ -22,7 +22,8 @@
         <FIELD NAME="use_questionnaire" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="use_wiki" NEXT="questionnaire"/>
         <FIELD NAME="questionnaire" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="use_questionnaire" NEXT="bbb"/>
         <FIELD NAME="bbb" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="questionnaire" NEXT="use_bbb"/>
-        <FIELD NAME="use_bbb" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" PREVIOUS="bbb"/>
+        <FIELD NAME="use_bbb" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" PREVIOUS="bbb" NEXT="start_month_of_year"/>
+        <FIELD NAME="start_month_of_year" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false" PREVIOUS="use_bbb" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -167,7 +168,8 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="chairman_agenda"/>
         <FIELD NAME="chairman_agenda" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="firstname"/>
         <FIELD NAME="firstname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="chairman_agenda" NEXT="lastname"/>
-        <FIELD NAME="lastname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="firstname" NEXT="moodleid"/>
+        <FIELD NAME="lastname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="firstname" NEXT="email"/>
+        <FIELD NAME="email" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="lastname" NEXT="moodleid"/>
         <FIELD NAME="moodleid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="lastname"/>
       </FIELDS>
       <KEYS>

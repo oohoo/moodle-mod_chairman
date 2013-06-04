@@ -122,82 +122,49 @@ $chairmanMemberRecords = $DB->get_records('chairman_agenda_members', array('chai
 
 //--------Comittee Members------------------------------------------------------
  if ($chairmanMemberRecords) {//If any committee members present
-     generate_participants_multiselect($mform, $agenda_id, $commity_members);
+     generate_participants_multiselect($mform, $agenda_id, $chairmanMemberRecords);
  }
 
 //------------MOODLE USERS------------------------------------------------------
  
 $sql = "SELECT * FROM {chairman_agenda_guests} WHERE chairman_agenda = ? AND moodleid IS NOT NULL";
-
 $moodle_members = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=0);
 
-            if($moodle_members){
-            $mform->addElement('static', "", '', "");
-            $mform->addElement('static', "", '', "<h4>" . get_string('moodle_members', 'chairman') . '</h4>');
+    $idList = "";
+    //For each moodle user create Number, Name, Remove Image
+    foreach($moodle_members as $moodle_user){
+       if(strlen($idList) > 0)
+          $idList.= ","; 
+          
+          $idList.= $moodle_user->moodleid;
+    }
+    
+    $mform->addElement('html', "<table width='100%'><td><h4>" . get_string('moodle_members', 'chairman') . '</h4></td>');
+    $mform->addElement('html', "<td><input type='hidden' width='100%' class='moodle_users_selector' name='moodle_users' id='id_moodle_users' value='$idList'></td></tr>");
+    $mform->setType('moodle_users', PARAM_SEQUENCE);   
 
-            $index = 0;
-
-            foreach($moodle_members as $moodle_user){
-            $count_label = $index + 1;
-
-            $participant = array();
-                $participant[] = & $mform->createElement('static', "participant_moodle_num[$index]", '', "$count_label.&nbsp;");
-                $participant[] = & $mform->createElement('static', "participant_moodle_name[$index]", '', "");
-                $participant[] = & $mform->createElement('html', "");//remove_moodle_user[$index]
-
-            $mform->addElement('hidden', "participant_moodle_id[$index]", $moodle_user->moodleid);
-            $exclusion_id[] = $moodle_user->moodleid;
-            $mform->setType('participant_moodle_id', PARAM_INT);
-
-            $mform->addGroup($participant, "participant_moodle[$index]", '', array(' '), false);
-
-//----------DEFAULT VALUES------------------------------------------------------
- $name = getUserName($moodle_user->moodleid);
-$toform->participant_moodle_name[$index] = $name;
-//------------------------------------------------------------------------------
-
-            $index++;
-            }
-}
 //----------ADD New Moodle MEMBERS----------------------------------------------
 //------------------------------------------------------------------------------
  $mform->addElement('static', "", '', "");
- //$mform->addElement('static', "", '', "----------------------------------");
-$mform->registerNoSubmitButton('new_moodle_member');
-
+ 
+ 
 //-----------GUESTS-------------------------------------------------------------
-
+ 
 $sql = "SELECT * FROM {chairman_agenda_guests} WHERE chairman_agenda = ? AND moodleid IS NULL";
-
-$guests = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=0);
-
-            if($guests){
-            $mform->addElement('static', "", '', "");
-            $mform->addElement('static', "", '', "<h4>" . get_string('guest_members', 'chairman') . '</h4>');
-
-            $index = 0;
-
-            foreach($guests as $guest){
-            $count_label = $index + 1;
-
-            $participant = array();
-                $participant[] = & $mform->createElement('static', "participant_guest_num[$index]", '', "$count_label.&nbsp;");
-                $participant[] = & $mform->createElement('static', "participant_guest_name[$index]", '', "");
-
-                $mform->addElement('hidden', "participant_guest_id[$index]", $guest->id);
-                $mform->setType('participant_guest_id', PARAM_INT);
-
-            $mform->addGroup($participant, "participant_guest[$index]", '', array(' '), false);
-
-
-//----------DEFAULT VALUES------------------------------------------------------
-            $toform->participant_guest_name[$index] = $guest->firstname . " " . $guest->lastname;
-//------------------------------------------------------------------------------
-
-
-            $index++;
-            }
-        }
+$guests = $DB->get_records_sql($sql, array($agenda_id));
+    
+    $multiselect = "<select id='id_guest_members' name='guest_members[]' class='guest_members' multiple>";
+    
+    foreach($guests as $guest) {   
+        $email = ($guest->email == '') ? '' : "(" . $guest->email . ")";
+        $guest_display = $guest->firstname . " " . $guest->lastname . "   " . $email;
+        $multiselect.= "<option selected='selected' value='$guest->id'>" . $guest_display . "</option>";
+    }
+    
+    $multiselect .= "</select>";
+    
+    $mform->addElement('html', "<tr><td><h4>" . get_string('guest_members', 'chairman') . '</h4></td>');
+    $mform->addElement('html', "<td>$multiselect</td></tr></table>");
 
 //---------TOPICS---------------------------------------------------------------
 //------------------------------------------------------------------------------

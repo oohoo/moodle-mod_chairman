@@ -157,107 +157,39 @@ $commity_members = $DB->get_records('chairman_agenda_members', array('chairman_i
 //------------MOODLE USERS------------------------------------------------------
  
 $sql = "SELECT * FROM {chairman_agenda_guests} WHERE chairman_agenda = ? AND moodleid IS NOT NULL";
-
 $moodle_members = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=0);
 
-            if($moodle_members){
-            $mform->addElement('static', "", '', "");
-            $mform->addElement('static', "", '&nbsp;', "<h4>" . get_string('moodle_members', 'chairman') . '</h4>');
-
-            $index = 0;
-            //For each moodle user create Number, Name, Remove Image
-            foreach($moodle_members as $moodle_user){
-            
-            $count_label = $index + 1;
-
-            $participant = array();
-            $participant[] = & $mform->createElement('static', "participant_moodle_num[$index]", '', "$count_label.&nbsp;");
-            $participant[] = & $mform->createElement('static', "participant_moodle_name[$index]", '', "");
-            $participant[] = & $mform->createElement('image',"remove_moodle_user[$index]", "$CFG->wwwroot/mod/chairman/pix/delete.gif");
-            $participant[] = & $mform->createElement('html', "");//remove_moodle_user[$index]
-
-            $mform->addElement('hidden', "participant_moodle_id[$index]", $moodle_user->moodleid);
-            $mform->setType('participant_moodle_id', PARAM_INT);
-            
-            $exclusion_id[] = $moodle_user->moodleid;
-
-            $mform->addGroup($participant, "participant_moodle[$index]", '&nbsp;', array(' '), false);
-
-//----------DEFAULT VALUES------------------------------------------------------
-            $name = getUserName($moodle_user->moodleid);
-            $toform->participant_moodle_name[$index] = $name;
- //-----------------------------------------------------------------------------
-
-
-            $index++;
-            }
-}
-//----------ADD NEW MOODLE MEMBERS----------------------------------------------
-//------------------------------------------------------------------------------
- $mform->addElement('static', "", '', "");
- //$mform->addElement('static', "", '', "----------------------------------");
-$userselector = new my_user_selector('myuserselector',10,array('multiselect'=>false,'class'=>'mod-committee-user_selector'));
-
-$userselector->invalidate_selected_users();
-$userselector->exclude($exclusion_id);
-$test = $userselector->display(true);
-
-$htmlMoodleSelect='
-<div class="fitem">
-    <div class="fitemtitle">
-        <label>&nbsp;</label>
-    </div>
-    <div class="felement fhtml">
-        '.$test.'
-    </div>
-</div>';
-
-
-$mform->addElement('html', $htmlMoodleSelect);
-
-$mform->registerNoSubmitButton('new_moodle_member');
-
-$submit = &$mform->addElement('submit', 'new_moodle_member', get_string('add_moodle_user','chairman'));
-$submit->setLabel('&nbsp;');
-            
+    $idList = "";
+    //For each moodle user create Number, Name, Remove Image
+    foreach($moodle_members as $moodle_user){
+       if(strlen($idList) > 0)
+          $idList.= ","; 
+          
+          $idList.= $moodle_user->moodleid;
+    }
+    
+    $mform->addElement('html', "<table width='100%'><td><h4>" . get_string('moodle_members', 'chairman') . '</h4></td>');
+    $mform->addElement('html', "<td><input type='hidden' width='100%' class='moodle_users_selector' name='moodle_users' id='id_moodle_users' value='$idList'></td></tr>");
+    $mform->setType('moodle_users', PARAM_SEQUENCE);      
 
 //-----------GUESTS-------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM {chairman_agenda_guests} WHERE chairman_agenda = ? AND moodleid IS NULL";
-
-$guests = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=0);
-
-            if($guests){
-            $mform->addElement('static', "", '', "");
-            $mform->addElement('static', "", '&nbsp;', "<h4>" . get_string('guest_members', 'chairman') . '</h4>');
-
-            $index = 0;
-
-            foreach($guests as $guest){
-            
-             $count_label = $index + 1;
-
-            $participant = array();
-                $participant[] = & $mform->createElement('static', "participant_guest_num[$index]", '', "$count_label.&nbsp;");
-                $participant[] = & $mform->createElement('static', "participant_guest_name[$index]", '', "");
-                $participant[] = & $mform->createElement('image',"remove_guest[$index]", "$CFG->wwwroot/mod/chairman/pix/delete.gif");
-
-            $mform->addElement('hidden', "participant_guest_id[$index]", $guest->id);
-            $mform->setType('participant_guest_id', PARAM_INT);
-
-            $mform->addGroup($participant, "participant_guest[$index]", '&nbsp;', array(' '), false);
-
-//----------DEFAULT VALUES------------------------------------------------------
-            $toform->participant_guest_name[$index] = $guest->firstname . " " . $guest->lastname;
-//------------------------------------------------------------------------------
-
-
-            $index++;
-            }
-
-
-            }
+$guests = $DB->get_records_sql($sql, array($agenda_id));
+    
+    $multiselect = "<select id='id_guest_members' name='guest_members[]' class='guest_members' multiple>";
+    
+    foreach($guests as $guest) {   
+        $email = ($guest->email == '') ? '' : "(" . $guest->email . ")";
+        $guest_display = $guest->firstname . " " . $guest->lastname . "   " . $email;
+        $multiselect.= "<option selected='selected' value='$guest->id'>" . $guest_display . "</option>";
+    }
+    
+    $multiselect .= "</select>";
+    
+    $mform->addElement('html', "<tr><td><h4>" . get_string('guest_members', 'chairman') . '</h4></td>');
+    $mform->addElement('html', "<td>$multiselect</td></tr></table>");
 
 //-----------ADD GUESTS---------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -265,7 +197,7 @@ $guests = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=
    // $mform->addElement('static', "", '', "----------------------------------");
             //Previous Guests!
 
-  $sql = "SELECT DISTINCT cag.id, cag.firstname,cag.lastname FROM {chairman_agenda_guests} cag,{chairman_events} ce,{chairman_agenda} ca WHERE cag.moodleid IS NULL " .
+  $sql = "SELECT DISTINCT cag.id, cag.firstname,cag.lastname, cag.email FROM {chairman_agenda_guests} cag,{chairman_events} ce,{chairman_agenda} ca WHERE cag.moodleid IS NULL " .
       "AND cag.chairman_agenda = ca.id AND ".
     "ca.chairman_id = ce.chairman_id AND ".
     "ca.chairman_events_id = ce.id AND ".
@@ -281,9 +213,8 @@ $guests = $DB->get_records_sql($sql, array($agenda_id), $limitfrom=0, $limitnum=
 
      //Create dropdown options for previous guests
      foreach($prev_guests as $guest){
-         $FORUM_TYPES[$guest->firstname."{x}".$guest->lastname] = $guest->firstname ." ". $guest->lastname;
-     //print_object($guest);
-
+         $email = ($guest->email == '') ? '' : "(" . $guest->email . ")";
+         $FORUM_TYPES[$guest->firstname."{x}".$guest->lastname."{x}". $guest->email] = $guest->firstname ." ". $guest->lastname."   ". $email;
      }
 
 $add_prev_guest = array();
@@ -293,47 +224,39 @@ $mform->addGroup($add_prev_guest, "prev_guest_group", get_string('add_previous_g
 $mform->registerNoSubmitButton('add_prev_guest');
 
 }
+$mform->addElement('static', "", "", '');
 
-$mform->addElement('static', "", '', "");
-$mform->addElement('static', "", '&nbsp;', get_string('add_new_guest', 'chairman'));
-$mform->addElement('text', 'guest_firstname', get_string('add_new_guest_first', 'chairman'),"");
-$mform->setType('guest_firstname', PARAM_TEXT);
-$mform->addElement('text', 'guest_lastname', get_string('add_new_guest_last', 'chairman'),"");
-$mform->setType('guest_lastname', PARAM_TEXT);
-$submit = &$mform->addElement('submit', 'add_new_guest',get_string('add_new_guest', 'chairman'));
-$submit->setLabel('&nbsp;');
+$mform->addElement('static', "", "<b>".get_string('add_new_guest', 'chairman')."</b>", '');
 
+$addmembergroup=array();
+$addmembergroup[] =& $mform->createElement('static', "", '&nbsp;', get_string('add_new_guest_first', 'chairman'));
+$addmembergroup[] =& $mform->createElement('text', 'guest_firstname', get_string('add_new_guest_first', 'chairman'),"");
+
+$addmembergroup[] =& $mform->createElement('static', "", '&nbsp;', '&nbsp;');
+
+$addmembergroup[] =& $mform->createElement('static', "", '&nbsp;', get_string('add_new_guest_last', 'chairman'));
+$addmembergroup[] =& $mform->createElement('text', 'guest_lastname', get_string('add_new_guest_last', 'chairman'),"");
+
+$mform->addGroup($addmembergroup, 'guest_member_name', '', ' ', false);
+
+$addmembergroup = array();
+
+$addmembergroup[] =& $mform->createElement('static', "", '&nbsp;', get_string('add_new_guest_email', 'chairman'));
+$addmembergroup[] =& $mform->createElement('static', "", '&nbsp;', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+$addmembergroup[] =& $mform->createElement('text', 'guest_email', get_string('add_new_guest_email', 'chairman'),"");
+
+
+
+$mform->addGroup($addmembergroup, 'guest_member_email', '', ' ', false);
+
+$mform->addElement('submit', 'add_new_guest',get_string('add'));
 $mform->registerNoSubmitButton('add_new_guest');
 
+$mform->setType('guest_email', PARAM_EMAIL);
+$mform->setType('guest_firstname', PARAM_TEXT);
+$mform->setType('guest_lastname', PARAM_TEXT);
 
-//// add some JS to delete div block created by the group of the committee members
-//             $mform->addElement('static',"","", "<script type='text/javascript'>
-//                 function deleteRows_attend_table(){
-//                    var table = document.getElementById('attend_table');
-//                    var divTable = table.parentNode;
-//                    var divs = divTable.childNodes;
-//                    var nb = divs.length;
-//                    for(var i = 0; i<= nb; i++ )
-//                    {
-//                        if (divs[i] != undefined && divs[i].tagName == 'DIV')
-//                        {
-//                            divTable.removeChild(divs[i] );
-//                            i--;
-//                        }
-//                    }
-//                    divs = table.childNodes[1].childNodes;
-//                    nb = divs.length;
-//                    for(var i = 0; i<= nb; i++ )
-//                    {
-//                        if (divs[i] != undefined && divs[i].tagName != 'TR')
-//                        {
-//                            table.childNodes[1].removeChild(divs[i] );
-//                            i--;
-//                        }
-//                    }
-//                }
-//                deleteRows_attend_table();
-//                </script>");
+$mform->registerNoSubmitButton('add_new_guest');
 
 //---------TOPICS---------------------------------------------------------------
 //------------------------------------------------------------------------------

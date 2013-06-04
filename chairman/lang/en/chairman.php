@@ -402,6 +402,20 @@ $string['no_pdf_file_to_export'] = 'No PDF avaliable to export. An admin for the
 
 $string['export_pdf_email_public_warning'] = 'Note: For this link to be public to non-moodle users, the \'Auto-login Guests\' setting in Moodle must be enabled and the course must allow guest users.';
 
-$string['invalid_participants_error'] = "Programmer Error: Unexpected error generating participants attendance. "
+$string['invalid_participants_error'] = "Programmer Error: Unexpected error generating participants attendance. ";
 
+$string['add_new_guest_email'] = "Email: ";
+
+
+$string['select2_no_matches'] = "No matches found";
+$string['select2_plural_extension'] = "s";
+$string['select2_enter'] = "Please add ";
+$string['select2_additional_chars'] = " more character";
+$string['select2_remove_chars'] = "Please delete ";
+$string['select2_chars'] = " character";
+$string['select2_only_select'] = "You can only select ";
+$string['select2_item'] = " item";
+$string['select2_loading_more'] = "Loading more results...";
+$string['select2_searching'] = "Searching...";
+        
 ?>
