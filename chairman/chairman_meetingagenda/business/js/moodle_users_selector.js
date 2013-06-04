@@ -1,4 +1,19 @@
-
+/**
+**************************************************************************
+**                                Chairman                              **
+**************************************************************************
+* @package mod                                                          **
+* @subpackage chairman                                                  **
+* @name Chairman                                                        **
+* @copyright oohoo.biz                                                  **
+* @link http://oohoo.biz                                                **
+* @author Raymond Wainman                                               **
+* @author Patrick Thibaudeau                                            **
+* @author Dustin Durand                                                 **
+* @license                                                              **
+http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
+**************************************************************************
+**************************************************************************/
 
 $("#id_moodle_users").select2({
     

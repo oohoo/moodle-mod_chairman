@@ -149,7 +149,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
             'name', 'timecreated', 'timemodified', 'description',
             'intro', 'introformat', 'secured', 'forum',
             'wiki', 'use_forum', 'use_wiki', 'use_questionnaire',
-            'questionnaire', 'bbb', 'use_bbb'));
+            'questionnaire', 'bbb', 'use_bbb', 'start_month_of_year'));
         
         return $chairman;
     }
@@ -302,7 +302,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_guests = new backup_nested_element('chairman_agenda_guests');
         $chairman_guest = new backup_nested_element('chairman_agenda_guest', array('id'), array(
-            'planner_date_id','firstname', 'lastname', 'moodleid'));
+            'planner_date_id','firstname', 'lastname', 'email', 'moodleid'));
         
         return array($chairman_guest,$chairman_guests);
     }
