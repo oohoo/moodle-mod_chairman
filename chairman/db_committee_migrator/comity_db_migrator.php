@@ -24,6 +24,7 @@
  * @author dddurand
  */
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
+require_once("$CFG->dirroot/mod/chairman/lib.php");
 
 class comity_db_migrator {
 
@@ -130,7 +131,10 @@ class comity_db_migrator {
                 $generated_table_ids[$record->id] = $return_value;
 
                 if ($comity_table == 'comity')
+                {
                     $this->migrate_file_data($record, $return_value);
+                    $this->load_new_table_defaults($return_value);
+                }
 
 
                 //display updated completed display
@@ -721,6 +725,44 @@ class comity_db_migrator {
         );
 
         return $map;
+    }
+    
+    /**
+     * Loads any default data needed for chairman that arises for new tables that
+     * are in chairman, but didn't exist in comity.
+     */
+    private function load_new_table_defaults($chairman_instance_id)
+    {
+       $this->load_menu_table_defaults($chairman_instance_id); 
+    }
+    
+    /**
+     * Updates the chairman menu defaults based on the STATIC state from comity
+     * 
+     * @param int $chairman_instance_id primary id from the chairman table
+     */
+    private function load_menu_table_defaults($chairman_instance_id) {
+        
+        $chairman = new stdClass();
+        $chairman->id = $chairman_instance_id;
+        $chairman->col_menu_members = 1;
+        $chairman->col_menu_addmember = 1;
+        $chairman->col_menu_deletemember = 1;
+        $chairman->col_menu_planner = 1;
+        $chairman->col_menu_newplanner = 1;
+        $chairman->col_menu_viewplanner = 1;
+        $chairman->col_menu_events = 1;
+        $chairman->col_menu_editevent = 1;
+        $chairman->col_menu_addevent = 1;
+        $chairman->col_menu_deleteevent = 1;
+        $chairman->col_menu_agenda = 0;
+        $chairman->col_menu_arising_issues = 0;
+        $chairman->col_menu_viewer_events = 0;
+        $chairman->col_menu_open_topic_list = 0;
+        $chairman->col_menu_agenda_archives = 0;
+        $chairman->col_menu_filesview = 1;
+        
+        chairman_update_menu_state($chairman);
     }
 
 }

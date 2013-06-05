@@ -21,6 +21,7 @@ require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 
 class mod_chairman_mod_form extends moodleform_mod {
 
+    //update db migrator if changed
     private $collapse_menu_prepend = 'col_menu_';
     private $mform;
     
@@ -58,6 +59,7 @@ class mod_chairman_mod_form extends moodleform_mod {
         $mform->addElement('header','collaps_menu_label',get_string('collaps_menu_label', 'mod_chairman'));
         $mform->addElement('static','collaps_menu_desc', '', get_string('collaps_menu_desc', 'mod_chairman'));
         
+        //NOTE: Any changes here, need to be completed in the db migrator IF they need to be defaulted as open
         $this->add_collapseable_chkbox('members', 'collaps_menu_members', 1);
         $this->add_collapseable_chkbox('addmember', 'collaps_menu_addmembers', 1);
         $this->add_collapseable_chkbox('deletemember', 'collaps_menu_delmembers', 1);
@@ -72,10 +74,7 @@ class mod_chairman_mod_form extends moodleform_mod {
         $this->add_collapseable_chkbox('arising_issues', 'collaps_menu_minutes', 0);
         $this->add_collapseable_chkbox('viewer_events', 'collaps_menu_viewer_events', 0);
         $this->add_collapseable_chkbox('open_topic_list', 'collaps_menu_agenda_ba', 0);
-        
         $this->add_collapseable_chkbox('agenda_archives', 'collaps_menu_agenda_archives', 0);
-        
-        
         $this->add_collapseable_chkbox('filesview', 'collaps_menu_files', 1);
         
         
