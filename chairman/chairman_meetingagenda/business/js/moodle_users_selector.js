@@ -18,7 +18,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 $("#id_moodle_users").select2({
     
     //displayed when no values are present
-    placeholder: "Search Moodle Users",
+    placeholder: php_strings['search_moodle_users'],
     
     //min search length before ajax call
     minimumInputLength: 3,

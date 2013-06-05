@@ -406,6 +406,8 @@ $string['invalid_participants_error'] = "Programmer Error: Unexpected error gene
 
 $string['add_new_guest_email'] = "Email: ";
 
+$string['no_guests'] = "No Guests";
+$string['search_moodle_users'] = "Search Moodle Users";
 
 $string['select2_no_matches'] = "No matches found";
 $string['select2_plural_extension'] = "s";

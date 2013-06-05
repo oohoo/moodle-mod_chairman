@@ -107,16 +107,21 @@ function chairman_global_js($cmid) {
     echo 'php_strings["export_pdf_email_public_warning"] = "' . get_string('export_pdf_email_public_warning', 'chairman') . '";';
     echo 'php_strings["export_pdf_email_private"] = "' . get_string('export_pdf_email_private', 'chairman') . '";';
     
-    echo "php_strings['select2_no_matches'] = 'No matches found';";
-    echo "php_strings['select2_plural_extension'] = 's';";
-    echo "php_strings['sselect2_enter'] = 'Please add ';";
-    echo "php_strings['select2_additional_chars'] = ' more character';";
-    echo "php_strings['select2_remove_chars'] = 'Please delete ';";
-    echo "php_strings['select2_chars'] = ' character';";
-    echo "php_strings['select2_only_select'] = 'You can only select ';";
-    echo "php_strings['select2_item'] = ' item';";
-    echo "php_strings['select2_loading_more'] = 'Loading more results...';";
-    echo "php_strings['select2_searching'] = 'Searching...';";
+    echo "php_strings['select2_no_matches'] = '" . get_string('select2_no_matches', 'chairman') . "';";
+    echo "php_strings['select2_plural_extension'] = '" . get_string('select2_plural_extension', 'chairman') . "';";
+    echo "php_strings['sselect2_enter'] = '" . get_string('select2_enter', 'chairman') . "';";
+    echo "php_strings['select2_additional_chars'] = '" . get_string('select2_additional_chars', 'chairman') . "';";
+    echo "php_strings['select2_remove_chars'] = '" . get_string('select2_remove_chars', 'chairman') . "';";
+    echo "php_strings['select2_chars'] = '" . get_string('select2_chars', 'chairman') . "';";
+    echo "php_strings['select2_only_select'] = '" . get_string('select2_only_select', 'chairman') . "';";
+    echo "php_strings['select2_item'] = '" . get_string('select2_item', 'chairman') . "';";
+    echo "php_strings['select2_loading_more'] = '" . get_string('select2_loading_more', 'chairman') . "';";
+    echo "php_strings['select2_searching'] = '" . get_string('select2_searching', 'chairman') . "';";
+    
+    echo "php_strings['search_moodle_users'] = '" . get_string('search_moodle_users', 'chairman') . "';";
+    echo "php_strings['no_guests'] = '" . get_string('no_guests', 'chairman') . "';";
+    
+    
     
     
     echo '</script>';
@@ -164,6 +169,7 @@ function chairman_footer() {
  */
 function chairman_basic_footer() {
 
+     echo "</div>";
     echo "</div>"; //end main area
     echo "</div>"; //end root container
     echo "</div>"; //end root
