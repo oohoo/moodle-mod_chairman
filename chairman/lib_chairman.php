@@ -632,6 +632,31 @@ function chairman_get_year_definition($now=null) {
 }
 
 /**
+ * Returns the earliest year that a meeting, and therefore angenda can exist.
+ * 
+ * @param int $chairman_id
+ */
+function getMinEventYear($chairman_id) {
+    global $DB;
+    
+    $date_time = new DateTime();
+
+    $sql = "SELECT MIN(year) as year from {chairman_events} " .
+            "WHERE chairman_id=? ";
+
+    $min_years_events = $DB->get_records_sql($sql, array($chairman_id));
+
+    if (empty($min_years_events))
+        $min_year = $date_time->format('Y');
+    else {
+        $years = array_keys($min_years_events);
+        $min_year = $years[0];
+    }
+
+    return $min_year;
+}
+
+/**
  * Based on a given month, where jan = 1, feb = 2, ...
  * This function will return the string representation of that month.
  * 

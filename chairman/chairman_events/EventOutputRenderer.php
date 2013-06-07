@@ -110,17 +110,8 @@ class EventOutputRenderer {
 
         $date_time = new DateTime();
 
-        $sql = "SELECT MIN(year) as year from {chairman_events} " .
-                "WHERE chairman_id=? ";
+        $min_year = getMinEventYear($this->id);
 
-        $min_years_events = $DB->get_records_sql($sql, array($this->id));
-
-        if (empty($min_years_events))
-            $min_year = $date_time->format('Y');
-        else {
-            $years = array_keys($min_years_events);
-            $min_year = $years[0];
-        }
 
         if ($skip_first)
             list($itteration_date) = chairman_get_year_definition();

@@ -147,7 +147,7 @@ $PAGE->requires->css('/mod/chairman/jquery/plugins/select2/select2.css');
 $PAGE->requires->js('/mod/chairman/jquery/plugins/select2/select2_locale_moodle.js');
 $PAGE->requires->js('/mod/chairman/chairman_meetingagenda/business/js/moodle_users_selector.js');
 
-
+$PAGE->requires->js('/mod/chairman/chairman_meetingagenda/topics/js/topics.js');
 
 chairman_header($cm->id, $currenttab, "/chairman_meetingagenda/view.php?event_id='.$event_id");
 
