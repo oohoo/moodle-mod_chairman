@@ -135,12 +135,12 @@ function chairman_global_js($cmid) {
  * @param type $cmid
  */
 function chairman_structure($chairman, $pagename, $cmid) {
-    echo "<div id='chairman_root' class='chairman_container'>";
+    echo "<div id='chairman_root' class='ui-state-default ui-corner-all chairman_container'>";
     echo "<div id='chairman_root_container' class='chairman_container'>";
     echo "<h1>$chairman->name</h1>";
 
 
-    echo "<div id='chairman_nav_root' class='chairman_container chairman_nav_container'>";
+    echo "<div id='chairman_nav_root' class='chairman_container ui-widget-header ui-corner-all chairman_nav_container'>";
     chairman_menu($chairman, $pagename, $cmid);
     chairman_links($chairman, $cmid);
     echo "</div>";
@@ -208,7 +208,7 @@ function chairman_menu($chairman, $pagename, $id) {
 
     echo "<div id='chairman_menu_container' class='chairman_container chairman_menu_container'>";
 
-    echo "<ul id='chairman_menu'>";
+    echo "<ul id='chairman_menu' class='chairman_menu'>";
 
     echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/view.php?id=' . $id . '">' . get_string('members', 'chairman') . '</a></li>';
     echo '<li><a href="' . $CFG->wwwroot . '/mod/chairman/chairman_planner/planner.php?id=' . $id . '">' . get_string('planner', 'chairman') . '</a></li>';
@@ -252,7 +252,7 @@ function chairman_links($chairman, $cmid) {
 
     echo "<span id='link_title' class='nav_title'>" . get_string("external_link_label", 'chairman') . "</span>";
 
-    echo "<ul id='chairman_links'>";
+    echo "<ul id='chairman_links' class='chairman_menu'>";
 
     foreach ($link_records as $link) {
         $URL = $link->link;
@@ -280,7 +280,7 @@ function chairman_links($chairman, $cmid) {
  */
 function chairman_main() {
     echo "<div id='chairman_main_container' class='chairman_container chairman_main_container'>";
-    echo "<div id='chairman_main' class='chairman_container chairman_main_container'>";
+    echo "<div id='chairman_main' class='chairman_container chairman_main_container ui-widget-content ui-corner-all'>";
 }
 
 /**

@@ -120,10 +120,10 @@ jQuery.widget("oohoo.multipanetransfer", {
         this._generate_sortable();
 
         //set the height from options
-        jQuery(".multipanetransfer").css("height", this.options['height']);
+        this.display.css("height", this.options['height']);
 
         //set width based on # of panes
-        jQuery(".mpt-div-container").css("width", 95 / this.num_panes + "%");
+        this.display.find(".mpt-div-container").css("width", 95 / this.num_panes + "%");
 
 
     },
@@ -176,7 +176,7 @@ jQuery.widget("oohoo.multipanetransfer", {
             self.pane_map[self.num_panes] = pane;
 
             //create div as pane container
-            var pane_container = jQuery('<div/>', {class: "mpt-div-container"});
+            var pane_container = jQuery('<div/>', {class: "mpt-div-container ui-widget-content ui-corner-all"});
             container.append(pane_container);
 
             //attach title
@@ -242,7 +242,7 @@ jQuery.widget("oohoo.multipanetransfer", {
         var self = this;//allow access to widget in itteration contexts
 
         //convert all lists to sortable lists with specific callbacks & properties    
-        jQuery(".mpt-acceptor").sortable({
+        this.display.find(".mpt-acceptor").sortable({
             connectWith: "ul.mpt-acceptor",
             containment: "div.multipanetransfer",
             //when an li is moved we need to update its value, and move it in the original(& change value)     
@@ -374,14 +374,14 @@ jQuery.widget("oohoo.multipanetransfer", {
             var new_ul = "ul[mpt_id=" + self._get_target_ul_mpt_id(this, event['offsetX']) + "]";
 
             //move to new ul
-            jQuery(this).appendTo(new_ul);
+            jQuery(this).appendTo(jQuery(self.display).find(new_ul));
 
             //create our sudo event
             var event = jQuery([]);
             event['item'] = this;
 
             //trigger the recieve event for sortable
-            jQuery(new_ul).data('ui-sortable')._trigger("receive", null, event);
+            jQuery(self.display).find(new_ul).data('ui-sortable')._trigger("receive", null, event);
         });
 
         //When the mouse leaves an li, remove the direction indicator for clicking
@@ -419,7 +419,7 @@ jQuery.widget("oohoo.multipanetransfer", {
                 .removeClass("multipanetransfer");
 
         //destory sortable lists
-        jQuery(".mpt-acceptor").sortable("destroy");
+        this.find(".mpt-acceptor").sortable("destroy");
         //show original display
         jQuery(this.element).show();
         //remove new display

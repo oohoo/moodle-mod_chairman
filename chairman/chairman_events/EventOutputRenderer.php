@@ -84,7 +84,7 @@ class EventOutputRenderer {
                     echo "<ul>";
                     foreach ($records as $record) {
                         $url = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $record->id . "&selected_tab=" . 1;
-                        print '<li><a href="' . $url . '" >' . toMonth($record->month) . " " . $record->day . ", " . $record->year . '</a></li>';
+                        print '<li class="ui-state-default ui-corner-all"><a href="' . $url . '" >' . toMonth($record->month) . " " . $record->day . ", " . $record->year . '</a></li>';
                     }
                     echo "</ul>";
 

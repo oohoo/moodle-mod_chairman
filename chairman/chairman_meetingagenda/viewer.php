@@ -119,6 +119,7 @@ $PAGE->requires->css('/mod/chairman/chairman_meetingagenda/meetingagenda.css');
 $PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
 $PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
 $PAGE->requires->js('/mod/chairman/chairman_meetingagenda/topics/js/topics.js');
+$PAGE->requires->js('/mod/chairman/chairman_meetingagenda/init.js');
 
 chairman_header($cm->id, $currenttab, "chairman_meetingagenda/viewer.php?chairman_id=$cm->id&selected_tab=$selected_tab");
 

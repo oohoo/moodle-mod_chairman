@@ -21,21 +21,21 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
     width: 99%;
     height: 100%;
     float: left;
-    background-color: #d9e7ff;
+    /*background-color: #d9e7ff;
     border-color: #c1d8fe;
     border-style: solid;
-    border-width: 1px;
+    border-width: 1px;*/
 }
 
 #chairman_nav_root{
     position: relative;
     width: 150px;
     float: left;
-    background-color: #c9dcfd;
+    /*background-color: #c9dcfd;
     border-color: #a8c8fe;
     border-style: solid;
     border-width: 1px;
-    border-radius: 15px;
+    border-radius: 15px;*/
 }
 
 #chairman_menu li a.ui-state-focus,
@@ -52,13 +52,16 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 
 #chairman_main{
     position: relative;
-    background-color: #e6effe;
+    overflow-x: hidden;
     margin-left: 160px;
+    
+    /*
+    background-color: #e6effe;
     border-radius: 5px;
     border-style: solid;
     border-color: #c1d8fa;
     border-width: 1px;
-    overflow-x: hidden;
+    */
 }
 
 .chairman_container{
