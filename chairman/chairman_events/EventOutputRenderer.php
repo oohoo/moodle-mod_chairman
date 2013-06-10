@@ -114,9 +114,9 @@ class EventOutputRenderer {
 
 
         if ($skip_first)
-            list($itteration_date) = chairman_get_year_definition();
+            list($itteration_date) = chairman_get_year_definition($this->id);
         else
-            list($a, $b, $itteration_date) = chairman_get_year_definition();
+            list($a, $b, $itteration_date) = chairman_get_year_definition($this->id);
 
         $end_year = new DateTime();
         $end_year->setDate($min_year, $date_time->format('m'), $date_time->format('d'));
@@ -157,7 +157,7 @@ class EventOutputRenderer {
     public function output_year($unixnow, $itteration_date, $search, $force_first = true) {
         echo '<div class="events_container">';
 
-        list($start_date) = chairman_get_year_definition($itteration_date);
+        list($start_date) = chairman_get_year_definition($this->id, $itteration_date);
 
         $records = $this->get_month_event_records($itteration_date, $search);
 

@@ -419,5 +419,8 @@ $string['select2_only_select'] = "You can only select ";
 $string['select2_item'] = " item";
 $string['select2_loading_more'] = "Loading more results...";
 $string['select2_searching'] = "Searching...";
-        
+  
+$string['start_month_of_year'] = "First Month of Year: ";
+
+
 ?>

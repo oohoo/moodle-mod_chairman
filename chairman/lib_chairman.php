@@ -607,12 +607,17 @@ function chairman_convert_strdate_time($year, $day, $month, $hour, $minute) {
  * Determines  the start / end dates for the current year as specified by start
  * month & day of each year. (To accomidate for academic or custom year definitions.
  */
-function chairman_get_year_definition($now=null) {
+function chairman_get_year_definition($cmid, $now=null) {
+    
+    global $DB;
     
     if(!$now)
         $now = new DateTime();
     
-    $start_time = mktime(0, 0, 0, 01, 01, $now->format("Y"));
+    $cm = get_coursemodule_from_id('chairman', $cmid);
+    $chairman = $DB->get_record('chairman', array("id"=>$cm->instance));
+    
+    $start_time = mktime(0, 0, 0, $chairman->start_month_of_year, 01, $now->format("Y"));
     $start_year = new DateTime();
     $start_year->setTimestamp($start_time);
 

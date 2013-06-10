@@ -96,7 +96,7 @@ function output_open_topics($control, $chairman_id, $event_id, $selected_tab) {
     
     $date_time = new DateTime();
     $min_year = getMinEventYear($chairman_id);
-    list($a, $b, $itteration_date) = chairman_get_year_definition();
+    list($a, $b, $itteration_date) = chairman_get_year_definition($chairman_id);
 
     $end_year = new DateTime();
     $end_year->setDate($min_year, $date_time->format('m'), $date_time->format('d'));
@@ -126,7 +126,10 @@ function output_open_topics($control, $chairman_id, $event_id, $selected_tab) {
                     chairman_get_month($itteration_date->format('m')) . " " . ($itteration_date->format('Y')) . '</h3>';
         
         
+        echo '<div>';
         create_topics_table($topics, $control,$chairman_id,$event_id,$selected_tab);
+        echo '</div>';
+        
         echo '</li>';
         
         $interval = $itteration_date->sub(new DateInterval("P1Y"))->diff($end_year, false);

@@ -27,7 +27,6 @@ function change_open_topic_save_visiblity(old_value, index, year) {
 
     if (selected_value !== old_value) {
         $('#save_image_' + index+"_"+year).show(100);
-        console.log($('#save_image_' + index));
     } else {
         $('#save_image_' + index+"_"+year).hide(100);
     }

@@ -17,6 +17,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************/
 
 require_once ($CFG->dirroot.'/course/moodleform_mod.php');
+require_once ($CFG->dirroot.'/mod/chairman/lib_chairman.php');
 
 
 class mod_chairman_mod_form extends moodleform_mod {
@@ -50,6 +51,7 @@ class mod_chairman_mod_form extends moodleform_mod {
         //chairman name
         $mform->addElement('header','chairman_general',get_string('header_general', 'mod_chairman'));
         $mform->addElement('text', 'name', get_string('name','chairman'), array('size'=>'48'));
+        
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -80,6 +82,17 @@ class mod_chairman_mod_form extends moodleform_mod {
         
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
         $mform->addElement('header','chairman_advanced',get_string('header_advanced', 'mod_chairman'));
+        
+        $month_options = array();
+        for($i = 0 ; $i < 12; $i++)
+        {
+            $month = $i + 1;
+            $month_options[$month] = chairman_get_month($month);
+            
+        }
+        
+        
+        $mform->addElement('select', 'start_month_of_year', get_string('start_month_of_year','chairman'), $month_options);
         $mform->addElement('checkbox','secured',get_string('secured','chairman'));
         $mform->setDefault('secured', 1);
         $mform->addHelpButton('secured', 'secured', 'chairman');
