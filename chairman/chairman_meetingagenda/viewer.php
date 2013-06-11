@@ -95,13 +95,13 @@ $url = "viewer.php?chairman_id=$cm->id&selected_tab=$selected_tab";
 	$contents = 'topics/open_topics.php';
 } 
 elseif($selected_tab==2) {
-    $currenttab = 'open_topics_list';
+    $currenttab = 'arising_issues';
 	$thispageurl = $url;
 	$contents = 'topics/open_topic_list.php';
 } 
 
 elseif($selected_tab==4) {
-    $currenttab = 'archive';
+    $currenttab = 'agenda_archives';
 	$thispageurl = $url;
 	$contents = 'archive/archive.php';
 } 
@@ -117,7 +117,7 @@ else {
 $tabs = array(array(
     new tabobject('viewer_events', new moodle_url($thispageurl, array('selected_tab' => 1)), get_string('events', 'chairman')),
     new tabobject('open_topics_list', new moodle_url($thispageurl, array('selected_tab' => 2)), get_string('open_topic_list_tab', 'chairman')),
-    new tabobject('archive', new moodle_url($thispageurl, array('selected_tab' => 4)), get_string('archive', 'chairman')),
+    new tabobject('archive', new moodle_url($thispageurl, array('selected_tab' => 4)), get_string('agenda_archives', 'chairman')),
     //new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 6)), get_string('topics_by_year_list_tab', 'chairman')),
     //new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman'))
 ));

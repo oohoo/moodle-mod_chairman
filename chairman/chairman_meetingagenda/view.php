@@ -115,6 +115,11 @@ if ($selected_tab==3) {
         $thispageurl = $url;
         $contents = 'topics/open_topic_list.php';        
 
+} elseif($selected_tab==4) {
+    $currenttab = 'agenda_archives';
+	$thispageurl = $url;
+	$contents = 'archive/archive.php';         
+        
 //Agenda
 } else {
 
@@ -126,10 +131,11 @@ if ($selected_tab==3) {
 
 //Create Tab Objects
 $tabs = array(array(
-    new tabobject('agenda', new moodle_url($thispageurl, array('selected_tab' => 1)), get_string('agenda_tab', 'chairman')),
-    new tabobject('arising_issues', new moodle_url($thispageurl, array('selected_tab' => 3)), get_string('minutes_tab', 'chairman')),
+   new tabobject('agenda', new moodle_url($thispageurl, array('selected_tab' => 1)), get_string('agenda_tab', 'chairman')),
+   new tabobject('arising_issues', new moodle_url($thispageurl, array('selected_tab' => 3)), get_string('minutes_tab', 'chairman')),
    new tabobject('open_topic_list', new moodle_url($thispageurl, array('selected_tab' => 6)), get_string('open_topic_list_tab', 'chairman')),
-   
+   new tabobject('archive', new moodle_url($thispageurl, array('selected_tab' => 4)), get_string('agenda_archives', 'chairman')),
+    
     //new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 7)), get_string('topics_by_year_list_tab', 'chairman')),
 
     //new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman')),

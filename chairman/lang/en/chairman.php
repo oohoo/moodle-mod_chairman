@@ -429,7 +429,7 @@ $string["agenda_archive_motion_title"] = "Agenda Motions Archive";
 $string["agenda_archive_year_filter"] = "Year: ";
 
 //archive table columns
-
+$string["agenda_archives"] = "Agenda Archives";
 $string['agenda_archive_event'] = "Event";
 $string['agenda_archive_title'] = "Title";
 $string['agenda_archive_date'] = "Date";
@@ -466,5 +466,6 @@ $string["sNext"] = "Next";
 $string["sPrevious"] = "Previous";
 $string["sSortAscending"] = ": activate to sort column ascending";
 $string["sSortDescending"] = ": activate to sort column descending";
+
 
 ?>
