@@ -75,7 +75,7 @@ $selected_tab = optional_param('selected_tab', -1, PARAM_INT);
 
 $url = "viewer.php?chairman_id=$cm->id&selected_tab=$selected_tab";
 
-// Print the tabs to switch modes.
+//Print the tabs to switch modes.
 //if ($selected_tab==6) {
 //	$currenttab = 'topics_by_year_list';
 //	$thispageurl = $url;
@@ -100,6 +100,12 @@ elseif($selected_tab==2) {
 	$contents = 'topics/open_topic_list.php';
 } 
 
+elseif($selected_tab==4) {
+    $currenttab = 'archive';
+	$thispageurl = $url;
+	$contents = 'archive/archive.php';
+} 
+
 else {
     $currenttab = 'viewer_events';
 	$thispageurl = $url;
@@ -111,6 +117,7 @@ else {
 $tabs = array(array(
     new tabobject('viewer_events', new moodle_url($thispageurl, array('selected_tab' => 1)), get_string('events', 'chairman')),
     new tabobject('open_topics_list', new moodle_url($thispageurl, array('selected_tab' => 2)), get_string('open_topic_list_tab', 'chairman')),
+    new tabobject('archive', new moodle_url($thispageurl, array('selected_tab' => 4)), get_string('archive', 'chairman')),
     //new tabobject('topics_by_year_list', new moodle_url($thispageurl, array('selected_tab' => 6)), get_string('topics_by_year_list_tab', 'chairman')),
     //new tabobject('motions_by_year', new moodle_url($thispageurl, array('selected_tab' => 5)), get_string('motions_by_year_tab', 'chairman'))
 ));

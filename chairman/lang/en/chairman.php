@@ -422,5 +422,38 @@ $string['select2_searching'] = "Searching...";
   
 $string['start_month_of_year'] = "First Month of Year: ";
 
+/** ARCHIVE -----------------------------**/
+
+$string["agenda_archive_topic_title"] = "Agenda Topics Archive";
+$string["agenda_archive_motion_title"] = "Agenda Motions Archive";
+$string["agenda_archive_year_filter"] = "Year: ";
+
+//archive table columns
+$string['agenda_archive_title'] = "Title";
+$string['agenda_archive_date'] = "Date";
+$string['agenda_archive_status'] = "Status";
+$string['agenda_archive_desc'] = "Description";
+$string['agenda_archive_notes'] = "Notes";
+$string['agenda_archive_files'] = "Files";
+
+
+//DataTables Lang Interface
+$string["sEmptyTable"] = "No data available in table";
+$string["sInfo"] = "Showing _START_ to _END_ of _TOTAL_ entries";
+$string["sInfoEmpty"] = "Showing 0 to 0 of 0 entries";
+$string["sInfoFiltered"] = "(filtered from _MAX_ total entries)";
+$string["sInfoPostFix"] = "";
+$string["sInfoThousands"] = ",";
+$string["sLengthMenu"] = "Show _MENU_ entries";
+$string["sLoadingRecords"] = "Loading...";
+$string["sProcessing"] = "Processing...";
+$string["sSearch"] = "Search:";
+$string["sZeroRecords"] = "No matching records found";
+$string["sFirst"] = "First";
+$string["sLast"] = "Last";
+$string["sNext"] = "Next";
+$string["sPrevious"] = "Previous";
+$string["sSortAscending"] = ": activate to sort column ascending";
+$string["sSortDescending"] = ": activate to sort column descending";
 
 ?>

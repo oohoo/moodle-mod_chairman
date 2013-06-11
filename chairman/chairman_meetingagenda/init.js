@@ -235,7 +235,6 @@ $(function() {
 
 
     $('.viwer_menu ul ul li').each(function() {
-        console.log($(this));
          $(this).hover(
         function() {
             $(this).addClass("ui-state-hover");

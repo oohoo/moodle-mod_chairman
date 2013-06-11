@@ -53,6 +53,9 @@ function chairman_header($cmid, $pagename, $pagelink) {
     $PAGE->requires->jquery_plugin('ui-css');
     $PAGE->requires->js('/mod/chairman/chairman.js');
     $PAGE->requires->css("/mod/chairman/style.css");
+    
+    $PAGE->requires->js('/mod/chairman/jquery/plugins/datatables/js/jquery.dataTables.min.js');  
+    $PAGE->requires->css('/mod/chairman/jquery/plugins/datatables/css/jquery.dataTables_themeroller.css');
 
     $PAGE->set_url('/mod/chairman/' . $pagelink);
     $PAGE->set_title($chairman_name);
@@ -121,8 +124,27 @@ function chairman_global_js($cmid) {
     echo "php_strings['search_moodle_users'] = '" . get_string('search_moodle_users', 'chairman') . "';";
     echo "php_strings['no_guests'] = '" . get_string('no_guests', 'chairman') . "';";
     
+    echo "php_strings['agenda_archive_topic_title'] = '" . get_string('agenda_archive_topic_title', 'chairman') . "';";
+    echo "php_strings['agenda_archive_motion_title'] = '" . get_string('agenda_archive_motion_title', 'chairman') . "';";
     
-    
+    //data tables
+    echo "php_strings['sEmptyTable'] = '" . get_string('sEmptyTable', 'chairman') . "';";
+    echo "php_strings['sInfo'] = '" . get_string('sInfo', 'chairman') . "';";
+    echo "php_strings['sInfoEmpty'] = '" . get_string('sInfoEmpty', 'chairman') . "';";
+    echo "php_strings['sInfoFiltered'] = '" . get_string('sInfoFiltered', 'chairman') . "';";
+    echo "php_strings['sInfoPostFix'] = '" . get_string('sInfoPostFix', 'chairman') . "';";
+    echo "php_strings['sInfoThousands'] = '" . get_string('sInfoThousands', 'chairman') . "';";
+    echo "php_strings['sLengthMenu'] = '" . get_string('sLengthMenu', 'chairman') . "';";
+    echo "php_strings['sLoadingRecords'] = '" . get_string('sLoadingRecords', 'chairman') . "';";
+    echo "php_strings['sProcessing'] = '" . get_string('sProcessing', 'chairman') . "';";
+    echo "php_strings['sSearch'] = '" . get_string('sSearch', 'chairman') . "';";
+    echo "php_strings['sZeroRecords'] = '" . get_string('sZeroRecords', 'chairman') . "';";
+    echo "php_strings['sFirst'] = '" . get_string('sFirst', 'chairman') . "';";
+    echo "php_strings['sLast'] = '" . get_string('sLast', 'chairman') . "';";
+    echo "php_strings['sNext'] = '" . get_string('sNext', 'chairman') . "';";
+    echo "php_strings['sPrevious'] = '" . get_string('sPrevious', 'chairman') . "';";
+    echo "php_strings['sSortAscending'] = '" . get_string('sSortAscending', 'chairman') . "';";
+    echo "php_strings['sSortDescending'] = '" . get_string('sSortDescending', 'chairman') . "';";
     
     echo '</script>';
 }

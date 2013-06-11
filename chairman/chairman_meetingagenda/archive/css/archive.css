@@ -1,0 +1,38 @@
+/**
+**************************************************************************
+**                                Chairman                              **
+**************************************************************************
+* @package mod                                                          **
+* @subpackage chairman                                                  **
+* @name Chairman                                                        **
+* @copyright oohoo.biz                                                  **
+* @link http://oohoo.biz                                                **
+* @author Raymond Wainman                                               **
+* @author Patrick Thibaudeau                                            **
+* @author Dustin Durand                                                 **
+* @license                                                              **
+http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
+**************************************************************************
+**************************************************************************/
+
+.data_tables_title_wrapper {
+    float:left;
+    vertical-align: middle;
+    height:100%;
+}
+
+.data_tables_title {
+    margin-bottom:0;
+    margin-left: 5px;
+    margin-top:5px;
+}
+
+.agenda_archive_year_filter_wrapper {
+    float:right;
+    margin-right:5px;
+}
+
+.dataTables_wrapper {
+    padding: 15px;
+}
+
