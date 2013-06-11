@@ -145,6 +145,11 @@ class mod_business_mod_form extends moodleform {
         if ($commity_members) {//If any committee members present
             generate_participants_multiselect($mform, $agenda_id, $commity_members);
         }
+        
+        foreach ($commity_members as $commity_member) {
+            $name = getUserName($commity_member->user_id);
+            $chairmanmembers[$commity_member->id] = $name;
+        }
 
 
 //------------MOODLE USERS------------------------------------------------------

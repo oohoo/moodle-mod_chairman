@@ -24,6 +24,8 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
  * The archives can be explicitly filtered by year.
  *  
  */
+require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/lib.php");
+
     //inherited from parent page
     global $PAGE, $chairman_id;
     
@@ -83,6 +85,7 @@ function build_agenda_topics_archive($chairman_id, $data) {
     //output table with unique id & class that is shared with motions table
     echo '<table id="agenda_archive_topics" class="archive_table">';
     echo '<thead><tr>';//headers
+        echo '<th>'.get_string('agenda_archive_event','chairman').'</th>';//event
         echo '<th>'.get_string('agenda_archive_title','chairman').'</th>';//title
         echo '<th>'.get_string('agenda_archive_date','chairman').'</th>';//date
         echo '<th>'.get_string('agenda_archive_status','chairman').'</th>';//status
@@ -124,13 +127,14 @@ function build_agenda_topics_archive($chairman_id, $data) {
             //create display text based on status
             $status = $TOPIC_STATUS[$topic->status];
             //link to agenda containing topic
-            $link = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $topic->eid . "&selected_tab=" . 3;
-            
+            $link_agenda = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $topic->eid . "&selected_tab=" . 3;
+            $link_event = "$CFG->wwwroot/mod/chairman/chairman_events/events.php?id=" . $topic->eid;
             //create row
             echo '<tr>';
         
             //title with link to agenda
-            echo '<td><a href="'.$link.'">'.$topic->title.'</a></td>';
+            echo '<td><a sort="'.$topic->summary.'" href="'.$link_event.'">'.$topic->summary.'</a></td>';//summary from event
+            echo '<td><a sort="'.$topic->title.'" href="'.$link_agenda.'">'.$topic->title.'</a></td>';//title
             echo '<td>'.$display_date.'</td>';//date
             echo '<td>'.$status.'</td>';//status
             echo '<td>'.$topic->description.'</td>';//desc
@@ -159,7 +163,88 @@ function build_agenda_topics_archive($chairman_id, $data) {
  * @param array $data A multinested array containing the topic data: $data[YEAR]['motions']
  */
 function build_agenda_motions_archive($chairman_id, $data) {
+   global $CFG;
     
+    //output the year filter based on which years topics are avaliable
+    output_year_selector('agenda_archive_motions_year_filter', 'agenda_archive_year_filter', $chairman_id, $data, 'motions');
+
+    
+    //output table with unique id & class that is shared with topics table
+    echo '<table id="agenda_archive_motions" class="archive_table">';
+    echo '<thead><tr>';//headers
+        echo '<th>'.get_string('agenda_archive_event','chairman').'</th>';//event
+        echo '<th>'.get_string('agenda_archive_topic','chairman').'</th>';//topic
+        echo '<th>'.get_string('agenda_archive_motion','chairman').'</th>';//motion
+        echo '<th>'.get_string('agenda_archive_date','chairman').'</th>';//date
+        echo '<th>'.get_string('agenda_archive_motionby','chairman').'</th>';//motionby
+        echo '<th>'.get_string('agenda_archive_secby','chairman').'</th>';//seconded by
+        echo '<th>'.get_string('agenda_archive_carried','chairman').'</th>';//carried
+        echo '<th>'.get_string('agenda_archive_unanimous','chairman').'</th>';//unanimous
+        echo '<th>'.get_string('agenda_archive_yea','chairman').'</th>'; //yes
+        echo '<th>'.get_string('agenda_archive_nay','chairman').'</th>';//no
+        echo '<th>'.get_string('agenda_archive_abs','chairman').'</th>';//dont care
+        echo '<th></th>';//year - hidden
+        echo '<th></th>';//month - hidden
+        echo '<th></th>';//day - hidden
+    echo '</tr></thead>';
+    
+    //actual body of table
+    echo '<tbody>';
+    
+    //itterate through each year of data and output topics
+    foreach($data as $yeardata) {
+        //get motions for this year
+        $motions = $yeardata['motions'];
+        
+        //itterate through all motions
+        foreach($motions as $motion)
+        {
+            
+            //create a display date using month, day, year
+            $display_date = chairman_get_month($motion->month) . " " . $motion->day . ", " . $motion->year;
+
+            //get member name for motionby and secondedby
+            $motionby = get_agenda_member_name($motion->motionby);
+            $secondedby = get_agenda_member_name($motion->secondedby);
+            
+            //display if carried
+            $carried = ($motion->carried == 1) ? get_string('yes') : get_string('no');
+            
+            //display if unanimous
+            $unanimous = ($motion->unanimous == 1) ? get_string('yes') : get_string('no');
+            
+            //link to agenda containing topic
+            $link_agenda = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $motion->eid . "&selected_tab=" . 3;
+            $link_event = "$CFG->wwwroot/mod/chairman/chairman_events/events.php?id=" . $motion->eid;
+            //create row
+            echo '<tr>';
+        
+            //title with link to agenda
+            echo '<td><a sort="'.$motion->event.'" href="'.$link_event.'">'.$motion->event.'</a></td>';//summary from event
+            echo '<td><a sort="'.$motion->topic.'" href="'.$link_agenda.'">'.$motion->topic.'</a></td>';//topic
+            echo '<td>'.$motion->motion.'</td>';//motion
+            echo '<td>'.$display_date.'</td>';//date
+            echo '<td>'.$motionby.'</td>';//who started the motion
+            echo '<td>'.$secondedby.'</td>';//who seconded
+            echo '<td>'.$carried.'</td>';//did it get carried
+            echo '<td>'.$unanimous.'</td>';//was it unanimous
+            echo '<td>'.$motion->yea.'</td>';//in favour count
+            echo '<td>'.$motion->nay.'</td>';//against count
+            echo '<td>'.$motion->abstained.'</td>';//didn't vote
+            
+            //hidden fields
+            echo '<td>'.$motion->year.'</td>';//year
+            echo '<td>'.$motion->month.'</td>';//month
+            echo '<td>'.$motion->day.'</td>';//day
+
+            echo '</tr>';
+        }
+        
+    }
+    
+    //end table
+    echo '</tbody>';
+    echo '</table>';
 }
 
 /**
@@ -199,7 +284,7 @@ function build_yearly_agenda_archive_data($chairman_id) {
     ($interval->invert === 0 && ($interval->y === 0))) {
 
             //all topics sql with event info
-            $sql = "SELECT DISTINCT t.*, e.day, e.month, e.year, e.id as EID FROM {chairman_agenda} a, {chairman_agenda_topics} t, {chairman_events} e " .
+            $sql = "SELECT DISTINCT t.*, e.day, e.month, e.year, e.summary, e.id as EID FROM {chairman_agenda} a, {chairman_agenda_topics} t, {chairman_events} e " .
             "WHERE t.chairman_agenda = a.id AND e.id = a.chairman_events_id AND e.chairman_id = a.chairman_id " .
             "AND a.chairman_id = $chairman_id and ((e.year=? and e.month>=?) or (e.year=? and e.month<=?)) " .
             "ORDER BY e.year DESC, e.month DESC, e.day DESC";
@@ -221,8 +306,16 @@ function build_yearly_agenda_archive_data($chairman_id) {
             $topic_motions = $DB->get_records('chairman_agenda_motions', array('chairman_agenda_topics'=>$topic->id));
             
             //add motions to array containing all motions for this year
-            foreach($topic_motions as $topic_motion)
+            foreach($topic_motions as $topic_motion){
+                $topic_motion->event = $topic->summary;
+                $topic_motion->eid = $topic->eid;
+                $topic_motion->topic = $topic->title;
+                $topic_motion->topic_id = $topic->id;
+                $topic_motion->day = $topic->day;
+                $topic_motion->month = $topic->month;
+                $topic_motion->year = $topic->year;
                 array_push ($motions, $topic_motion);
+            }
             
         }
         
@@ -298,6 +391,22 @@ function output_year_selector($output_id, $output_class, $chairman_id, $data, $t
     echo "</select>";
     echo "</label>";
     echo "</div>";
+    
+}
+
+/**
+ * Converts an agenda member id into their full name
+ * 
+ * @global moodle_database $DB
+ * @param int $agenda_member_id id of member from chairman_agenda_members
+ * @return string Members full name
+ */
+function get_agenda_member_name($agenda_member_id) {
+    global $DB;
+    
+    $member_record = $DB->get_record('chairman_agenda_members', array('id'=>$agenda_member_id));
+    if(!$member_record) return "---";
+    return getUserName($member_record->user_id);
     
 }
 

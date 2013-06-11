@@ -429,13 +429,24 @@ $string["agenda_archive_motion_title"] = "Agenda Motions Archive";
 $string["agenda_archive_year_filter"] = "Year: ";
 
 //archive table columns
+
+$string['agenda_archive_event'] = "Event";
 $string['agenda_archive_title'] = "Title";
 $string['agenda_archive_date'] = "Date";
 $string['agenda_archive_status'] = "Status";
 $string['agenda_archive_desc'] = "Description";
 $string['agenda_archive_notes'] = "Notes";
 $string['agenda_archive_files'] = "Files";
-
+$string['agenda_archive_motionby'] = "Motion By";
+$string['agenda_archive_secby'] = "Second By";
+$string['agenda_archive_carried'] = "Carried";
+$string['agenda_archive_unanimous'] = "Unanimous";
+$string['agenda_archive_yea'] = "Yea";
+$string['agenda_archive_nay'] = "Nay";
+$string['agenda_archive_abs'] = "Abs";
+$string['agenda_archive_abs'] = "Abs";
+$string['agenda_archive_topic'] = "Topic";
+$string['agenda_archive_motion'] = "Motion";
 
 //DataTables Lang Interface
 $string["sEmptyTable"] = "No data available in table";
