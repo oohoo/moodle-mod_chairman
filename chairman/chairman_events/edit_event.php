@@ -131,17 +131,16 @@ if(chairman_isadmin($id)) {
 
     echo '<select name="year">';
     $year = date('Y');
- echo '<option value="'.($year-5).'">'.($year-5).'</option>';
-    echo '<option value="'.($year-4).'">'.($year-4).'</option>';
-    echo '<option value="'.($year-3).'">'.($year-3).'</option>';
-    echo '<option value="'.($year-2).'">'.($year-2).'</option>';
-    echo '<option value="'.($year-1).'">'.($year-1).'</option>';
-    echo '<option value="'.$year.'" selected="selected" >'.$year.'</option>';
-    echo '<option value="'.($year+1).'">'.($year+1).'</option>';
-    echo '<option value="'.($year+2).'">'.($year+2).'</option>';
-    echo '<option value="'.($year+3).'">'.($year+3).'</option>';
-    echo '<option value="'.($year+4).'">'.($year+4).'</option>';
-    echo '<option value="'.($year+5).'">'.($year+5).'</option>';
+    
+    for($i = -5; $i < 6; $i++ ) {
+        $selected = '';
+        
+        if($event->year == $year + $i)
+            $selected = " selected='selected' ";
+        
+        echo '<option value="'.($year+$i).'"'.$selected.'>'.($year+$i).'</option>';
+    }
+    
     echo '</select>';
 
     echo '</td></tr>';

@@ -227,8 +227,7 @@ $context = get_context_instance(CONTEXT_COURSE, $cm->course);
     
     echo '<tr><td valign="top" colspan="2">'.get_string('sendnotificationweek', 'chairman').' : ';
     echo '<input type="checkbox" name="notify_week" value="1">';
-    echo '</td></tr>';
-    echo '<tr><td valign="top" colspan="2">'.get_string('sendnotification', 'chairman').' : ';
+    echo '   '.get_string('sendnotification', 'chairman').' : ';
     echo '<input type="checkbox" name="notify" value="1">';
     echo '</td></tr>';
     
