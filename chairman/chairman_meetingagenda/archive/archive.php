@@ -128,7 +128,7 @@ function build_agenda_topics_archive($chairman_id, $data) {
             $status = $TOPIC_STATUS[$topic->status];
             //link to agenda containing topic
             $link_agenda = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $topic->eid . "&selected_tab=" . 3;
-            $link_event = "$CFG->wwwroot/mod/chairman/chairman_events/events.php?id=" . $topic->eid;
+            $link_event = "$CFG->wwwroot/mod/chairman/chairman_events/edit_event.php?id=$chairman_id&event_id=" . $topic->eid;
             //create row
             echo '<tr>';
         
@@ -215,7 +215,7 @@ function build_agenda_motions_archive($chairman_id, $data) {
             
             //link to agenda containing topic
             $link_agenda = "$CFG->wwwroot/mod/chairman/chairman_meetingagenda/view.php?event_id=" . $motion->eid . "&selected_tab=" . 3;
-            $link_event = "$CFG->wwwroot/mod/chairman/chairman_events/events.php?id=" . $motion->eid;
+            $link_event = "$CFG->wwwroot/mod/chairman/chairman_events/edit_event.php?id=$chairman_id&event_id=" . $motion->eid;
             //create row
             echo '<tr>';
         

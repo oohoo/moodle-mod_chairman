@@ -112,7 +112,7 @@ function chairman_global_js($cmid) {
     
     echo "php_strings['select2_no_matches'] = '" . get_string('select2_no_matches', 'chairman') . "';";
     echo "php_strings['select2_plural_extension'] = '" . get_string('select2_plural_extension', 'chairman') . "';";
-    echo "php_strings['sselect2_enter'] = '" . get_string('select2_enter', 'chairman') . "';";
+    echo "php_strings['select2_enter'] = '" . get_string('select2_enter', 'chairman') . "';";
     echo "php_strings['select2_additional_chars'] = '" . get_string('select2_additional_chars', 'chairman') . "';";
     echo "php_strings['select2_remove_chars'] = '" . get_string('select2_remove_chars', 'chairman') . "';";
     echo "php_strings['select2_chars'] = '" . get_string('select2_chars', 'chairman') . "';";

@@ -161,16 +161,6 @@ if(chairman_isadmin($id)) {
     echo '</select>';
     echo '</td></tr>';
 
-
-
-//----CHECK FOR SCHEDULER PLUGIN -----------------------------------------------
- $dbman = $DB->get_manager();
-$table = new xmldb_table('roomscheduler_reservations');
-$scheduler_plugin_installed = $dbman->table_exists($table);
-
-$cm = get_coursemodule_from_id('chairman', $id);
-$context = get_context_instance(CONTEXT_COURSE, $cm->course);
-
     
     //Summary
     echo '<tr><td>'.get_string('summary', 'chairman').' : </td>';
@@ -217,6 +207,65 @@ $context = get_context_instance(CONTEXT_COURSE, $cm->course);
 
 
 
+} elseif(chairman_isMember($id)) {//view only
+    
+    echo '<div><div class="title">'.get_string('event', 'chairman').'</div>';
+
+    echo '<table width=100% border=0>';
+    
+    echo '<tr>';
+    echo '<td valign="top">'.get_string('timezone_used','mod_chairman').'</td>';
+    //Timezone
+    require_once($CFG->dirroot.'/calendar/lib.php');
+    $timezones = get_list_of_timezones();
+    
+    $current = $event->timezone;
+    
+    echo '<td>'.html_writer::select($timezones, "timezone", $current, array('99'=>get_string("serverlocaltime"))).'</td>';
+    echo '</tr>';
+
+    echo '<tr><td>'.get_string('date', 'chairman').' : </td>';
+    echo '<td width=85%>';
+   
+      //inline date picker
+    echo "<div class='date_time_picker' id='add_date_time_picker'/>";
+    
+    //hidden date picker elements for submission
+    echo "<input type='hidden' name='day' id='date_time_day' value='$event->day'/>";
+    echo "<input type='hidden' name='month' id='date_time_month' value='$event->month'/>";
+    echo "<input type='hidden' name='year' id='date_time_year' value='$event->year'/>";
+
+    echo '</td></tr>';
+
+    //Start time
+
+    echo '<tr><td>'.get_string('starttime', 'chairman').' : </td>';
+    echo '<td>'.$event->starthour . ':'. $event->startminutes;
+
+    //End time
+    echo '<tr><td>'.get_string('endtime', 'chairman').' : </td>';
+    echo '<td>' . $event->endhour . ':' . $event->endminutes;
+            
+    echo '</td></tr>';
+
+    
+    //Summary
+    echo '<tr><td>'.get_string('summary', 'chairman').' : </td>';
+    echo '<td><span name="summary" style="width:500px;">'.$event->summary.'</span></td>';
+
+    //Detailed description
+    echo '<tr><td>'.get_string('description', 'chairman').' : </td>';
+    echo '<td><span name="description">';
+    echo $event->description;
+    echo '</span></td></tr>';
+    
+    
+    echo '</table>';
+
+    echo '<span class="content">';
+
+    echo '</span></div>';
+    
 }
 
 chairman_footer();
