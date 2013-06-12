@@ -156,7 +156,7 @@ function output_mailto($chairman_id, $pdf, $mailto_body) {
     $mailto_subject = $pdf->get_event_name();
 
 
-    $mailto = "mailto:" . $mailto_members . "?subject=" . urlencode($mailto_subject) . "&body=" . $mailto_body;
+    $mailto = "mailto:" . $mailto_members . "?subject=" . urlencode($mailto_subject) . "&body=" . urlencode($mailto_body);
 
     $return_url = required_param("return_url", PARAM_URL);
 

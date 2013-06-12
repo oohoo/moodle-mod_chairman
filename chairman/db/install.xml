@@ -23,7 +23,7 @@
         <FIELD NAME="questionnaire" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="use_questionnaire" NEXT="bbb"/>
         <FIELD NAME="bbb" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="questionnaire" NEXT="use_bbb"/>
         <FIELD NAME="use_bbb" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" PREVIOUS="bbb" NEXT="start_month_of_year"/>
-        <FIELD NAME="start_month_of_year" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="07" SEQUENCE="false" PREVIOUS="use_bbb" />
+        <FIELD NAME="start_month_of_year" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="7" SEQUENCE="false" PREVIOUS="use_bbb" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

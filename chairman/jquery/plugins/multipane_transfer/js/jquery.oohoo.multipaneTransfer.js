@@ -348,7 +348,7 @@ jQuery.widget("oohoo.multipanetransfer", {
         {
             //middle of li
             var middle = jQuery(li_panel).width() / 2;
-            
+
             //offset
             var click_x_position = xoffset;
 
@@ -371,7 +371,8 @@ jQuery.widget("oohoo.multipanetransfer", {
         jQuery(li_panels).click(function(event)
         {
             //get id for new ul target
-            var new_ul = "ul[mpt_id=" + self._get_target_ul_mpt_id(this, event['offsetX']) + "]";
+            var offset = (event.offsetX || event.clientX - $(event.target).offset().left);
+            var new_ul = "ul[mpt_id=" + self._get_target_ul_mpt_id(this, offset) + "]";
 
             //move to new ul
             jQuery(this).appendTo(jQuery(self.display).find(new_ul));
@@ -398,7 +399,8 @@ jQuery.widget("oohoo.multipanetransfer", {
         jQuery(li_panels).mousemove(function(event) {
             jQuery(this).find('.mpt-dir-indc').remove();//remove old indicator
             var current_id = jQuery(this).parent().attr("mpt_id");//get current mpt_id
-            var id = self._get_target_ul_mpt_id(this, event['offsetX']);////get mpt_id for where it would go on click
+            var offset = (event.offsetX || event.clientX - $(event.target).offset().left);
+            var id = self._get_target_ul_mpt_id(this, offset);////get mpt_id for where it would go on click
             
             //if current id is larger - going left
             if (current_id > id)
