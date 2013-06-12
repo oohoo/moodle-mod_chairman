@@ -44,6 +44,9 @@ require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.ph
 
 $id = required_param('id',PARAM_INT);    // Course Module ID
 
+$PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
+$PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
+
 chairman_check($id);
 chairman_header($id,'addevent','add_event.php?id='.$id);
 
@@ -70,71 +73,21 @@ if(chairman_isadmin($id)) {
     
     $now = time();
 
-    $day = date('j',$now);
-    echo '<tr><td>'.get_string('date', 'chairman').' : </td>';
-    echo '<td width=85%><select name="day">';
-    for($i=1; $i<=31; $i++) {
-        echo '<option value="'.$i.'" ';
-        if($day==$i){echo 'SELECTED';}
-        echo '>'.$i.'</option>';
-    }
-    echo '</select>';
-
+    $day = date('d',$now);
     $month = date('m',$now);
+    $year = date('Y',$now);
+    
+    echo '<tr><td>'.get_string('date', 'chairman').' : </td>';
+    echo '<td width=85%>';
 
-    echo '<select name="month">';
-    echo '<option value="01" ';
-    if($month=='01'){echo 'SELECTED ';}
-    echo '>'.get_string('january', 'chairman').'</option>';
-    echo '<option value="02" ';
-    if($month=='02'){echo 'SELECTED ';}
-    echo '>'.get_string('february', 'chairman').'</option>';
-    echo '<option value="03" ';
-    if($month=='03'){echo 'SELECTED ';}
-    echo '>'.get_string('march', 'chairman').'</option>';
-    echo '<option value="04" ';
-    if($month=='04'){echo 'SELECTED ';}
-    echo '>'.get_string('april', 'chairman').'</option>';
-    echo '<option value="05" ';
-    if($month=='05'){echo 'SELECTED ';}
-    echo '>'.get_string('may', 'chairman').'</option>';
-    echo '<option value="06" ';
-    if($month=='06'){echo 'SELECTED ';}
-    echo '>'.get_string('june', 'chairman').'</option>';
-    echo '<option value="07" ';
-    if($month=='07'){echo 'SELECTED ';}
-    echo '>'.get_string('july', 'chairman').'</option>';
-    echo '<option value="08" ';
-    if($month=='08'){echo 'SELECTED ';}
-    echo '>'.get_string('august', 'chairman').'</option>';
-    echo '<option value="09" ';
-    if($month=='09'){echo 'SELECTED ';}
-    echo '>'.get_string('september', 'chairman').'</option>';
-    echo '<option value="10" ';
-    if($month=='10'){echo 'SELECTED ';}
-    echo '>'.get_string('october', 'chairman').'</option>';
-    echo '<option value="11" ';
-    if($month=='11'){echo 'SELECTED ';}
-    echo '>'.get_string('november', 'chairman').'</option>';
-    echo '<option value="12" ';
-    if($month=='12'){echo 'SELECTED ';}
-    echo '>'.get_string('december', 'chairman').'</option>';
-    echo '</select>';
-
-    echo '<select name="year">';
-    $year = date('Y');
-    echo '<option value="'.($year-5).'">'.($year-5).'</option>';
-    echo '<option value="'.($year-4).'">'.($year-4).'</option>';
-    echo '<option value="'.($year-3).'">'.($year-3).'</option>';
-    echo '<option value="'.($year-2).'">'.($year-2).'</option>';
-    echo '<option value="'.($year-1).'">'.($year-1).'</option>';
-    echo '<option value="'.$year.'" selected="selected" >'.$year.'</option>';
-    echo '<option value="'.($year+1).'">'.($year+1).'</option>';
-    echo '<option value="'.($year+2).'">'.($year+2).'</option>';
-    echo '<option value="'.($year+3).'">'.($year+3).'</option>';
-    echo '<option value="'.($year+4).'">'.($year+4).'</option>';
-    echo '<option value="'.($year+5).'">'.($year+5).'</option>';
-    echo '</select>';
+    //inline date picker
+    echo "<div class='date_time_picker' id='add_date_time_picker'/>";
+    
+    //hidden date picker elements for submission
+    echo "<input type='hidden' name='day' id='date_time_day' value='$day'/>";
+    echo "<input type='hidden' name='month' id='date_time_month' value='$month'/>";
+    echo "<input type='hidden' name='year' id='date_time_year' value='$year'/>";
+    
 
     echo '</td></tr>';
 
@@ -209,6 +162,8 @@ if(chairman_isadmin($id)) {
     echo '</select>';
     echo '</td></tr>';
 
+
+    
 
 $cm = get_coursemodule_from_id('chairman', $id);
 $context = get_context_instance(CONTEXT_COURSE, $cm->course);

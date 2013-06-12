@@ -135,5 +135,35 @@ $(function() {
         }
 
     });
+    
+    $(function() {
+    $( ".date_time_picker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      autoSize: true,
+      dateFormat: "dd/mm/yy",
+      defaultDate: (function() {
+        var day = $("#date_time_day").val();
+        var month = $("#date_time_month").val();
+        var year = $("#date_time_year").val();
+
+        return day + '/' + month + '/' + year;
+      }()),
+      onSelect: function(date) {
+        var day = $("#date_time_day");
+        var month = $("#date_time_month");
+        var year = $("#date_time_year");
+        
+        var date_elements = date.split('/');
+        
+        day.val(date_elements[0]);
+        month.val(date_elements[1]);
+        year.val(date_elements[2]);
+        
+        }
+      
+    });
+    
+  });
 
 });

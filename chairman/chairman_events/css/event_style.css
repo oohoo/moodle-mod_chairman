@@ -51,3 +51,7 @@
 .title a:visited {color:#800080;}  /* visited link */
 .title a:hover {color:#FF00FF;}  /* mouse over link */
 .title a:active {color:#FF0000;}  /* selected link */
+
+.date_time_picker {
+ font-size:10px;
+}

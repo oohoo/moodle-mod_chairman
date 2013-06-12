@@ -28,8 +28,13 @@ require_once('../lib_chairman.php');
 
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 
+$PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
+$PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
+
 $id = required_param('id',PARAM_INT);    // Course Module ID
 $event_id = required_param('event_id', PARAM_INT);
+
+
 
 chairman_check($id);
 chairman_header($id,'editevent','edit_event.php?id='.$id.'&event_id='.$event_id);
@@ -55,93 +60,15 @@ if(chairman_isadmin($id)) {
     echo '</tr>';
 
     echo '<tr><td>'.get_string('date', 'chairman').' : </td>';
-    echo '<td width=85%><select name="day">';
-    for($i=1; $i<=31; $i++) {
-        if ($event->day == $i) {
-            echo '<option value="'.$i.'" selected="selected">'.$i.'</option>';
-        } else {
-            echo '<option value="'.$i.'">'.$i.'</option>';
-        }
-    }
-    echo '</select>';
-    $selected = 'selected="selected"';
-
-    echo '<select name="month">';
-    echo '<option value="01" ';
-    if ($event->month == 1) {
-        echo $selected;
-    }
-    echo' >'.get_string('january', 'chairman').'</option>';
-    echo '<option value="02" ';
-    if ($event->month == 2) {
-        echo $selected;
-    }
-    echo ' >'.get_string('february', 'chairman').'</option>';
-    echo '<option value="03" ';
-    if ($event->month == 3) {
-        echo $selected;
-    }
-    echo ' >'.get_string('march', 'chairman').'</option>';
-    echo '<option value="04" ';
-    if ($event->month == 4) {
-        echo $selected;
-    }
-    echo ' >'.get_string('april', 'chairman').'</option>';
-    echo '<option value="05" ';
-    if ($event->month == 5) {
-        echo $selected;
-    }
-    echo ' >'.get_string('may', 'chairman').'</option>';
-    echo '<option value="06" ';
-    if ($event->month == 6) {
-        echo $selected;
-    }
-    echo ' >'.get_string('june', 'chairman').'</option>';
-    echo '<option value="07" ';
-    if ($event->month == 7) {
-        echo $selected;
-    }
-    echo ' >'.get_string('july', 'chairman').'</option>';
-    echo '<option value="08" ';
-    if ($event->month == 8) {
-        echo $selected;
-    }
-    echo ' >'.get_string('august', 'chairman').'</option>';
-    echo '<option value="09" ';
-    if ($event->month == 9) {
-        echo $selected;
-    }
-    echo ' >'.get_string('september', 'chairman').'</option>';
-    echo '<option value="10" ';
-    if ($event->month == 10) {
-        echo $selected;
-    }
-    echo ' >'.get_string('october', 'chairman').'</option>';
-    echo '<option value="11" ';
-    if ($event->month == 11) {
-        echo $selected;
-    }
-    echo ' >'.get_string('november', 'chairman').'</option>';
-    echo '<option value="12" ';
-    if ($event->month == 12) {
-        echo $selected;
-    }
-    echo ' >'.get_string('december', 'chairman').'</option>';
-    echo '</select>';
-
-    echo '<select name="year">';
-    $year = date('Y');
+    echo '<td width=85%>';
+   
+      //inline date picker
+    echo "<div class='date_time_picker' id='add_date_time_picker'/>";
     
-    for($i = -5; $i < 6; $i++ ) {
-        $selected = '';
-        
-        if($event->year == $year + $i)
-            $selected = " selected='selected' ";
-        
-        echo '<option value="'.($year+$i).'"'.$selected.'>'.($year+$i).'</option>';
-    }
-    
-    echo '</select>';
+    //hidden date picker elements for submission
+    echo "<input type='hidden' name='day' id='date_time_day' value='$event->day'/>";
+    echo "<input type='hidden' name='month' id='date_time_month' value='$event->month'/>";
+    echo "<input type='hidden' name='year' id='date_time_year' value='$event->year'/>";
 
     echo '</td></tr>';
 
