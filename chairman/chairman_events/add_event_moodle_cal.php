@@ -48,9 +48,16 @@ if ($USER->timezone == 99) {
     $server_timezone = $USER->timezone;
 }
 
-//get the time that the event starts at and ends
-$event_start = make_timestamp($event->year, $event->month, $event->day, $event->starthour, $event->startminutes, '00', $event->timezone);
-$event_end = make_timestamp($event->year, $event->month, $event->day, $event->endhour, $event->endminutes,'00',$event->timezone );
+//calculate offset
+$offset = chairman_get_timezone_offset($event->timezone,$server_timezone);
+
+//Convert event into unix timestamp
+$event_start = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->starthour, $event->startminutes);
+$event_end = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->endhour, $event->endminutes);
+
+$event_start+= $offset;
+$event_end+= $offset;
+
 $event_duration = $event_end - $event_start;
 
 $moodle_event->timestart = $event_start;

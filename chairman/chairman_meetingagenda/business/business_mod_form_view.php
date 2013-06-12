@@ -117,6 +117,13 @@ class mod_business_mod_form extends moodleform {
         if ($chairmanMemberRecords) {//If any committee members present
             generate_participants_multiselect($mform, $agenda_id, $chairmanMemberRecords);
         }
+        
+        $chairmanmembers = array(); //Used to store commitee members in an array
+
+        foreach ($chairmanMemberRecords as $commity_member) {
+            $name = getUserName($commity_member->user_id);
+            $chairmanmembers[$commity_member->id] = $name;
+        }
 
 //------------MOODLE USERS------------------------------------------------------
 
@@ -213,8 +220,8 @@ class mod_business_mod_form extends moodleform {
                     $sub_index = 1;
                     foreach ($motions as $key => $motion) {
 
-                        $proposing_choices = $chairmanMemberRecords;
-                        $supporting_choices = $chairmanMemberRecords;
+                        $proposing_choices = $chairmanmembers;
+                        $supporting_choices = $chairmanmembers;
 
                         $proposing_choices['-1'] = get_string('proposedby', 'chairman');
                         $supporting_choices['-1'] = get_string('supportedby', 'chairman');

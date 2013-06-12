@@ -86,9 +86,11 @@ function add_link_ajax(name, link)
         $("#chairman_links")
                 .prepend("<li id='link_" + id + "'><a target='_blank' href='" + clean_link + "'>" + name.val() + "</a><div ><span name='delete_link_" + id + "' class='ui-icon ui-icon-minusthick'/></div></li>");
 
+        register_delete_link_listeners();
         $("#chairman_links").menu("refresh");
 
         $("#link_dialog_form").dialog("close");
+        
     })
             .fail(function() {
         update_form_info(php_strings["link_ajax_failed"]);
@@ -186,7 +188,31 @@ function show_menu(time)
     $("#chairman_menu_collapse").addClass("ui-icon-arrowthickstop-1-w");
 }
 
+function register_delete_link_listeners() {
+        //register all delete icons for the links
+    $("[name^='delete_link_']").each(function(index, icon)
+    {
+        var id = $(icon).attr('name').replace("delete_link_", "");
 
+        $(icon).click(function(event)
+        {
+            event.preventDefault();//don't let a tag event to occur
+            $("#link_delete_confirm").data('id', id).dialog("open");
+
+        });
+
+        //icon hover outline
+        $(icon).hover(
+                function() {
+                    $(icon).addClass("chairman_bordered");
+                },
+                function() {
+                    $(icon).removeClass("chairman_bordered");
+                }
+        );
+
+    });
+}
 
 /**
  * Global Initalization
@@ -255,7 +281,7 @@ $(function() {
     //create add link dialog
     $("#link_dialog_form").dialog({
         autoOpen: false,
-        height: 236,
+        height: 265,
         width: 245,
         modal: true,
         buttons: buttons,
@@ -294,29 +320,7 @@ $(function() {
         buttons: buttons
     });
 
-    //register all delete icons for the links
-    $("[name^='delete_link_']").each(function(index, icon)
-    {
-        var id = $(icon).attr('name').replace("delete_link_", "");
-
-        $(icon).click(function(event)
-        {
-            event.preventDefault();//don't let a tag event to occur
-            $("#link_delete_confirm").data('id', id).dialog("open");
-
-        });
-
-        //icon hover outline
-        $(icon).hover(
-                function() {
-                    $(icon).addClass("chairman_bordered");
-                },
-                function() {
-                    $(icon).removeClass("chairman_bordered");
-                }
-        );
-
-    });
+    register_delete_link_listeners();
 
 });
 

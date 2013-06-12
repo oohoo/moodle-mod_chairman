@@ -1,0 +1,91 @@
+Fought with getting the time zones to work correctly since PHP 5.4+ will not work for the old implementation. 
+(date_default_timezone_get doesn't guess anymore & there were issues with the inital implementation - moodle using 99 for no timezone, etc)
+Created some generalized tests to help find issues.
+
+
+/**
+* Tests the chairman_get_timezone_offset function in library
+*
+*/
+function test_chairman_get_timezone_offset() {
+    
+    echo '<table border=1>';
+    
+    $test_cases = array();
+    
+    //utcs
+    $test_cases[0][-25200] = array(7.0, 0.0);
+    $test_cases[1][25200] = array(0.0, 7.0);
+    
+    //timezones
+    $test_cases[2][10800] = array('America/Vancouver', 'America/Toronto');
+    $test_cases[3][-10800] = array('America/Toronto','America/Vancouver');
+    
+    //utc and timezone
+    $test_cases[4][0] = array(99,'America/Vancouver');
+    $test_cases[5][3600] = array('America/Vancouver',99);
+    
+    //utc everywhere
+    $test_case[6][0] = array(0.0,99);
+    $test_case[7][0] = array(99,0.0);
+    
+    //UTc & timezones
+    $test_cases[8][54000] = array('America/Edmonton',9.0);
+    $test_cases[9][-54000] = array(9.0,'America/Edmonton');
+    
+    //bad time values
+    $test_cases[10][0] = array('America/Edmonton',-5.5);
+    $test_cases[11][0] = array(-5.5,'America/Edmonton');
+    
+        
+    //neg utf values
+    $test_cases[10][3600] = array('America/Edmonton',-5);
+    $test_cases[11][-3600] = array(-5,'America/Edmonton');
+    
+    //Tested when phoenix was in MST and Edmonton was in MDT
+    $test_cases[12][-3600] = array('America/Edmonton','America/Phoenix');
+    $test_cases[13][3600] = array('America/Phoenix','America/Edmonton');
+    
+    echo '<tr style="border:1px solid black;">';
+    echo '<th>' . "Remote" . '</th>';
+    echo '<th>' . "Origin" . '</th>';
+    echo '<th>' . "Expected" . '</th>';
+    echo '<th>' . "Result" . '</th>';
+    echo '</tr>';
+    
+    foreach($test_cases as $test_case_wrapper) {
+        foreach($test_case_wrapper as $expected=>$test_case) {
+            $actual = chairman_get_timezone_offset($test_case[0], $test_case[1]);
+
+            echo '<tr style="border:1px solid black;">';
+            test_helper_chairman_get_timezone_offset($test_case, $expected, $actual);
+            echo '</tr>';
+        }
+    }
+    
+    
+    echo '</table>';
+    
+    
+}
+
+/**
+* Helps tests the chairman_get_timezone_offset function in library
+* Do not call directly
+*/
+function test_helper_chairman_get_timezone_offset($test_case,$expected, $actual) {
+    
+    echo '<td>' . $test_case[0] . '</td>';
+    echo '<td>' . $test_case[1] . '</td>';
+    echo '<td>' . $expected . '</td>';
+    echo '<td>';
+    
+    if($expected == $actual)
+    {
+        echo '<div style="color:green">'. $actual .'<p>';
+    } else {
+        echo '<div style="color:red">'. $actual .'<p>';
+    }
+    
+    echo '</td>';
+}

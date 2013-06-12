@@ -38,31 +38,20 @@ $eventname = str_replace('\'', '_', $eventname);
 $eventname = str_replace('.','_' ,$eventname);
 
 
-//Get timezone offest
-//Events timezone as an object
-$tzone1 = new DateTimeZone($event->timezone);
-
 //If user did nt set timezone use server timezone
-if ($USER->timezone == 99) {
+if ($event->timezone == 99) {
     $server_timezone = $CFG->timezone;
 } else {
     $server_timezone = $USER->timezone;
 }
 
-//server timezone object
-$tzone2 = new DateTimeZone($server_timezone);
-
-//DateTime according to timezones
-$dtzone1 = new DateTime("now",$tzone1);
-$dtzone2 = new DateTime("now",$tzone2);
-
 //calculate offset
-//$offset = $tzone1->getOffset($dtzone2) - $tzone2->getOffset($dtzone1);
 $offset = chairman_get_timezone_offset($event->timezone,$server_timezone);
 
 //Convert event into unix timestamp
 $event_start = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->starthour, $event->startminutes);
 $event_end = chairman_convert_strdate_time($event->year, $event->day, $event->month, $event->endhour, $event->endminutes);
+
 //calculate offset
 $event_start = $event_start + $offset;
 $event_end = $event_end + $offset;

@@ -283,13 +283,19 @@ function chairman_links($chairman, $cmid) {
         if (!(strpos($URL, 'http') === 0)) {
             $URL = "http://" . $URL;
         }
-
-        echo "<li id='link_$link->id'><a target='_blank' href='$URL'>$link->name<span style='float:left' name='delete_link_" . $link->id . "' class='ui-icon ui-icon-minusthick'/></a></li>";
+        
+        
+        $remove_icon = '';
+        if(chairman_isadmin($USER->id))
+            $remove_icon = "<span style='float:left' name='delete_link_" . $link->id . "' class='ui-icon ui-icon-minusthick'/>";
+        
+        
+        echo "<li id='link_$link->id'><a target='_blank' href='$URL'>$link->name$remove_icon</a></li>";
     }
 
 
-    //if admin
-    echo '<li><a id="chairman_add_link" href="javascript:void(0)"/>' . get_string('new_external_link', 'chairman') . '<span class="ui-icon ui-icon-plusthick"/></a></li>';
+    if(chairman_isadmin($USER->id))
+        echo '<li><a id="chairman_add_link" href="javascript:void(0)"/>' . get_string('new_external_link', 'chairman') . '<span class="ui-icon ui-icon-plusthick"/></a></li>';
 
     echo "</ul>";
 
@@ -582,28 +588,64 @@ function display_planner_results($planner_id, $chairman_id) {
 }
 
 /**    Returns the offset from the origin timezone to the remote timezone, in seconds.
- *    @param $remote_tz;
- *    @param $origin_tz; If null the servers current timezone is used as the origin.
- *    @return int;
+ *     
+ *    If moodle's timezone is set to server default it becomes 99 - which is invalid, and no origin is provided - returns false
+ *    If the remote or origin timezone is 99, it returns false. 
+ *    If remote or origin cannot be resolved to a valid timezone - it returns false - ex: 99999, asdf, or -5.5, etc
+ * 
+ *    The function accepts: -UTC parameters such as 9.0, -5.0, 0, etc. 
+ *                          -Timezone inputs(IF MOODLE HAS THEM DOWNLOADED): ex: America/Edmonton
+ * 
+ *    @param $remote_tz The reference point for the meeting. AKA: The meeting is held at 8:00 UTF-8.
+ *    @param $origin_tz; The user's timezone or moodle's server's timezone if not set.
+ *    @return int offset in seconds or false on failure (moodle timezone not set or remote not set)
  */
 function chairman_get_timezone_offset($remote_tz, $origin_tz = null) {
-    if ($origin_tz === null) {
-        if (!is_string($origin_tz = date_default_timezone_get())) {
-            return false; // A UTC timestamp was returned -- bail out!
-        }
+    global $DB;
+    
+    if ($origin_tz === null || $origin_tz == 99) {
+        $timezone = $DB->get_record('config', array('name'=>'timezone'));
+        $origin_tz = $timezone->value;
     }
-    $offset = 3600;
-    $remote_timezonename = timezone_name_from_abbr("", $remote_tz * $offset, false);
-    $origin_timezonename = timezone_name_from_abbr("", $origin_tz * $offset, false);
-
-    if ($remote_timezonename === false || $origin_timezonename === false)
+    
+    //if either the remote or origin is 99, we cannot do offset
+    if($remote_tz == 99 || $origin_tz == 99) return false;
+    
+    if(is_numeric($remote_tz)) {
+        $remote_timezonename = timezone_name_from_abbr(null, $remote_tz * 3600, true);
+        if($remote_timezonename === false) $remote_timezonename = timezone_name_from_abbr(null, $remote_tz * 3600, false);
+        
+        
+    if ($remote_timezonename === false)
         return false;
-
+    
+    } else {
+       $remote_timezonename = $remote_tz;
+    }
+    
+    if(is_numeric($origin_tz)) {
+        
+        $origin_timezonename = timezone_name_from_abbr(null, $origin_tz * 3600, true);
+        if($origin_timezonename === false) $origin_timezonename = timezone_name_from_abbr(null, $origin_tz * 3600, false);
+        
+        if ($origin_timezonename === false)
+            return false;
+    } else {
+        $origin_timezonename = $origin_tz;
+    }
+    
+    try{
     $origin_dtz = new DateTimeZone($origin_timezonename);
     $remote_dtz = new DateTimeZone($remote_timezonename);
     $origin_dt = new DateTime("now", $origin_dtz);
     $remote_dt = new DateTime("now", $remote_dtz);
+    } catch(Exception $e)
+    {
+        return false;
+    }
+    
     $offset = $origin_dtz->getOffset($origin_dt) - $remote_dtz->getOffset($remote_dt);
+
     return $offset;
 }
 
@@ -708,8 +750,5 @@ function chairman_get_month($month_num) {
         default: return "";
     }
 }
-
-
-
 
 ?>
