@@ -53,7 +53,7 @@ if(chairman_isadmin($id)){
 
     echo '</td></tr>';
     echo '<tr><td></td>';
-    echo '<td><input style="color:grey;" type="text" onkeyup="ajax_post(\'searchmember.php?str=\'+this.value,\'user\');" value="'.get_string('search','chairman').'" onfocus="if(this.value==\''.get_string('search','chairman').'\'){this.value=\'\';}" onblur="if(this.value==\'\'){this.value=\''.get_string('search','chairman').'\';}"></td>';
+    echo '<td><input style="color:grey;" type="text" onkeyup="ajax_post(\'searchmember.php?id='.$id.'&str=\'+this.value,\'user\');" value="'.get_string('search','chairman').'" onfocus="if(this.value==\''.get_string('search','chairman').'\'){this.value=\'\';}" onblur="if(this.value==\'\'){this.value=\''.get_string('search','chairman').'\';}"></td>';
     echo '</tr>';
     echo '<tr><td>'.get_string('role', 'chairman').' : </td>';
     echo '<td><select name="role">';

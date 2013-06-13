@@ -22,12 +22,13 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 require_once('../../../config.php');
 
 $string = optional_param('str',null,PARAM_TEXT); //search query
+$id = required_param('id',PARAM_INT); //search query
 
 if($string=='') {
     $users = $DB->get_records('user',array('deleted'=>0),'lastname ASC');
 }
 else {
-    $users = $DB->get_records_select('user','upper(firstname) LIKE upper("%'.$string.'%") OR upper(lastname) LIKE upper("%'.$string.'%")',null,'lastname ASC');
+    $users = $DB->get_records_select('user','upper(firstname) LIKE upper("%'.$string.'%") OR upper(lastname) LIKE upper("%'.$string.'%") and deleted = 0 ',null,'lastname ASC');
 }
 
 echo '<select name="user">';
