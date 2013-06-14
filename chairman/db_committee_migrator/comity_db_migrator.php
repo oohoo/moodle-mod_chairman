@@ -357,12 +357,12 @@ class comity_db_migrator {
 
             //the way the files where done before leaves me wary of potential duplicates
             // - so we check and change filename if need be
-            $file_exists = $fs->file_exists($file_record->contextid, $file_record->component, $file_record->filearea, 0, $file_record->filepath, $file_record->filename);
+        $file_exists = $fs->file_exists($file_record['contextid'], $file_record['component'], $file_record['filearea'], 0, $file_record['filepath'], $file_record['filename']);
             
             $repeat = 0;
             while ($file_exists) {
                 $repeat++;
-                $file_exists = $fs->file_exists($file_record->contextid, $file_record->component, $file_record->filearea, 0, $file_record->filepath, $repeat."_".$file_record->filename);
+                $file_exists = $fs->file_exists($file_record['contextid'], $file_record['component'], $file_record['filearea'], 0, $file_record['filepath'], $repeat."_".$file_record['filename']);
             }
             
             if($repeat > 0)

@@ -170,7 +170,7 @@
         <FIELD NAME="firstname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="chairman_agenda" NEXT="lastname"/>
         <FIELD NAME="lastname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="firstname" NEXT="email"/>
         <FIELD NAME="email" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="lastname" NEXT="moodleid"/>
-        <FIELD NAME="moodleid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="lastname"/>
+        <FIELD NAME="moodleid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="email"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="chairman_agenda"/>

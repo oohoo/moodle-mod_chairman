@@ -45,21 +45,17 @@ moodleMsgs = {
 
 <?php
 //get dependencies
-$PAGE->requires->jquery();
-$PAGE->requires->jquery_plugin('ui');
-$PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->css('/mod/chairman/chairman_planner/css/planner.css');
-$PAGE->requires->js('/mod/chairman/chairman_planner/script/planner.js');
-$PAGE->requires->js('/mod/chairman/jquery/plugins/multiselect/js/jquery.uix.multiselect.js');
-$PAGE->requires->js('/mod/chairman/jquery/plugins/multiselect/js/locales/jquery.uix.multiselect_en.js');
 $PAGE->requires->css('/mod/chairman/jquery/plugins/multiselect/css/jquery.uix.multiselect.css');
-$PAGE->requires->js('/mod/chairman/chairman_planner/script/planner_calendar.js');
-
 
 // print header
 chairman_check($id);
 chairman_header($id,'newplanner','newplanner.php?id='.$id);
 
+$PAGE->requires->js('/mod/chairman/chairman_planner/script/planner.js');
+$PAGE->requires->js('/mod/chairman/jquery/plugins/multiselect/js/jquery.uix.multiselect.js');
+$PAGE->requires->js('/mod/chairman/jquery/plugins/multiselect/js/locales/jquery.uix.multiselect_en.js');
+$PAGE->requires->js('/mod/chairman/chairman_planner/script/planner_calendar.js');
 
 //content
 echo '<div class="title">'.get_string('newplanner','chairman').'</div>';

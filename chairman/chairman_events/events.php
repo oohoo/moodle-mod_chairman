@@ -31,7 +31,6 @@ $id = optional_param('id', 0, PARAM_INT);    // Course Module ID
 $archive = optional_param('archive', 0, PARAM_INT);    // Course Module ID
 
 $PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
-$PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
 
 chairman_check($id);
 
@@ -45,6 +44,8 @@ if($is_ajax)
 
 //Normal page load
 chairman_header($id, 'events', 'events.php?id=' . $id);
+
+$PAGE->requires->js('/mod/chairman/chairman_events/js/events.js');
 
 echo "<script> var is_archive = $archive; </script>";
 

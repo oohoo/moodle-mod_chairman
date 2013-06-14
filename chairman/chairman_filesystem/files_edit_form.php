@@ -53,6 +53,7 @@ class files_edit_form extends moodleform {
         
         $this->build_hidden_info($mform);
         $this->build_private_files_form($mform);
+        $this->build_submission();
         $this->build_public_files_form($mform); 
         $this->build_submission();
 

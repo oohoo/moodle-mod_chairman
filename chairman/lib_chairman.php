@@ -48,9 +48,8 @@ function chairman_header($cmid, $pagename, $pagelink) {
     $page = get_string($pagename, 'chairman');
     $title = $chairman_name . ': ' . $page;
 
-    $PAGE->requires->jquery();
-    $PAGE->requires->jquery_plugin('ui');
-    $PAGE->requires->jquery_plugin('ui-css');
+    load_jQuery();
+    
     $PAGE->requires->js('/mod/chairman/chairman.js');
     $PAGE->requires->css("/mod/chairman/style.css");
     
@@ -67,6 +66,21 @@ function chairman_header($cmid, $pagename, $pagelink) {
 
     chairman_global_js($cmid);
     chairman_structure($chairman, $pagename, $cmid);
+}
+
+function load_jQuery() {
+    global $PAGE;
+    
+    if (moodle_major_version() >= '2.5') {
+        $PAGE->requires->jquery();
+        $PAGE->requires->jquery_plugin('migrate');
+        $PAGE->requires->jquery_plugin('ui');
+        $PAGE->requires->jquery_plugin('ui-css');
+    } else {
+        $PAGE->requires->js("/mod/chairman/jquery/core/jquery-1.9.1.js");
+        $PAGE->requires->js("/mod/chairman/jquery/core/jquery-ui.min.js");
+        $PAGE->requires->css("/mod/chairman/jquery/core/themes/base/jquery.ui.all.css");
+    }
 }
 
 /**

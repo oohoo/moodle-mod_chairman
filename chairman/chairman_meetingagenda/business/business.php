@@ -23,7 +23,7 @@ require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/css/bus
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.php");
 require_once("$CFG->dirroot/lib/form/selectgroups.php");
 
-echo "<script type='text/javascript' src='business/js/business.js'/>";
+$PAGE->requires->js("/mod/chairman/chairman_meetingagenda/business/js/business.js");
 
 global $DB;
 

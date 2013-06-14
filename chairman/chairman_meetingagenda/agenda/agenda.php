@@ -30,7 +30,7 @@ require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.ph
 
 //Temp fix for moodle bug - see file for details
 //@TODO Remove once moodle bug has been fixed.
-echo "<script type='text/javascript' src='agenda/js/agenda_form.js'/>";
+$PAGE->requires->js("/mod/chairman/chairman_meetingagenda/agenda/js/agenda_form.js");
 
 //-------------------SECURITY---------------------------------------------------
 //------------------------------------------------------------------------------

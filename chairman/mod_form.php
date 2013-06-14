@@ -93,6 +93,8 @@ class mod_chairman_mod_form extends moodleform_mod {
         
         
         $mform->addElement('select', 'start_month_of_year', get_string('start_month_of_year','chairman'), $month_options);
+        $mform->setDefault('start_month_of_year', 7);
+        
         $mform->addElement('checkbox','secured',get_string('secured','chairman'));
         $mform->setDefault('secured', 1);
         $mform->addHelpButton('secured', 'secured', 'chairman');

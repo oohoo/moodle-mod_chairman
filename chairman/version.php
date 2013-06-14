@@ -17,7 +17,7 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************/
 
 $module->version  = 2013050100;  // The current module version (Date: YYYYMMDDXX)
-$module->requires = 2013042600;  // Requires this Moodle version
+$module->requires = 2012120300;  // Requires this Moodle version
 $module->cron     = 900;         // (15 minutes) Period for cron to check this module (secs)
 $module->maturity = MATURITY_BETA;
 $module->release = '4.0 (Build: 2013050100)';
