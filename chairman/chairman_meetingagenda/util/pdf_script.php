@@ -39,6 +39,7 @@ $agenda = null;
 //If Event ID provided
 if ($event_id) {
     //Check if agenda created
+    $chairman_event = $DB->get_record('chairman_events', array('id' => $event_id), '*', $ignoremultiple = false);
     $agenda = $DB->get_record('chairman_agenda', array('chairman_events_id' => $event_id), '*', $ignoremultiple = false);
     if ($agenda) {
         $chairman_id = $agenda->chairman_id;
@@ -48,7 +49,7 @@ if ($event_id) {
         //No Agenda Created
     } else {
 
-        $chairman_event = $DB->get_record('chairman_events', array('id' => $event_id), '*', $ignoremultiple = false);
+        
 
         if ($chairman_event) {
             $chairman_id = $chairman_event->chairman_id;
@@ -134,12 +135,37 @@ function send_email($chairman_id, $export_link_security, $context, $pdf) {
 }
 
 function send_email_link($chairman_id, $pdf, $fileinfo) {
-   
+    global $DB, $agenda, $cm, $chairman_event;
+    $newline = '%0d%0a';
+    
+    $chairman = $DB->get_record('chairman', array('id'=>$cm->instance));
+    
     $url = moodle_url::make_pluginfile_url($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-    output_mailto($chairman_id, $pdf, $url);
+    
+    //formal greeting
+    $body = get_string('formal_general_greeting','chairman') . $newline;
+    $body .= get_string('formal_group_email_export','chairman') . $newline . $newline;
+    
+    $time = $chairman_event->starthour . ":" . ZeroPaddingTime($chairman_event->startminutes) . "-" . $chairman_event->endhour . ":" . ZeroPaddingTime($chairman_event->endminutes);
+    $month = chairman_get_month($chairman_event->month);
+    
+   $eventstart = $chairman_event->day . '-' . $chairman_event->month . '-' . $chairman_event->year . ' ' . $chairman_event->starthour . ':' . $chairman_event->startminutes;
+   $eventend = $chairman_event->day . '-' . $chairman_event->month . '-' . $chairman_event->year . ' ' . $chairman_event->endhour . ':' . $chairman_event->endminutes;
+   $durationInSecs = strtotime($eventend) - strtotime($eventstart);
+   $duration = formatTime($durationInSecs);
+        
+    $body .= get_string('committee_agenda', 'chairman') . " " . $chairman->name . $newline;
+    $body .= get_string('date_agenda', 'chairman') . " " . $month . " " . $chairman_event->day . ", " . $chairman_event->year . $newline;
+    $body .= get_string('time_agenda', 'chairman') . " " . $time . $newline;
+    $body .= get_string('duration_agenda', 'chairman') . " " . $duration . $newline;
+    $body .= get_string('location_agenda', 'chairman') . " " . $agenda->location . $newline;
+    $body .= get_string('summary_agenda', 'chairman') . " " . $chairman_event->summary . $newline;
+    $body .= get_string('desc_agenda', 'chairman') . " " . $chairman_event->description . $newline;
+    
+    output_mailto($chairman_id, $pdf, $body, $url);
 }
 
-function output_mailto($chairman_id, $pdf, $mailto_body) {
+function output_mailto($chairman_id, $pdf, $mailto_body, $url) {
     global $DB;
 
     $members = $DB->get_records('chairman_members', array('chairman_id' => $chairman_id));
@@ -156,7 +182,7 @@ function output_mailto($chairman_id, $pdf, $mailto_body) {
     $mailto_subject = $pdf->get_event_name();
 
 
-    $mailto = "mailto:" . $mailto_members . "?subject=" . urlencode($mailto_subject) . "&body=" . urlencode($mailto_body);
+    $mailto = "mailto:" . $mailto_members . "?subject=" . $mailto_subject . "&body=" . $mailto_body . '%0d%0a%0d%0a' . urlencode($url);
 
     $return_url = required_param("return_url", PARAM_URL);
 

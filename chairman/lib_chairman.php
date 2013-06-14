@@ -586,7 +586,7 @@ function display_planner_results($planner_id, $chairman_id) {
 
         if (chairman_isadmin($chairman_id) && $percentage > 0) {
 
-            echo ' <input type="image" src="../pix/create_meeting.png" />';
+            echo ' <input type="image" title="'.get_string('create_meeting', 'chairman').'" src="../pix/create_meeting.png" />';
             echo '<input type="hidden" name="date_id" value ="' . $date_col[$i] . '"/>';
             echo '<input type="hidden" name="chairman_id" value ="' . $chairman_id . '"/>';
             echo '</form>';

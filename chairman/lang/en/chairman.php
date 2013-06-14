@@ -142,14 +142,11 @@ $string['add_previous_guest'] = "Add Previous Guest";
 $string['add_topic'] = "Add Topic";
 $string['add_update_motions'] = "Add/Update Motion(s)";
 $string['agenda_absent'] = "Absent";
-$string['agenda_absents'] = "Absent(s):";
 $string['agenda_present'] = "Present";
-$string['agenda_presents'] = "Present(s):";
 $string['agenda_tab'] = 'Agenda';
 $string['agenda'] = 'agenda';
 $string['arising_issues'] = 'Minutes';
 $string['agenda_uabsent'] = "Unexcused Absent";
-$string['agenda_uabsents'] = "Unexcused Absent(s):";
 $string['agendas'] = 'Agendas';
 $string['attachments'] = "Attachments: ";
 $string['committee_agenda'] = 'Committee: ';
@@ -466,6 +463,16 @@ $string["sNext"] = "Next";
 $string["sPrevious"] = "Previous";
 $string["sSortAscending"] = ": activate to sort column ascending";
 $string["sSortDescending"] = ": activate to sort column descending";
+
+
+$string["formal_general_greeting"] = "Dear Sir or Madam,";
+$string["formal_group_email_export"] = "The following email contains a link to a PDF version of the agenda or minutes for the following meeting:";
+
+$string['agenda_presents'] = "Present: ";
+$string['agenda_uabsents'] = "Unexcused Absent: ";
+$string['agenda_absents'] = "Absent: ";
+
+$string['create_meeting'] = "Create a meeting at this date & time.";
 
 
 ?>

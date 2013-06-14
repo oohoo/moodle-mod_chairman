@@ -755,11 +755,11 @@ class comity_db_migrator {
         $chairman->col_menu_editevent = 1;
         $chairman->col_menu_addevent = 1;
         $chairman->col_menu_deleteevent = 1;
-        $chairman->col_menu_agenda = 0;
-        $chairman->col_menu_arising_issues = 0;
-        $chairman->col_menu_viewer_events = 0;
-        $chairman->col_menu_open_topic_list = 0;
-        $chairman->col_menu_agenda_archives = 0;
+        $chairman->col_menu_agenda = 1;
+        $chairman->col_menu_arising_issues = 1;
+        $chairman->col_menu_viewer_events = 1;
+        $chairman->col_menu_open_topic_list = 1;
+        $chairman->col_menu_agenda_archives = 1;
         $chairman->col_menu_filesview = 1;
         
         chairman_update_menu_state($chairman);
