@@ -93,6 +93,14 @@ class pdf_creator
 
     function __construct($event_id, $agenda_id, $chairman_id, $cm)
     {
+        /**
+         * @TODO Fix Naming in this file
+         * NAMING IS REALLY MESSED UP HERE
+         * chairman_id = cm->id
+         * 
+         * I think cm is actually the chairman id too?!...
+         */
+        
         $this->event_id = $event_id;
         $this->agenda_id = $agenda_id;
         $this->chairman_id = $chairman_id;
@@ -116,6 +124,7 @@ class pdf_creator
         $agenda_id = $this->agenda_id;
         $instance = $this->instance;
         $chairman_id = $this->chairman_id;
+        $context = context_module::instance($chairman_id);
         
         if($plain_pdf!= null)
             $this->plain_pdf = $plain_pdf;
@@ -231,7 +240,7 @@ class pdf_creator
         }
 
         // -------------- Topics ------------------------------------------------
-        $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'timecreated ASC', '*', $ignoremultiple = false);
+        $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'topic_order ASC, timecreated ASC', '*', $ignoremultiple = false);
 
 
 
@@ -415,7 +424,27 @@ class pdf_creator
                     $pdf->WriteHTML('&nbsp;<B>' . get_string('duration_agenda', 'chairman') . "</b> " . $topic->duration);
                 }
 
-
+                $fs = get_file_storage();
+                $files = $fs->get_area_files($context->id, 'mod_chairman', 'attachment', $topic->filename);
+                $filenames = '';
+                
+                foreach($files as $file)
+                {
+                    $filename = $file->get_filename();
+                    if($filename == '.') continue;
+                    
+                    $filenames.= $filename . ", ";
+                }
+                    
+                $filenames_len = strlen($filenames);
+                if($filenames_len > 0)
+                    $filenames = substr($filenames, 0, $filenames_len - 2);
+                
+               if (!$filenames == "")
+                {
+                    $pdf->WriteHTML('&nbsp;<B>' . get_string('filenames_agenda_c', 'chairman') . "</b> " . $filenames);
+                }
+                
 
                 if (isset($topic->description) && !$topic->description == "")
                 {

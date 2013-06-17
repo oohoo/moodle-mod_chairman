@@ -32,6 +32,9 @@ require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/ajax_lib.ph
 //@TODO Remove once moodle bug has been fixed.
 $PAGE->requires->js("/mod/chairman/chairman_meetingagenda/agenda/js/agenda_form.js");
 
+//any new topic has an identifier of -1 WHEN DEALING WITH ORDER
+$NEW_TOPIC_ORDER_INDEX = -1;
+
 //-------------------SECURITY---------------------------------------------------
 //------------------------------------------------------------------------------
 //Simple role cypher for code clarity
@@ -116,8 +119,7 @@ output_export_pdf_image();
  *
  */
 function agenda_editable($agenda,$chairman_id,$event_id,$cm,$selected_tab,$agenda_id){
-    global $DB,$USER,$CFG;
-
+    global $DB,$USER,$CFG, $NEW_TOPIC_ORDER_INDEX;
 
     $topic_count = 0; //initalize as having zero topics
 
@@ -142,6 +144,8 @@ require_once('agenda_mod_form.php');
 //Create new object, with topic count as parameter
 $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty field
 
+$topics_order_string = optional_param('topics_order','',PARAM_RAW);
+$topics_order = json_decode($topics_order_string);
 
 //----------PARTIAL SUBMIT------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -211,6 +215,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
                     $topic_object->modifiedby = $USER->id;
                     $topic_object->timemodified = time();
                     $topic_object->timecreated = time();
+                    $topic_object->topic_order = $topics_order->$NEW_TOPIC_ORDER_INDEX;
 
                     //Set up files for topic
                     //search database to find first unused filename ID for the current instance of this course plugin
@@ -294,8 +299,9 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
                     $topic_object->description = $topic_descriptions[$key];
                     $topic_object->title = $topic_title[$key];
                     $topic_object->duration = $topic_duration[$key];
-                     $topic_object->timemodified = time();
+                    $topic_object->timemodified = time();
                     $topic_object->modifiedby = $USER->id;
+                    $topic_object->topic_order = $topics_order->$topic_id;
 
 
                     //Update topic
@@ -324,6 +330,7 @@ $mform = new mod_chairman_agenda_form($topic_count,$agenda_id); //One empty fiel
                     $topic_object->modifiedby = $USER->id;
                     $topic_object->timemodified = time();
                     $topic_object->timecreated = time();
+                    $topic_object->topic_order = $topics_order->$NEW_TOPIC_ORDER_INDEX;
 
                     //Set up files for topic
                     //Find first unused fileID for current instance of course plugin
@@ -454,20 +461,19 @@ pdf_version($event_id);
 
             $toform->created = 'yes';
             $toform->location = $agenda->location;
-            $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'timecreated ASC', $fields = '*', $limitfrom = 0, $limitnum = 0);
+             $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'topic_order ASC, timecreated ASC', $fields = '*', $limitfrom = 0, $limitnum = 0);
 
 
             $index = 0;
-
-            // print_object($topics);
-
+            $order_json = array();
             foreach ($topics as $topic) { //For each topic
 
                 $toform->topic_title[$index] = $topic->title;
                 $toform->duration_topic[$index] = $topic->duration;
                 $toform->topic_description[$index] = $topic->description;
                 $toform->topic_id[$index] = $topic->id;
-
+                $order_json[$topic->id] = $index;
+                
                 //Set up files for each topic
                 if (!isset($toform->id)) {
                     $toform->id = null;
@@ -491,6 +497,11 @@ pdf_version($event_id);
 
                 $index++;
             }
+            
+            $order_json[-1] = $index;
+            
+            $toform->topics_order = json_encode($order_json);
+            
             //SupplyDefault Value to New Topic
             $toform->topic_title[$index] = get_string('topic_title_default', 'chairman');
         }
@@ -604,7 +615,7 @@ require_once('agenda_mod_form_view.php'); //Form for users that can view
         if ($agenda) {
             $toform->created = 'yes';
             $toform->location = $agenda->location;
-            $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'timecreated ASC', $fields = '*', $limitfrom = 0, $limitnum = 0);
+            $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'topic_order ASC, timecreated ASC', $fields = '*', $limitfrom = 0, $limitnum = 0);
 
             $index = 0;
 
@@ -732,6 +743,7 @@ $commityRecords = $DB->get_records('chairman_members', array('chairman_id' => $c
                 $topic_object->modifiedby = $USER->id;
                 $topic_object->timemodified = time();
                 $topic_object->timecreated = time();
+                $topic_object->topic_order = 0;
 
                 $DB->insert_record('chairman_agenda_topics', $topic_object, $returnid = true, $bulk = false);
 
@@ -761,7 +773,7 @@ $commityRecords = $DB->get_records('chairman_members', array('chairman_id' => $c
                 $topic_object->modifiedby = $USER->id;
                 $topic_object->timemodified = time();
                 $topic_object->timecreated = time();
-
+                $topic_object->topic_order = 1;
                
                 $DB->insert_record('chairman_agenda_topics', $topic_object, $returnid = true, $bulk = false);
             }

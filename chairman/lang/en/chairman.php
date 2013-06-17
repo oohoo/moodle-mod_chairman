@@ -473,6 +473,6 @@ $string['agenda_uabsents'] = "Unexcused Absent: ";
 $string['agenda_absents'] = "Absent: ";
 
 $string['create_meeting'] = "Create a meeting at this date & time.";
-
+$string['filenames_agenda_c'] = 'Attached Files:';
 
 ?>

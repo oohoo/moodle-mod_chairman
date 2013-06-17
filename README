@@ -10,13 +10,13 @@ This repository contains the chairman module for moodle. The module allows the m
 committees through the the control of current members, creation and viewing of agendas, scheduling
 and organizing of meetings, central file storage for the committee, and much more. 
 
-This version of the chairman module is compatible with Moodle 2.5.X.
+This version of the chairman module is compatible with Moodle 2.4.X +.
 
 --------------------------------------------------------------------------------
 Prerequisites
 --------------------------------------------------------------------------------
 
-Moodle Installed - Version 2.5.X
+Moodle Installed - Version 2.4.X +
 
 --------------------------------------------------------------------------------
 Installation

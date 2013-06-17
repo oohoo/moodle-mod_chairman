@@ -9,3 +9,11 @@ textarea[id^=id_topic_description_] {
      vertical-align:top;
  }
 
+ .sortable_icon {
+     float: left;
+ }
+
+ .mform .ui-sortable{
+     list-style-image: none;
+     list-style-type: none;
+ }

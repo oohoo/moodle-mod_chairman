@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/chairman/db" VERSION="20130522" COMMENT="XMLDB file for Moodle mod/chairman"
+<XMLDB PATH="mod/chairman/db" VERSION="20130617" COMMENT="XMLDB file for Moodle mod/chairman"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -23,7 +23,7 @@
         <FIELD NAME="questionnaire" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="use_questionnaire" NEXT="bbb"/>
         <FIELD NAME="bbb" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="questionnaire" NEXT="use_bbb"/>
         <FIELD NAME="use_bbb" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" PREVIOUS="bbb" NEXT="start_month_of_year"/>
-        <FIELD NAME="start_month_of_year" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="7" SEQUENCE="false" PREVIOUS="use_bbb" />
+        <FIELD NAME="start_month_of_year" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="7" SEQUENCE="false" PREVIOUS="use_bbb"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -58,7 +58,7 @@
     <TABLE NAME="chairman_links" COMMENT="External Links" PREVIOUS="chairman_files" NEXT="chairman_menu_state">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="chairman_id"/>
-        <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
         <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="name displayed for link" PREVIOUS="chairman_id" NEXT="link"/>
         <FIELD NAME="link" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="link" PREVIOUS="name"/>
       </FIELDS>
@@ -191,7 +191,8 @@
         <FIELD NAME="hidden" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Check if topic is hidden. This is for default topics." PREVIOUS="status" NEXT="modifiedby"/>
         <FIELD NAME="modifiedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="hidden" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="modifiedby" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="topic_order"/>
+        <FIELD NAME="topic_order" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="chairman_agenda"/>

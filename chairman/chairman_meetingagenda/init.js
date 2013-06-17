@@ -428,6 +428,10 @@ $(function() {
     var last_topic_id = $("[id^=id_mod_committee_create_topics_]").last().attr("id");
     expand_topic_fields("#"+last_topic_id);
     
+    build_topics_sortable();
+
+    
+    
     //@TODO Look for a way for YUI & Query to communicate or interact to avoid this.
     setTimeout(function() { 
         setup_collapseall_listener();
@@ -467,5 +471,69 @@ function convert_moodle_field_to_accordian_motion(container_selector_start)
           
           convert_moodle_field_to_accordian("#"+id, false, label);
       });
+      
+}
+
+/**
+ * Converts the topic elements within an agenda into a sortable list
+ */
+function build_topics_sortable() {
+    
+    var previous_element = $('#id_mod_committee_create_topics_0, #mod_committee_create_topics_0');//first element before topics
+    
+    console.log(previous_element);
+    
+    var topic_elements = $('fieldset[id^=id_mod_committee_create_topics_],fieldset[id^=mod_committee_create_topics_]');//get the list of topics
+    var topics_list_wrapper = $('<ul/>', {id:'topics_sortable'});//create a list to wrap sortable list rows(topics)
+    
+    //insert list after the element before where the first topic
+    previous_element.after(topics_list_wrapper);
+    
+    //itterate through each topic element and put the topics into the list
+    topic_elements.each(function(index, topic) {
+        
+        var topic_wrapper = $('<li/>');//create an LI wrapper for the topic
+        topic_wrapper.prepend($('<span/>', {class:"sortable_icon ui-icon ui-icon-arrow-4"}));
+        topic_wrapper.append(topic);//append the topic to the wrapper
+        topics_list_wrapper.append(topic_wrapper);//attach the li topic wrapper to the list
+        
+    });
+    
+    
+    //create sortable list
+    topics_list_wrapper.sortable({
+        
+    //whenever a topic is dropped into the list
+    stop: function(event, ui) {
+        var list = ui.item.parent();//grab list
+        var order = $("input[name='topics_order']");//get hidden object that contains order information (in json format)
+        var json_string = order.val();//get string value of order info
+        var order_json = $.parseJSON(json_string);//convert to object from json
+        
+        //itterate through all topics and record new order
+        var position = 0;
+        $(list).children().each(function(index, element) {//each child is a topic
+            
+            var topic_fieldset = $(element).find('[id^=id_mod_committee_create_topics_], [id^=mod_committee_create_topics_]');//get an id that contains the original index
+            var original_index = find_repeated_field_num(topic_fieldset.attr('id'));//get the ORIGINAL INDEX of the current topic
+            
+            var topic_id_element = $('input[name="topic_id['+original_index+']"]')//retrieve the hidden element that contains topic id
+            var topic_id = topic_id_element.val();//get topic id value
+            
+            //use -1 for new topic that has no id
+            if(topic_id === '')
+                topic_id = '-1';
+            
+            //update position for this topic
+            order_json[topic_id] = position;
+            position++;
+        });
+        
+        //convert new json object to string
+        json_string = JSON.stringify(order_json);
+        order.val(json_string);//save order state back to hidden field
+        }
+    });
+    
 }
 

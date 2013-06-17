@@ -132,6 +132,9 @@ $mform->setType('selected_tab', PARAM_RAW);
 $mform->addElement('hidden', 'delete_requested', 'no');
 $mform->setType('delete_requested', PARAM_RAW);
 
+$mform->addElement('hidden', 'topics_order', '');
+$mform->setType('topics_order', PARAM_RAW);
+
 $mform->addElement('html', '<br>');
 
 $buttonarray=array();

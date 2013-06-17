@@ -169,7 +169,7 @@ class mod_business_mod_form extends moodleform {
 //---------TOPICS---------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-        $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'timecreated ASC', '*', $ignoremultiple = false);
+        $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'topic_order ASC, timecreated ASC', '*', $ignoremultiple = false);
 
         if ($topics) { //check if any topics actually exist
             //possible topic status:

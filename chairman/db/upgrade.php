@@ -29,18 +29,20 @@ global $CFG, $THEME, $DB;
 $dbman = $DB->get_manager();
 $result = true;
 
+if ($oldversion < 2013061700) {
+        // Define field introformat to be added to book
+        $table = new xmldb_table('chairman_agenda_topics');
+        $field = new xmldb_field('topic_order', XMLDB_TYPE_INTEGER, '20');
 
-//Possible check for another install only function in moodle instead of this upgrade
-//
-//Last check of migrating old data
-    //if old committee manager is installed && (migrate flag clear ?? - or do something like check if first install?)
-        //if its the latest version
-            //migrate data
-        //else
-            //display - please update committee manager to last version of 
-            //committee manager to migrate data to chairman
-    //else
-        //nothing
+        // Launch add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // book savepoint reached
+        upgrade_mod_savepoint(true, 2013061700, 'chairman');
+}
+
 
 return $result;
 }
