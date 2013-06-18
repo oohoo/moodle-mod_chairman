@@ -433,7 +433,11 @@ class pdf_creator
                     $filename = $file->get_filename();
                     if($filename == '.') continue;
                     
-                    $filenames.= $filename . ", ";
+                    $link = (moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename()));
+                    
+                    $file_link = '<a href="'.$link.'" dir="ltr">'.$filename.'</a>';
+                    
+                    $filenames.= $file_link . ", ";
                 }
                     
                 $filenames_len = strlen($filenames);

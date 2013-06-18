@@ -481,8 +481,6 @@ function build_topics_sortable() {
     
     var previous_element = $('#id_mod_committee_create_topics_0, #mod_committee_create_topics_0');//first element before topics
     
-    console.log(previous_element);
-    
     var topic_elements = $('fieldset[id^=id_mod_committee_create_topics_],fieldset[id^=mod_committee_create_topics_]');//get the list of topics
     var topics_list_wrapper = $('<ul/>', {id:'topics_sortable'});//create a list to wrap sortable list rows(topics)
     
