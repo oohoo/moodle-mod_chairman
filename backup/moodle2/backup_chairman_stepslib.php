@@ -41,13 +41,15 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         list($file,$files) = $this->chairman_files_table_element();
         list($event,$events) = $this->chairman_events_table_element();
         list($link,$links) = $this->chairman_links_table_element();
+        list($menu,$menus) = $this->chairman_menu_table_element();
+        
         
         list($agenda,$agendas) = $this->chairman_agenda_table_element();
         list($pl_date,$pl_dates) = $this->chairman_planner_dates_table_element();
         list($pl_user,$pl_users) = $this->chairman_planner_users_table_element();
         
-        list($ag_topic, $ag_topics) = $this->chairman_agenda_topics_table_element();
         list($ag_member, $ag_members) = $this->chairman_agenda_members_table_element();
+        list($ag_topic, $ag_topics) = $this->chairman_agenda_topics_table_element();
         list($ag_guest,$ag_guests) = $this->chairman_agenda_guests_table_element();
         list($pl_response,$pl_responses) = $this->chairman_planner_response_table_element();
         
@@ -74,6 +76,10 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         
         $chairman->add_child($links);
         $links->add_child($link);
+        
+        $chairman->add_child($menus);
+        $menus->add_child($menu);
+        
         
         
         //Level 3
@@ -118,6 +124,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $this->chairman_files_table_config($file);
         $this->chairman_events_table_config($event);
         $this->chairman_links_table_config($link);
+        $this->chairman_menus_table_config($menu);
         
         $this->chairman_agenda_table_config($agenda);
         $this->chairman_planner_dates_table_config($pl_date);
@@ -166,6 +173,20 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
             'user_id', 'role_id', 'chairman_id'));
         
         return array($chairman_member, $chairman_members);
+    }
+    
+        /**
+     * Generates the backup_nested_element for the chairman menu table
+     * 
+     * @return backup_nested_element Chairman Menu Table
+     */
+    private function chairman_menu_table_element()
+    {
+        $chairman_menus = new backup_nested_element('chairman_menus');
+        $chairman_menu = new backup_nested_element('chairman_menu', array('id'), array(
+            'chairman_id', 'page_code', 'state'));
+        
+        return array($chairman_menu, $chairman_menus);
     }
     
      /**
@@ -231,7 +252,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
     {
         $chairman_agendas = new backup_nested_element('chairman_agendas');
         $chairman_agenda = new backup_nested_element('chairman_agenda', array('id'), array(
-            'location', 'chairman_id'));
+            'location', 'chairman_id', 'message', 'footer'));
         
         return array($chairman_agenda, $chairman_agendas);
     }
@@ -274,7 +295,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $chairman_topics = new backup_nested_element('chairman_agenda_topics');
         $chairman_topic = new backup_nested_element('chairman_agenda_topic', array('id'), array(
             'title', 'description', 'duration', 'notes', 'filename', 'follow_up', 'status','hidden',
-            'modifiedby', 'timemodified', 'timecreated', 'topic_order'));
+            'modifiedby', 'timemodified', 'timecreated', 'topic_order', 'topic_header', 'presentedby'));
         
         return array($chairman_topic,$chairman_topics);
     }
@@ -370,6 +391,17 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $table->set_source_table('chairman_members', array('chairman_id' => backup::VAR_MODID));   
         $table->annotate_ids('user', 'user_id');
     }
+    
+   /**
+     * Sets the source for the chairman menu table
+     * 
+     */
+    private function chairman_menus_table_config($table)
+    {   
+        $table->set_source_table('chairman_menu_state', array('chairman_id' => backup::VAR_ACTIVITYID));   
+    }
+    
+    
     
      /**
      * Sets the source for the chairman planner table

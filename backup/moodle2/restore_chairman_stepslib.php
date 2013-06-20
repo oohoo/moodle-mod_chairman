@@ -40,6 +40,7 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $chairman_file = "$chairman_base/chairman_files/chairman_file";
         $chairman_events = "$chairman_base/chairman_events/chairman_event";
         $chairman_links = "$chairman_base/chairman_links/chairman_link";
+        $chairman_menu = "$chairman_base/chairman_menus/chairman_menu";
 
         //level 3 mapping
         $chairman_agenda = "$chairman_events/chairman_agendas/chairman_agenda";
@@ -62,6 +63,7 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $paths[] = new restore_path_element('chairman_file', $chairman_file);
         $paths[] = new restore_path_element('chairman_event', $chairman_events);
         $paths[] = new restore_path_element('chairman_link', $chairman_links);
+        $paths[] = new restore_path_element('chairman_menu', $chairman_menu);
         $paths[] = new restore_path_element('chairman_agenda', $chairman_agenda);
         $paths[] = new restore_path_element('chairman_planner_date', $chairman_planner_date);
         $paths[] = new restore_path_element('chairman_planner_user', $chairman_planner_user);
@@ -112,6 +114,25 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $this->set_mapping('chairman', $oldid, $newitemid);
     }
 
+    /**
+     * Processes all instances of chairman menu state present in the backup,
+     * and inserts them into the appropriate chairman table in moodle.
+     * 
+     * @global moodle_database $DB
+     * @param Object $data
+     */
+    protected function process_chairman_menu($data) {
+        global $DB;
+
+        $data = (object) $data;
+        $oldid = $data->id;
+        
+        $data->chairman_id = $this->get_new_parentid('chairman');
+
+        $newitemid = $DB->insert_record('chairman_menu_state', $data);
+        $this->set_mapping('chairman_menu_state', $oldid, $newitemid);
+    }
+    
     /**
      * Processes all instances of chairman members present in the backup,
      * and inserts them into the appropriate chairman table in moodle.
@@ -305,6 +326,8 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
 
         $data->modifiedby = $this->get_mappingid('user', $data->modifiedby);
 
+        $data->presentedby = $this->get_mappingid('chairman_agenda_member', $data->presentedby);
+        
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 

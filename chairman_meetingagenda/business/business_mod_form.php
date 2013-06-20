@@ -140,15 +140,10 @@ class mod_business_mod_form extends moodleform {
         $commity_members = $DB->get_records('chairman_agenda_members', array('chairman_id' => $chairman_id, 'agenda_id' => $agenda_id), '', '*', $ignoremultiple = false);
 
 //--------Comittee Members------------------------------------------------------
-        $chairmanmembers = array(); //Used to store commitee members in an array
-
+        $chairmanmembers = convert_members_to_select_options($commity_members);
+        
         if ($commity_members) {//If any committee members present
             generate_participants_multiselect($mform, $agenda_id, $commity_members);
-        }
-        
-        foreach ($commity_members as $commity_member) {
-            $name = getUserName($commity_member->user_id);
-            $chairmanmembers[$commity_member->id] = $name;
         }
 
 
@@ -282,8 +277,15 @@ class mod_business_mod_form extends moodleform {
                 $mform->addElement('htmleditor', "topic_notes[$index]", '&nbsp;', array('cols' => '100%'));
 //STATUS OF TOPIC
                 $mform->addElement('html', '</br>');
+                
+                conditionally_add_static($mform, getUserNameFromAgendaMemberID($topic->presentedby), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
+                
                 $mform->addElement('select', "topic_status[$index]", get_string('topic_status', 'chairman'), $topic_statuses, $attributes = null);
                 $mform->setType('topic_status', PARAM_TEXT);
+                
+                
+                conditionally_add_static($mform, $event_record->description, 'description', get_string('desc_agenda', 'chairman'));
+                
                 $mform->addElement('hidden', "topic_ids[$index]", $topic->id);
                 $mform->setType('topic_ids', PARAM_INT);
 //$mform->addElement('text', "follow_up[$index]", get_string('topic_followup', 'chairman'), array('size'=>'50'));

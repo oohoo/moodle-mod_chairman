@@ -72,6 +72,8 @@ class mod_business_mod_form extends moodleform {
         conditionally_add_static($mform, $agenda->location, 'location', get_string('location_agenda', 'chairman'));
         conditionally_add_static($mform, $event_record->summary, 'summary', get_string('summary_agenda', 'chairman'));
         conditionally_add_static($mform, $event_record->description, 'description', get_string('desc_agenda', 'chairman'));
+        conditionally_add_static($mform, $agenda->message, 'message', get_string('agenda_post_message', 'chairman'));
+        conditionally_add_static($mform, $agenda->footer, 'footer', get_string('agenda_post_footer', 'chairman'));
 
 //----------------CHANGE DEFAULT VARIABLES--------------------------------------
 //------------------------------------------------------------------------------
@@ -198,6 +200,10 @@ class mod_business_mod_form extends moodleform {
 //------------------------------------------------------------------------------
 //STATUS OF TOPIC
                 $mform->addElement('static', "topic_status[$index]", get_string('topic_status', 'chairman'), '');
+                
+                conditionally_add_static($mform, getUserNameFromAgendaMemberID($topic->presentedby), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
+                
+                
                 $mform->addElement('hidden', "topic_ids[$index]", $topic->id);
                 $mform->setType('topic_ids', PARAM_INT);
 //$mform->addElement('static', "follow_up[$index]", get_string('topic_followup', 'chairman'), '');

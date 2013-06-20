@@ -157,7 +157,9 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="chairman_id"/>
         <FIELD NAME="chairman_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="chairman_events_id"/>
         <FIELD NAME="chairman_events_id" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="chairman_id" NEXT="location"/>
-        <FIELD NAME="location" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="chairman_events_id"/>
+        <FIELD NAME="location" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="chairman_events_id" NEXT="message"/>
+        <FIELD NAME="message" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="location" NEXT="footer"/>
+        <FIELD NAME="footer" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="message"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -189,10 +191,12 @@
         <FIELD NAME="follow_up" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="filename" NEXT="status"/>
         <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="follow_up" NEXT="hidden"/>
         <FIELD NAME="hidden" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Check if topic is hidden. This is for default topics." PREVIOUS="status" NEXT="modifiedby"/>
-        <FIELD NAME="modifiedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="hidden" NEXT="timemodified"/>
+        <FIELD NAME="modifiedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="hidden" NEXT="presentby"/>
+        <FIELD NAME="presentedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="modifiedby" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="modifiedby" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="topic_order"/>
-        <FIELD NAME="topic_order" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timecreated"/>
+        <FIELD NAME="topic_order" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timecreated" NEXT="topic_header"/>
+        <FIELD NAME="topic_header" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="topic_order"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="chairman_agenda"/>

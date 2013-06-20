@@ -43,6 +43,41 @@ if ($oldversion < 2013061700) {
         upgrade_mod_savepoint(true, 2013061700, 'chairman');
 }
 
+if ($oldversion < 2013062000) {
+        // Define field introformat to be added to book
+        $table = new xmldb_table('chairman_agenda_topics');
+        $field = new xmldb_field('topic_header', XMLDB_TYPE_CHAR, '255');
+        
+        // Launch add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        $field = new xmldb_field('presentedby', XMLDB_TYPE_INTEGER, '20');
+        
+        // Launch add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+      
+        $table = new xmldb_table('chairman_agenda');
+        $field = new xmldb_field('message', XMLDB_TYPE_TEXT);
+        
+        // Launch add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        $field = new xmldb_field('footer', XMLDB_TYPE_CHAR, '255');
+
+        // Launch add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // book savepoint reached
+        upgrade_mod_savepoint(true, 2013062000, 'chairman');
+}
 
 return $result;
 }

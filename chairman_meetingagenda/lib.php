@@ -25,6 +25,27 @@
  * @copyright 2011 Dustin Durand
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+/**
+ * Converts an array of database records into an array that is used for select
+ * dropdowns.
+ * 
+ * results: array('memberid'=>'name',....)
+ * 
+ * @param array $commity_members Array of database result objects
+ */
+function convert_members_to_select_options($commity_members) {
+    $chairmanmembers = array('' => get_string('presentedby_default', 'chairman')); //Used to store commitee members in an array
+
+    foreach ($commity_members as $commity_member) {
+        $name = getUserName($commity_member->user_id);
+        $chairmanmembers[$commity_member->id] = $name;
+    }
+
+    return $chairmanmembers;
+}
+
+
 /*
  * Converts month, as a number, to a literary term.
  *
@@ -379,7 +400,7 @@ function output_export_pdf_image() {
  *  @param $int $userID An unique moodle ID for a moodle user.
  */
     function getUserName($userID){
-    Global $DB;
+    global $DB;
 
     $user = $DB->get_record('user', array('id' => $userID), '*', $ignoremultiple = false);
     $name = null;
@@ -388,5 +409,20 @@ function output_export_pdf_image() {
     }
     return $name;
     }
+    
+        /*
+ * Converts a given moodle ID into a FirstName LastName String.
+ *
+ *  @param $int $userID An unique moodle ID for a moodle user.
+ */
+    function getUserNameFromAgendaMemberID($memberUserID){
+    global $DB;
 
+    
+    $member = $DB->get_record('chairman_agenda_members', array('id'=>$memberUserID));
+    
+    if(!$member) return '';
+    
+    return getUserName($member->user_id);
+    }
 ?>

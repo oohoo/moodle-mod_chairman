@@ -39,8 +39,10 @@ $mform =& $this->_form;
 global $DB;
 
 $agenda_id = $this->agenda_id;
+$agenda = $DB->get_record('chairman_agenda', array('id' => $agenda_id), '*', $ignoremultiple = false);
 		
-		
+$commity_members = $DB->get_records('chairman_agenda_members', array('chairman_id' => $agenda->chairman_id, 'agenda_id' => $agenda_id), '', '*', $ignoremultiple = false);		
+$chairmanmembers = convert_members_to_select_options($commity_members);
 
 //---------GENERAL AGENDA INFORMATION-------------------------------------------
 //------------------------------------------------------------------------------
@@ -54,16 +56,22 @@ $mform->addElement('static', 'duration', get_string('duration_agenda', 'chairman
 $mform->addElement('text', 'location', get_string('location_agenda', 'chairman'),"");
 $mform->setType('location', PARAM_TEXT);
 
-$agenda = $DB->get_record('chairman_agenda', array('id' => $agenda_id), '*', $ignoremultiple = false);
+
 
 if($agenda){
 $event_record = $DB->get_record('chairman_events', array('id' => $agenda->chairman_events_id), '*', $ignoremultiple = false);
 
 if(isset($event_record)){
  conditionally_add_static($mform, $event_record->summary, 'summary', get_string('summary_agenda', 'chairman'));
-conditionally_add_static($mform, $event_record->description, 'description', get_string('desc_agenda', 'chairman'));
+ conditionally_add_static($mform, $event_record->description, 'description', get_string('desc_agenda', 'chairman'));
 
 }
+
+$mform->addElement('editor', 'agenda_post_message', get_string('agenda_post_message', 'chairman'), array('subdirs'=>0,'maxbytes'=>0,'maxfiles'=>0,'changeformat'=>0,'context'=>null,'noclean'=>0,'trusttext'=>0));
+$mform->setType('fieldname', PARAM_RAW);
+
+$mform->addElement('textarea', 'agenda_post_footer', get_string('agenda_post_footer', 'chairman'));
+$mform->setType('fieldname', PARAM_RAW);
 
 }
 
@@ -85,6 +93,8 @@ $repeatarray=array();
     $mform->setType('topic_title', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('text', 'duration_topic', get_string('duration_agenda', 'chairman'),"");
     $mform->setType('duration_topic', PARAM_TEXT);
+    $repeatarray[] = $mform->createElement('select', "presentedby", get_string('agenda_presentedby', 'chairman'), $chairmanmembers, $attributes = null);
+    $mform->setType('presentedby', PARAM_INT);
     $repeatarray[] = $mform->createElement('textarea', 'topic_description', get_string('desc_agenda', 'chairman'), 'wrap="virtual" rows="5" cols="80"');
     $mform->setType('topic_description', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('filemanager', 'attachments', get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );
