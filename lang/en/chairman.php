@@ -481,5 +481,9 @@ $string['agenda_post_footer'] = 'Footer: ';
 $string['agenda_presentedby'] = 'Presented By: ';
 $string['presentedby_default'] = '-----';
 
+$string['topics_header_label'] = 'Consecutive Topic Header: ';
+$string['topics_header_select_default'] = '-----';
+$string['standard_topics_header'] = 'Standard Topics';
+
 
 ?>

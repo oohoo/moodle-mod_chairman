@@ -83,6 +83,12 @@ class mod_chairman_agenda_form_view extends moodleform {
         
         $repeatarray[] = $mform->createElement('filemanager', 'attachments', get_string('attachments', 'chairman'), null, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')));
 
+        $header_group = array();
+    $header_group[] =& $mform->createElement('text', 'topic_header', '', array('class'=>"topic_header_text", 'style'=>"display:none"));
+    $repeatarray[]= $mform->createElement('group', 'topic_header_group', '', $header_group);
+    
+    $mform->setType('topic_header_group', PARAM_RAW); 
+        
 // $repeatarray[] = $mform->createElement('static', 'spacer_', '',"----------------------------------------------------------------------------");
         $repeatarray[] = $mform->createElement('static', 'spacer_', '', "");
 

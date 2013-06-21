@@ -95,6 +95,16 @@ $repeatarray=array();
     $mform->setType('duration_topic', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('select', "presentedby", get_string('agenda_presentedby', 'chairman'), $chairmanmembers, $attributes = null);
     $mform->setType('presentedby', PARAM_INT);
+    
+    $header_group = array();
+    $header_group[] =& $mform->createElement('text', 'topic_header', '', array('class'=>"topic_header_text"));
+    $header_group[] =& $mform->createElement('select', 'topic_header_select', '', array(''=> get_string('topics_header_select_default','chairman')), array('class'=>"topic_header_select"));
+    $repeatarray[]= $mform->createElement('group', 'topic_header_group', get_string('topics_header_label','chairman'), $header_group);
+    
+    $mform->setType('topic_header_group', PARAM_RAW);
+    $mform->setType('topic_header', PARAM_TEXT);    
+    $mform->setType('topic_header_select', PARAM_TEXT);  
+    
     $repeatarray[] = $mform->createElement('textarea', 'topic_description', get_string('desc_agenda', 'chairman'), 'wrap="virtual" rows="5" cols="80"');
     $mform->setType('topic_description', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('filemanager', 'attachments', get_string('attachments', 'chairman'), null,array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')) );

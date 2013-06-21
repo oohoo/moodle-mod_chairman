@@ -266,16 +266,26 @@ class mod_business_mod_form extends moodleform {
                 '0' => get_string('motion_rejected', 'chairman'));
 
             $index = 1;
-//For each topic print required elements
+            //For each topic print required elements
             foreach ($topics as $key => $topic) {
 
                 $this->topicNames[$index] = $topic->title;
                 $mform->addElement('html', "<a name=\"topic_$index\"></a>");
                 $mform->addElement('header', 'mod-committee-topic_header', get_string('topics_header', 'chairman') . " " . $index);
                 $mform->addElement('static', "", "&nbsp;", "<h3>$topic->title</h3>");
-//NOTES FOR TOPIC
+
+                /*
+                 * Hidden text for dynamic headings
+                 */
+                $mform->addElement('text', 'topic_header_' . $index, '', array('class'=>"topic_header_text", 'style'=>"display:none"));
+                $mform->setType('topic_header_'. $index, PARAM_TEXT);
+                         
+                $header_id = 'topic_header_'.$index;
+                $toform->$header_id = $topic->topic_header;
+                
+                //NOTES FOR TOPIC
                 $mform->addElement('htmleditor', "topic_notes[$index]", '&nbsp;', array('cols' => '100%'));
-//STATUS OF TOPIC
+                //STATUS OF TOPIC
                 $mform->addElement('html', '</br>');
                 
                 conditionally_add_static($mform, getUserNameFromAgendaMemberID($topic->presentedby), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
@@ -288,8 +298,8 @@ class mod_business_mod_form extends moodleform {
                 
                 $mform->addElement('hidden', "topic_ids[$index]", $topic->id);
                 $mform->setType('topic_ids', PARAM_INT);
-//$mform->addElement('text', "follow_up[$index]", get_string('topic_followup', 'chairman'), array('size'=>'50'));
-//-------FILE MANAGER ----------------------------------------------------------
+                //$mform->addElement('text', "follow_up[$index]", get_string('topic_followup', 'chairman'), array('size'=>'50'));
+                //-------FILE MANAGER ----------------------------------------------------------
                 $mform->addElement('filemanager', "attachments[$index]", get_string('attachments', 'chairman'), null, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')));
 
                 $context = get_context_instance(CONTEXT_MODULE, $this->chairman_id);

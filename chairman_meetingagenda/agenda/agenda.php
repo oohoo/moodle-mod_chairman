@@ -184,6 +184,7 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
             $topic_description = $_REQUEST['topic_description'];
             $topic_files = $_REQUEST['attachments'];
             $topic_presentedbys = $_REQUEST['presentedby'];
+            $topic_header_groups = $_REQUEST['topic_header_group'];
 
 //for each topic_id that is returned in array
             foreach ($_REQUEST['topic_id'] as $key => $topic_id) {
@@ -207,6 +208,7 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                     $topic_object->timemodified = time();
                     $topic_object->timecreated = time();
                     $topic_object->topic_order = $topics_order->$NEW_TOPIC_ORDER_INDEX;
+                    $topic_object->topic_header = $topic_header_groups[$key]['topic_header'];
 
                     //Set up files for topic
                     //search database to find first unused filename ID for the current instance of this course plugin
@@ -265,7 +267,7 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
             $topic_title = $fromform->topic_title;
             $topic_duration = $fromform->duration_topic;
             $topic_presentedbys = $fromform->presentedby;
-
+            $topic_header_groups = $_REQUEST['topic_header_group'];
 
             //for each topic_id
             foreach ($topic_ids as $key => $topic_id) {
@@ -295,7 +297,7 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                     $topic_object->timemodified = time();
                     $topic_object->modifiedby = $USER->id;
                     $topic_object->topic_order = $topics_order->$topic_id;
-
+                    $topic_object->topic_header = $topic_header_groups[$key]['topic_header'];
 
                     //Update topic
                     $DB->update_record('chairman_agenda_topics', $topic_object, $bulk = false);
@@ -462,6 +464,8 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                 $toform->topic_id[$index] = $topic->id;
                 $toform->presentedby[$index] = $topic->presentedby;
 
+                $toform->topic_header_group[$index]['topic_header'] = $topic->topic_header;
+                
                 $order_json[$topic->id] = $index;
 
                 //Set up files for each topic
@@ -608,12 +612,13 @@ function agenda_viewonly($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
             $toform->duration_topic[$index] = $topic->duration;
             $toform->topic_description[$index] = $topic->description;
             $toform->topic_id[$index] = $topic->id;
-
+            
             $presentedby = $topic->presentedby;
-            echo $presentedby;
+
             if ($presentedby != null)
                 $toform->presentedby[$index] = getUserNameFromAgendaMemberID($presentedby);
 
+            $toform->topic_header_group[$index]['topic_header'] = $topic->topic_header;
 
             //Set up files for each topic
             if (!isset($toform->id)) {
@@ -721,6 +726,7 @@ function create_agenda($chairman_id, $event_id, $location = "") {
         $topic_object->timemodified = time();
         $topic_object->timecreated = time();
         $topic_object->topic_order = 0;
+        $topic_object->topic_header = get_string('standard_topics_header','chairman');
 
         $DB->insert_record('chairman_agenda_topics', $topic_object, $returnid = true, $bulk = false);
 
@@ -751,6 +757,7 @@ function create_agenda($chairman_id, $event_id, $location = "") {
         $topic_object->timemodified = time();
         $topic_object->timecreated = time();
         $topic_object->topic_order = 1;
+        $topic_object->topic_header = get_string('standard_topics_header','chairman');
 
         $DB->insert_record('chairman_agenda_topics', $topic_object, $returnid = true, $bulk = false);
     }

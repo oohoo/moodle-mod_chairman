@@ -120,12 +120,7 @@ class mod_business_mod_form extends moodleform {
             generate_participants_multiselect($mform, $agenda_id, $chairmanMemberRecords);
         }
         
-        $chairmanmembers = array(); //Used to store commitee members in an array
-
-        foreach ($chairmanMemberRecords as $commity_member) {
-            $name = getUserName($commity_member->user_id);
-            $chairmanmembers[$commity_member->id] = $name;
-        }
+        $chairmanmembers = convert_members_to_select_options($chairmanMemberRecords);
 
 //------------MOODLE USERS------------------------------------------------------
 
@@ -187,9 +182,15 @@ class mod_business_mod_form extends moodleform {
 
                 $this->topicNames[$index] = $topic->title;
                 $mform->addElement('html', "<a name=\"topic_$index\"></a>");
-                $mform->addElement('header', 'topic_header', get_string('topics_header', 'chairman') . " " . $index);
+                $mform->addElement('header', 'mod-committee-topic_header', get_string('topics_header', 'chairman') . " " . $index);
                 $mform->addElement('static', "", "", "<h3>$topic->title</h3>");
 
+                $mform->addElement('text', 'topic_header_' . $index, '', array('class'=>"topic_header_text", 'style'=>"display:none"));
+                $mform->setType('topic_header_'. $index, PARAM_TEXT);
+                
+                $header_id = 'topic_header_'.$index;
+                $toform->$header_id = $topic->topic_header;
+                
 //NOTES FOR TOPIC && DEFAULT VALUE FOR NOTES------------------------------------
                 $mform->addElement('html', '</br>');
 

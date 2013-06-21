@@ -500,17 +500,23 @@ function build_topics_sortable() {
     
     //create sortable list
     topics_list_wrapper.sortable({
-        
+    items: 'li:not(.sort_ignore)',
     //whenever a topic is dropped into the list
     stop: function(event, ui) {
         var list = ui.item.parent();//grab list
         var order = $("input[name='topics_order']");//get hidden object that contains order information (in json format)
+        
         var json_string = order.val();//get string value of order info
+        
+        if(json_string == null) return;
+        
+        console.log(json_string);
+        
         var order_json = $.parseJSON(json_string);//convert to object from json
         
         //itterate through all topics and record new order
         var position = 0;
-        $(list).children().each(function(index, element) {//each child is a topic
+        $(list).children(":not(.sort_ignore)").each(function(index, element) {//each child is a topic
             
             var topic_fieldset = $(element).find('[id^=id_mod_committee_create_topics_], [id^=mod_committee_create_topics_]');//get an id that contains the original index
             var original_index = find_repeated_field_num(topic_fieldset.attr('id'));//get the ORIGINAL INDEX of the current topic
@@ -535,3 +541,61 @@ function build_topics_sortable() {
     
 }
 
+
+/**
+ * Update Topic Headers based on the values in the topic's header textfield
+ * 
+ * Headers are added before each unique header in a series of topics (Only considering the last seen header - consecutive unqiueness).
+ * Upon finding a header that is same as the previous topic, it is considered part of 
+ * the previous group and no header is added.
+ * 
+ * @param {string} topic_header_text_selector jQuery selector used to select the text value containing the header value
+ * @param {string} topic_fieldset_selector jQuery selector used to select the fieldset that contains the whole topic
+ * @param {string} topics_container_selector jQuery selector used to select the parent that contains the list of topics ex: ul or form
+ * @param {string} topics_container_type ex: li or fieldset : type of element that a topic is contained in
+ * @param {string} output_wrapper ex: li or div, etc : When the header is added, what should it be wrapped in
+ */
+function add_topic_headers(topic_fieldset_selector, topic_header_text_selector, topics_container_selector, topics_container_type, output_wrapper ) {
+
+
+var list = $(topics_container_selector);//get container of topics - ex: ul or form
+list.find('.topic_dynamic_headers').remove();//remove all the headers
+
+var previous = '';//consider empty header as the previous one
+
+//for each of the topics found
+list.find(topic_fieldset_selector).each(function(index, element) {
+    
+    var textfield = $(this).find(topic_header_text_selector);//get topic header text field
+    var topic_val = $.trim(textfield.val());//get trimmed value in field
+    
+    //if this header is the same as the last - we skip (its part of previous header group)
+    if(topic_val === previous)
+        return;
+    
+    
+    previous = topic_val;//update previous with new value
+    
+    //get parent li
+    
+    var parent = $(this).parent(topics_container_type);
+    
+    //if no valid parent is found use the current object
+    //Note: Minutes page is using this property
+    if(parent.length === 0)
+        parent = $(this);
+    
+    
+    //add the header before the current li element
+    var spacer = $("<br/>");
+    var title = $("<h3/>", {text: topic_val});
+    
+    //header wrapped in desired wrapper element
+    var title_list = $("<"+output_wrapper+"/>", {class:'topic_dynamic_headers sort_ignore'}).append(spacer).append(title);
+    
+    parent.before(title_list);
+    
+});
+
+
+}
