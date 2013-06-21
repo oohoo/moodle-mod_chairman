@@ -191,24 +191,26 @@ class mod_business_mod_form extends moodleform {
                 $header_id = 'topic_header_'.$index;
                 $toform->$header_id = $topic->topic_header;
                 
-//NOTES FOR TOPIC && DEFAULT VALUE FOR NOTES------------------------------------
+                //NOTES FOR TOPIC && DEFAULT VALUE FOR NOTES------------------------------------
                 $mform->addElement('html', '</br>');
 
                 $notes_htmlformated = format_text($topic->notes, $format = FORMAT_MOODLE, $options = NULL, $courseid_do_not_use = NULL);
 
                 $mform->addElement('static', "topic_status_" . $index, get_string('topics_notes', 'chairman'), $notes_htmlformated);
 
-//------------------------------------------------------------------------------
-//STATUS OF TOPIC
+                //------------------------------------------------------------------------------
+                //STATUS OF TOPIC
                 $mform->addElement('static', "topic_status[$index]", get_string('topic_status', 'chairman'), '');
                 
-                conditionally_add_static($mform, getUserNameFromAgendaMemberID($topic->presentedby), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
+                //Presentedby fields (text and member id)
+                conditionally_add_static($mform, get_presentedby_static_value($topic), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
                 
                 
                 $mform->addElement('hidden', "topic_ids[$index]", $topic->id);
                 $mform->setType('topic_ids', PARAM_INT);
-//$mform->addElement('static', "follow_up[$index]", get_string('topic_followup', 'chairman'), '');
-//-------FILE MANAGER -- VIEW ONLY----------------------------------------------
+                
+                //$mform->addElement('static', "follow_up[$index]", get_string('topic_followup', 'chairman'), '');
+                //-------FILE MANAGER -- VIEW ONLY----------------------------------------------
                 $mform->addElement('filemanager', "attachments[" . $index . "]", get_string('attachments', 'chairman'), null, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 10, 'accepted_types' => array('*')));
 
                 $context = get_context_instance(CONTEXT_MODULE, $this->chairman_id);

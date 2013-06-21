@@ -79,6 +79,21 @@ if ($oldversion < 2013062000) {
         upgrade_mod_savepoint(true, 2013062000, 'chairman');
 }
 
+if ($oldversion < 2013062100) {
+        // Define field introformat to be added to book
+        $table = new xmldb_table('chairman_agenda_topics');
+        $field = new xmldb_field('presentedby_text', XMLDB_TYPE_TEXT);
+        
+        // Launch add field introformat
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+
+        // book savepoint reached
+        upgrade_mod_savepoint(true, 2013062100, 'chairman');
+}
+
 return $result;
 }
 

@@ -295,7 +295,7 @@ class backup_chairman_activity_structure_step extends backup_activity_structure_
         $chairman_topics = new backup_nested_element('chairman_agenda_topics');
         $chairman_topic = new backup_nested_element('chairman_agenda_topic', array('id'), array(
             'title', 'description', 'duration', 'notes', 'filename', 'follow_up', 'status','hidden',
-            'modifiedby', 'timemodified', 'timecreated', 'topic_order', 'topic_header', 'presentedby'));
+            'modifiedby', 'timemodified', 'timecreated', 'topic_order', 'topic_header', 'presentedby', 'presentedby_text'));
         
         return array($chairman_topic,$chairman_topics);
     }

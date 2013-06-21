@@ -192,7 +192,8 @@
         <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="follow_up" NEXT="hidden"/>
         <FIELD NAME="hidden" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Check if topic is hidden. This is for default topics." PREVIOUS="status" NEXT="modifiedby"/>
         <FIELD NAME="modifiedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="hidden" NEXT="presentby"/>
-        <FIELD NAME="presentedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="modifiedby" NEXT="timemodified"/>
+        <FIELD NAME="presentedby" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Userid" PREVIOUS="modifiedby" NEXT="presentedby_text"/>
+        <FIELD NAME="presentedby_text" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="" PREVIOUS="presentedby" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="modifiedby" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="topic_order"/>
         <FIELD NAME="topic_order" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timecreated" NEXT="topic_header"/>

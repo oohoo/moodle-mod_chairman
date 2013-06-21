@@ -425,4 +425,37 @@ function output_export_pdf_image() {
     
     return getUserName($member->user_id);
     }
+    
+    
+    /**
+     * Retrieves the appropriate string value for the static presentedby fields
+     * Contains the value of the committee member and text field member
+     *  -Conditional on if they exist 
+     * 
+     * @param object $topic
+     */
+    function get_presentedby_static_value($topic) {
+        $presentedby_string = '';
+                    
+            $presentedby = $topic->presentedby;
+
+            if($presentedby != null) {//moodle dropdown has member
+                if($topic->presentedby_text != '') {//check if text box has value
+                    //both select and dropdown have presenters
+                    $presentedby_string = getUserNameFromAgendaMemberID($presentedby) . " & " . $topic->presentedby_text;
+                } else {
+                    //only select has member
+                   $presentedby_string = getUserNameFromAgendaMemberID($presentedby); 
+                } 
+            } else {
+                //only text has member
+                if($topic->presentedby_text != '') {
+                    $presentedby_string = $topic->presentedby_text;
+                }
+            }
+        
+            return $presentedby_string;   
+    }
+    
+    
 ?>

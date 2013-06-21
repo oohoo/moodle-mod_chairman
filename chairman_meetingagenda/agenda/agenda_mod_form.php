@@ -93,8 +93,16 @@ $repeatarray=array();
     $mform->setType('topic_title', PARAM_TEXT);
     $repeatarray[] = $mform->createElement('text', 'duration_topic', get_string('duration_agenda', 'chairman'),"");
     $mform->setType('duration_topic', PARAM_TEXT);
-    $repeatarray[] = $mform->createElement('select', "presentedby", get_string('agenda_presentedby', 'chairman'), $chairmanmembers, $attributes = null);
+    
+    $presentedby_group = array();
+    $presentedby_group[] =& $mform->createElement('select', "presentedby", '', $chairmanmembers, $attributes = null);
     $mform->setType('presentedby', PARAM_INT);
+    
+    $presentedby_group[] =& $mform->createElement('text', 'presentedby_text');
+    $mform->setType('presentedby_text', PARAM_TEXT);
+    
+    $repeatarray[]= $mform->createElement('group', 'presentedby_group', get_string('agenda_presentedby', 'chairman'), $presentedby_group);
+    $mform->setType('presentedby_group', PARAM_RAW);
     
     $header_group = array();
     $header_group[] =& $mform->createElement('text', 'topic_header', '', array('class'=>"topic_header_text"));

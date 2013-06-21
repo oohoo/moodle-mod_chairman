@@ -288,7 +288,9 @@ class mod_business_mod_form extends moodleform {
                 //STATUS OF TOPIC
                 $mform->addElement('html', '</br>');
                 
-                conditionally_add_static($mform, getUserNameFromAgendaMemberID($topic->presentedby), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
+                
+                
+                conditionally_add_static($mform, get_presentedby_static_value($topic), "presentedby[$index]", get_string('agenda_presentedby', 'chairman'));
                 
                 $mform->addElement('select', "topic_status[$index]", get_string('topic_status', 'chairman'), $topic_statuses, $attributes = null);
                 $mform->setType('topic_status', PARAM_TEXT);

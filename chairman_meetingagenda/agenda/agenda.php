@@ -183,13 +183,13 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
             $duration_topic = $_REQUEST['duration_topic'];
             $topic_description = $_REQUEST['topic_description'];
             $topic_files = $_REQUEST['attachments'];
-            $topic_presentedbys = $_REQUEST['presentedby'];
+            $topic_presentedbys = $_REQUEST['presentedby_group'];
             $topic_header_groups = $_REQUEST['topic_header_group'];
 
 //for each topic_id that is returned in array
             foreach ($_REQUEST['topic_id'] as $key => $topic_id) {
 
-                $topic_presentedby = $topic_presentedbys[$key] == '' ? NULL : $topic_presentedbys[$key];
+                $topic_presentedby = $topic_presentedbys[$key]['presentedby'] == '' ? NULL : $topic_presentedbys[$key]['presentedby'];
 
                 if ($topic_id == '') { //if the topic_id is empty, then it is not in the database
                     $topic_object = new stdClass(); //object representing new database row
@@ -198,10 +198,10 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                     $topic_object->description = $topic_description[$key];
                     $topic_object->duration = $duration_topic[$key];
                     $topic_object->presentedby = $topic_presentedby;
+                    $topic_object->presentedby_text = $topic_presentedbys[$key]['presentedby_text'];
                     $topic_object->notes = NULL;
                     $topic_object->follow_up = NULL;
                     $topic_object->follow_up = NULL;
-                    $topic_object->presentedby = NULL;
                     $topic_object->hidden = 0;
                     $topic_object->status = 'open';
                     $topic_object->modifiedby = $USER->id;
@@ -266,7 +266,7 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
             $topic_descriptions = $fromform->topic_description;
             $topic_title = $fromform->topic_title;
             $topic_duration = $fromform->duration_topic;
-            $topic_presentedbys = $fromform->presentedby;
+            $topic_presentedbys = $fromform->presentedby_group;
             $topic_header_groups = $_REQUEST['topic_header_group'];
 
             //for each topic_id
@@ -276,7 +276,8 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                     $topic_id = 0;
                 }
 
-                $topic_presentedby = (isset($topic_presentedbys[$key]) && $topic_presentedbys[$key] != '') ? $topic_presentedbys[$key] : NULL;
+                $topic_presentedby_raw = $topic_presentedbys[$key]['presentedby'];
+                $topic_presentedby = (isset($topic_presentedby_raw) && $topic_presentedby_raw != '') ? $topic_presentedby_raw : NULL;
 
                 if ($DB->record_exists('chairman_agenda_topics', array('id' => $topic_id))) { //Topic Exists
                     $record = $DB->get_record('chairman_agenda_topics', array('id' => $topic_id)); //get topic record
@@ -287,11 +288,14 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                         $count = 0; // otherwise it is a new topic, and something has gone terribly wrong(should never happen)
                     }
 
+                    
+                    
                     //Get all updated information from form elements
                     $topic_object = new stdClass();
                     $topic_object->id = $topic_id;
                     $topic_object->description = $topic_descriptions[$key];
                     $topic_object->presentedby = $topic_presentedby;
+                    $topic_object->presentedby_text = $topic_presentedbys[$key]['presentedby_text'];
                     $topic_object->title = $topic_title[$key];
                     $topic_object->duration = $topic_duration[$key];
                     $topic_object->timemodified = time();
@@ -317,6 +321,7 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                     $topic_object->title = $topic_title[$key];
                     $topic_object->description = $topic_descriptions[$key];
                     $topic_object->presentedby = $topic_presentedby;
+                    $topic_object->presentedby_text = $topic_presentedbys[$key]['presentedby_text'];
                     $topic_object->duration = $topic_duration[$key];
                     $topic_object->notes = NULL;
                     $topic_object->filename = NULL;
@@ -462,7 +467,8 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                 $toform->duration_topic[$index] = $topic->duration;
                 $toform->topic_description[$index] = $topic->description;
                 $toform->topic_id[$index] = $topic->id;
-                $toform->presentedby[$index] = $topic->presentedby;
+                $toform->presentedby_group[$index]['presentedby'] = $topic->presentedby;
+                $toform->presentedby_group[$index]['presentedby_text'] = $topic->presentedby_text;
 
                 $toform->topic_header_group[$index]['topic_header'] = $topic->topic_header;
                 
@@ -603,21 +609,15 @@ function agenda_viewonly($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
         $topics = $DB->get_records('chairman_agenda_topics', array('chairman_agenda' => $agenda_id), $sort = 'topic_order ASC, timecreated ASC', $fields = '*', $limitfrom = 0, $limitnum = 0);
 
         $index = 0;
-
-        // print_object($topics);
-
         foreach ($topics as $topic) {
 
             $toform->topic_title[$index] = $topic->title;
             $toform->duration_topic[$index] = $topic->duration;
             $toform->topic_description[$index] = $topic->description;
             $toform->topic_id[$index] = $topic->id;
+
+             $toform->presentedby[$index] = get_presentedby_static_value($topic);
             
-            $presentedby = $topic->presentedby;
-
-            if ($presentedby != null)
-                $toform->presentedby[$index] = getUserNameFromAgendaMemberID($presentedby);
-
             $toform->topic_header_group[$index]['topic_header'] = $topic->topic_header;
 
             //Set up files for each topic
