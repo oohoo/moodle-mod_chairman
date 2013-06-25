@@ -79,7 +79,7 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
     
 }
 
-export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 0);
+export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 1);
 
 
 

@@ -150,7 +150,7 @@ function conditionally_add_static($mform, $data, $html_id, $string_label) {
     }
 }
 
-function export_pdf_dialog($event_id, $agenda_id, $chairman_id, $cm_instance, $plain_pdf) {
+function export_pdf_dialog($event_id, $agenda_id, $chairman_id, $cm_instance, $minutesIncluded) {
     global $CFG, $DB;
 
     echo "<div id='pdf_export_dialog' title='" . get_string('export', 'chairman') . " PDF'>";
@@ -202,9 +202,9 @@ function export_pdf_dialog($event_id, $agenda_id, $chairman_id, $cm_instance, $p
 
     echo "<span style='font-size:x-small;font-style:italic;' id='export_pdf_form_info'></span>";
 
-    require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/pdf.php");
-    $pdf = new pdf_creator($event_id, $agenda_id, $chairman_id, $cm_instance);
-    $pdf->set_plain_pdf($plain_pdf);
+    require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/chairman_pdf.php");
+    $pdf = new chairman_pdf_creator($event_id, $agenda_id, $chairman_id, $cm_instance);
+    $pdf->setMinutesIncluded($minutesIncluded);
     $context = get_context_instance(CONTEXT_MODULE, $chairman_id);
 
 
@@ -226,7 +226,7 @@ function export_pdf_dialog($event_id, $agenda_id, $chairman_id, $cm_instance, $p
     $current_page_URL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
 
     echo "<input type='hidden' id='event_id' name='event_id' value='$event_id'/>";
-    echo "<input type='hidden' id='plain_pdf' name='plain_pdf' value='$plain_pdf'/>";
+    echo "<input type='hidden' id='minutesIncluded' name='minutesIncluded' value='$minutesIncluded'/>";
     echo "<input type='hidden' id='return_url' name='return_url' value='" . $current_page_URL . ";'/>";
 
     echo "<input type='hidden' id='private_pdf_avaliable' name='private_pdf_avaliable' value='$private_avaliable' />";
@@ -306,7 +306,7 @@ function js_function($func, $params) {
  * 
  * @param object $context
  * @param string $save_security "private" or "public" to indicate whether the file is a private or public chairman file
- * @param pdf_creator $pdf
+ * @param chairman_pdf_creator $pdf
  */
 function generate_pdf_fileinfo($context, $save_security, $pdf) {
 
@@ -318,7 +318,7 @@ function generate_pdf_fileinfo($context, $save_security, $pdf) {
         'filearea' => 'chairman' . $private,
         'itemid' => 0,
         'filepath' => "/" . $pdf->get_event_name() . "/", // any path beginning and ending in /
-        'filename' => $pdf->get_title($pdf->is_plain_pdf())); // any filename
+        'filename' => $pdf->get_title($pdf->isMinutesIncluded())); // any filename
 
     return $fileinfo;
 }
@@ -456,6 +456,28 @@ function output_export_pdf_image() {
         
             return $presentedby_string;   
     }
+    
+    /**
+ * Determines the duration of a given event.
+ * 
+ * @param object $event Event record
+ * @return string representing the duration of the event
+ */
+function find_event_duration($event) {
+    //Find Duration
+    //Start TimeStamp
+    $eventstart = $event->day . '-' . $event->month . '-' . $event->year . ' ' . $event->starthour . ':' . $event->startminutes;
+    $Start = strtotime($eventstart);
+    //End TImestamp
+    $eventstart = $event->day . '-' . $event->month . '-' . $event->year . ' ' . $event->endhour . ':' . $event->endminutes;
+    $End = strtotime($eventstart);
+
+    //Durations in secs
+    $durationInSecs = $End - $Start;
+
+
+    return formatTime($durationInSecs);
+}
     
     
 ?>

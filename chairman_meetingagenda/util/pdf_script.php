@@ -30,7 +30,7 @@ require_once("../lib.php");
 
 
 $event_id = required_param('event_id', PARAM_INT); // event ID
-$plain_pdf = required_param('plain_pdf', PARAM_INT); // event ID
+$minutesIncluded = required_param('minutesIncluded', PARAM_INT); // event ID
 
 global $DB, $PAGE, $USER;
 
@@ -101,10 +101,11 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
     $export_type = optional_param("export_pdf_type", "download", PARAM_TEXT);
     $export_link_security = optional_param("export_email_type", "private", PARAM_TEXT);
 
-    require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/pdf.php");
-    $pdf = new pdf_creator($event_id, $agenda_id, $chairman_id, $cm->instance);
-    $pdf->create_pdf($plain_pdf);
-
+    require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/util/chairman_pdf.php");
+    $pdf = new chairman_pdf_creator($event_id, $agenda_id, $chairman_id, $cm->instance);
+    $pdf->create_pdf($minutesIncluded);
+    
+    
     //check if want to save
     if ($save)
         save_pdf($credentials, $save_security, $context, $pdf);

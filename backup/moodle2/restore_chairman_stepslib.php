@@ -88,6 +88,7 @@ class restore_chairman_activity_structure_step extends restore_activity_structur
         $this->add_related_files('mod_chairman', 'attachement', 'filename');
         $this->add_related_files('mod_chairman', 'chairman', null);
         $this->add_related_files('mod_chairman', 'chairman_private', null);
+        $this->add_related_files('mod_chairman', 'chairman_logo', null);
     }
 
     /**

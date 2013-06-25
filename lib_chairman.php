@@ -411,12 +411,7 @@ function chairman_check($id, $silent = false, $redirect = true) {
     $context = get_context_instance(CONTEXT_USER, $USER->id);
 
     global $cm;
-    //Set session logo
-    if (!empty($chairman->logo)) {
-        $SESSION->chairman_logo = "$CFG->dirroot/mod/chairman/img/logos/$chairman->logo";
-    } else {
-        $SESSION->chairman_logo = "$CFG->dirroot/mod/chairman/img/blank.jpg";
-    }
+
     //If not a member, get out
     if ($chairman->secured == 1) {
         if ((!chairman_isMember($id)) AND (!chairman_isadmin($id))) {
@@ -763,6 +758,73 @@ function chairman_get_month($month_num) {
 
         default: return "";
     }
+}
+
+/**
+ * Retrieves the logo file for a particular chairman module
+ * 
+ * @param int $cmid course module id
+ * @return A file record of the chairman logo, or the default if not avaliable
+ */
+function chairman_get_logo_file($cmid) {
+    global $CFG;
+    
+    //get filesystem
+    $fs = get_file_storage();
+    
+    //get context
+    $context = context_module::instance($cmid);
+    
+    //get all area files in chairman logo for this context
+    //there should be at MOST: current directory "." and a logo
+    $files = $fs->get_area_files($context->id, 'mod_chairman', 'chairman_logo');
+    
+    //attempt to find logo, and if one is present - return that file
+    foreach ($files as $file) {
+        if($file->get_filename() != ".") {//do not return current directory
+            return $file;//found logo
+        }
+    }
+    
+    
+    //NO LOGO AVALIABLE - use or load default
+    //default file
+    $file = $fs->get_file($context->id, 'mod_chairman', 'chairman_logo_default', 0, '/', 'default_logo.jpeg');
+    
+    //see if default logo has already been loaded before
+    if($file) {
+         return $file;//default logo found - use it
+    }
+    
+    //default logo has never been used
+    //we are going to add it to its own filearea
+    //
+    //This is done to allow chairman to handle user uploaded logos and the default uploaded logos to be
+    //treated in the same way
+    $record = new stdClass();
+        $record->contextid = $context->id;
+        $record->component = 'mod_chairman';
+        $record->filearea = 'chairman_logo_default';
+        $record->itemid = 0;
+        $record->filename = 'default_logo.jpeg';
+        $record->filepath = '/';
+    
+    //create default logo file from a file in chairman imgs
+    $default_file = $fs->create_file_from_pathname($record, "$CFG->dirroot/mod/chairman/img/default_logo.jpeg");
+    
+    //return default
+    return $default_file;
+}
+
+/**
+ * 
+ * @param int $cmid course module id
+ * @return A file record of the chairman logo, or the default if not avaliable
+ */
+function chairman_get_logo_url($cmid) {   
+    $logo = chairman_get_logo_file($cmid);
+    
+   return moodle_url::make_pluginfile_url($logo->get_contextid(), $logo->get_component(), $logo->get_filearea(), $logo->get_itemid(), $logo->get_filepath(), $logo->get_filename());
 }
 
 ?>

@@ -78,7 +78,7 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
     //Not part of the committee in any way!
 }
 
-export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 1);
+export_pdf_dialog($event_id, $agenda->id, $chairman_id, $cm->instance, 0);
 
 //-------------------FUNCTIONS--------------------------------------------------
 //------------------------------------------------------------------------------
@@ -574,19 +574,8 @@ function agenda_viewonly($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
     $toform->date = $month . " " . $event_record->day . ", " . $event_record->year;
     $toform->time = $event_record->starthour . ":" . ZeroPaddingTime($event_record->startminutes) . "-" . $event_record->endhour . ":" . ZeroPaddingTime($event_record->endminutes);
 
-    //Find Duration
-    //Start TimeStamp
-    $eventstart = $event_record->day . '-' . $event_record->month . '-' . $event_record->year . ' ' . $event_record->starthour . ':' . $event_record->startminutes;
-    $Start = strtotime($eventstart);
-    //End TImestamp
-    $eventstart = $event_record->day . '-' . $event_record->month . '-' . $event_record->year . ' ' . $event_record->endhour . ':' . $event_record->endminutes;
-    $End = strtotime($eventstart);
 
-    //Durations in secs
-    $durationInSecs = $End - $Start;
-
-
-    $toform->duration = formatTime($durationInSecs);
+    $toform->duration = find_event_duration($event_record);
 
     //----Description ------
     //Committee has already been called in view.php, and is still a valid object but we re-queried for code claridy

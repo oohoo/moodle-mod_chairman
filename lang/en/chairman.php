@@ -485,5 +485,17 @@ $string['topics_header_label'] = 'Consecutive Topic Header: ';
 $string['topics_header_select_default'] = '-----';
 $string['standard_topics_header'] = 'Standard Topics';
 
+$string['presenter'] = 'Presenter';
 
+
+$string['moodle_guests'] = 'Moodle Guests';
+$string['guests'] = 'Guests';
+$string['duration'] = 'Duration';
+$string['motions'] = 'Motions';
+$string['description_c'] = 'Description:';
+$string['voting'] = 'Votes:';
+
+
+$string ['chairman_logo'] = "Chairman Logo";
+$string ['chairman_logo_help'] = "A logo that is used for the current chairman module. The optimal size is about 500 X 100 (can be wider or thinner width wise), and needs to be in an image format supported by moodle. ex: .jpeg, .png, etc";
 ?>

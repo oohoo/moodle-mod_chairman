@@ -58,6 +58,9 @@ class mod_chairman_mod_form extends moodleform_mod {
             $mform->setType('name', PARAM_CLEAN);
         }
         
+        /**
+         * Collapseable Menu
+         */
         $mform->addElement('header','collaps_menu_label',get_string('collaps_menu_label', 'mod_chairman'));
         $mform->addElement('static','collaps_menu_desc', '', get_string('collaps_menu_desc', 'mod_chairman'));
         
@@ -81,6 +84,23 @@ class mod_chairman_mod_form extends moodleform_mod {
         
         
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
+        
+        
+        $mform->addElement('header','chairman_logo_header',get_string('chairman_logo', 'mod_chairman'));
+        
+        
+        
+        $mform->addElement('filemanager', 'chairman_logo', get_string('chairman_logo', 'mod_chairman'), null,
+                    array('subdirs' => 0, 'maxfiles' => 1, 'accepted_types'=>array('image')));
+       
+        $mform->addHelpButton('chairman_logo', 'chairman_logo', 'chairman');
+        
+        //$draftitemid = file_get_submitted_draft_itemid('chairman_logo');
+ 
+        
+        /**
+         * ADVANCED
+         */
         $mform->addElement('header','chairman_advanced',get_string('header_advanced', 'mod_chairman'));
         
         $month_options = array();
@@ -110,8 +130,10 @@ class mod_chairman_mod_form extends moodleform_mod {
             $mform->setDefault('use_questionnaire', 0);
             $mform->addHelpButton('use_questionnaire', 'use_questionnaire', 'chairman');
         }
+        
         $mform->addElement('select','logo',get_string('logo','chairman'),$logos);
         $mform->addHelpButton('logo', 'logo', 'chairman');
+        
         $mform->addElement('hidden','forum');
         $mform->setDefault('forum', 0);
         $mform->setType('forum', PARAM_INT);
@@ -162,6 +184,17 @@ class mod_chairman_mod_form extends moodleform_mod {
         }
         
     }
+    
+        function data_preprocessing(&$default_values) {
+        if ($this->current->instance) {
+            // editing existing instance - copy existing files into draft area
+            $draftitemid = file_get_submitted_draft_itemid('chairman_logo');
+                    file_prepare_draft_area($draftitemid, $this->context->id, 'mod_chairman', 'chairman_logo', 0,
+                        array('subdirs' => 0, 'maxfiles' => 1, 'accepted_types'=>array('image')));
+            $default_values['chairman_logo'] = $draftitemid;
+        }
+    }
+    
 
 }
 ?>

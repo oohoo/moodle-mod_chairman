@@ -67,6 +67,10 @@ function chairman_add_instance($chairman) {
             chairman_add_module('questionnaire', $chairman->course, $chairman->name, $chairman->id, 'del',$chairman->questionnaire);
         }
     }
+       
+        $modcontext = context_module::instance($chairman->coursemodule);
+        file_save_draft_area_files($chairman->chairman_logo, $modcontext->id, 'mod_chairman', 'chairman_logo',
+                   0, array('subdirs' => 0, 'maxfiles' => 1, 'accepted_types'=>array('image')));
     
     chairman_update_menu_state($chairman);
     
@@ -113,6 +117,8 @@ function chairman_update_menu_state($chairman)
         
     } 
 }
+
+
 
 function chairman_update_instance($chairman, $mform=null) {
 /// Given an object containing all the necessary data, 
@@ -168,6 +174,12 @@ function chairman_update_instance($chairman, $mform=null) {
         }
         $chairman->use_questionnaire = 0;
     }
+    
+        $cm = get_coursemodule_from_instance('chairman', $chairman->id);
+        $modcontext = context_module::instance($cm->id);
+    
+        file_save_draft_area_files($chairman->chairman_logo, $modcontext->id, 'mod_chairman', 'chairman_logo',
+                   0, array('subdirs' => 0, 'maxfiles' => 1, 'accepted_types'=>array('image')));
     
     chairman_update_menu_state($chairman);
 
@@ -286,28 +298,41 @@ function chairman_supports($feature) {
  * @param bool $forcedownload
  * @return bool false if file not found, does not return if found - justsend the file
  */
-function chairman_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload)
-{
+function chairman_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload) {
     global $CFG, $DB, $USER;
+
+    //TCPDF needs images to be avaliable anonymously (uses a curl connection)
+    //Therefore for these two areas we don't care about the user being logged in.
+    if ($filearea === "chairman_logo" || $filearea === "chairman_logo_default") {
+
+        $chairmancontentid = (int) array_shift($args);
+        //Now gather file information
+        $fs = get_file_storage();
+        $relativepath = implode('/', $args);
+        $fullpath = "/$context->id/mod_chairman/$filearea/$chairmancontentid/$relativepath";
+
+        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+            return false;
+        }
+
+        send_stored_file($file, 0, 0, $forcedownload);
+    }
 
     //The following code is for security
     require_course_login($course, true, $cm);
 
-    if ($context->contextlevel != CONTEXT_MODULE)
-    {
+    if ($context->contextlevel != CONTEXT_MODULE) {
         return false;
     }
 
-    $fileareas = array('chairman', 'attachment',"chairman_private");
-    if (!in_array($filearea, $fileareas))
-    {
+    $fileareas = array('chairman', 'attachment', "chairman_private", "chairman_logo", "chairman_logo_default");
+    if (!in_array($filearea, $fileareas)) {
         return false;
     }
     //id of the content row
     $chairmancontentid = (int) array_shift($args);
 
-    if (!$tab = $DB->get_record('chairman', array('id' => $cm->instance)))
-    {
+    if (!$tab = $DB->get_record('chairman', array('id' => $cm->instance))) {
         return false;
     }
 
@@ -316,20 +341,16 @@ function chairman_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
     $relativepath = implode('/', $args);
     $fullpath = "/$context->id/mod_chairman/$filearea/$chairmancontentid/$relativepath";
 
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory())
-    {
+    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
         return false;
     }
-    
-    if($filearea === "chairman_private")
-    {
-        $cuser = $DB->get_record('chairman_members', array('user_id'=>$USER->id, 'chairman_id'=>$cm->id));
-        
-        if(!$cuser)
-        {
-            return false;  
+
+    if ($filearea === "chairman_private") {
+        $cuser = $DB->get_record('chairman_members', array('user_id' => $USER->id, 'chairman_id' => $cm->id));
+
+        if (!$cuser) {
+            return false;
         }
-            
     }
 
     // finally send the file
