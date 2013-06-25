@@ -330,7 +330,7 @@ $string['unknown_ajax_type_link']="Unknown Type provided to controller.";
 
 $string['collaps_menu_label']="Collapsible Menu Defaults";
 
-$string['collaps_menu_desc']="The navigation menu in chairman can be collapsed in order to maximize space. The follow settings determine whether the menu will be expanded by default.";
+$string['collaps_menu_desc']="The navigation menu in chairman can be collapsed in order to maximize space. Check the follow settings if you want them to be collapsed by default.";
 
 $string['collaps_menu_members']="Members ";
 $string['collaps_menu_addmembers']="Add Members ";
