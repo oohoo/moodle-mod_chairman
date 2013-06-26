@@ -43,11 +43,34 @@ echo '<span class="content">';
 echo '</span></div>';
 
 chairman_footer();
+//get members info 
+$chairman_member= $DB->get_record('chairman_members', array('id' => $member));
 
 
 $DB->delete_records('chairman_planner_response', array('planner_user_id'=>$member));
 $DB->delete_records('chairman_planner_users', array('chairman_member_id'=>$member));
 $DB->delete_records('chairman_members', array('id'=>$member));
+
+//Add to Moodle log
+$user_info = $DB->get_record('user', array('id' => $chairman_member->user_id));
+//Get role
+switch ($chairman_member->role_id) {
+    case 1:
+        $rolename = get_string('president', 'chairman');
+        break;
+    case 2:
+        $rolename = get_string('vicepresident', 'chairman');
+        break;
+    case 3:
+        $rolename = get_string('member', 'chairman');
+        break;
+    case 4:
+        $rolename = get_string('administrator', 'chairman');
+        break;
+}
+
+add_to_log($COURSE->id, 'chairman', 'delete','','User : ' . fullname($user_info). ', Role: ' . $rolename . ', Chairman: '.$chairman_name,$id);
+
 
 echo '<script type="text/javascript">';
 echo 'window.location.href="'.$CFG->wwwroot.'/mod/chairman/view.php?id='.$id.'";';

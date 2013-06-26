@@ -124,6 +124,8 @@ foreach($planners as $planner){
     echo '</table><br/><br/>';
 }
 
+//Add to logs
+add_to_log($COURSE->id, 'chairman', 'view','',get_string('viewplanner', 'chairman'),$id);
 
 //footer
 chairman_footer();

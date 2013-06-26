@@ -30,7 +30,7 @@
  * @param type $cmid
  */
 function chairman_header($cmid, $pagename, $pagelink) {
-    global $PAGE, $OUTPUT, $DB, $CFG;
+    global $PAGE, $OUTPUT, $DB, $CFG, $chairman_name;
 
     $course_mod = $DB->get_record('course_modules', array('id' => $cmid));
     $chairman = $DB->get_record('chairman', array('id' => $course_mod->instance));

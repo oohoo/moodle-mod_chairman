@@ -25,7 +25,7 @@ require_once('../../config.php');
 require_once('lib.php');
 require_once('lib_chairman.php');
 
-global $CFG, $PAGE, $OUTPUT;
+global $CFG, $PAGE, $OUTPUT, $COURSE;
 
 $id = optional_param('id',0,PARAM_INT);    // Course Module ID
 
@@ -127,6 +127,8 @@ if(chairman_isMember($id) || chairman_isadmin($id)) {
     echo '</div>';
 
 }
+//Add to Moodle log
+add_to_log($COURSE->id, 'chairman', 'view','',get_string('members', 'chairman'),$id);
 
 chairman_footer();
 

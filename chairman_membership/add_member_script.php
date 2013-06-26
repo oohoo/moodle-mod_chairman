@@ -55,6 +55,24 @@ if(!$new_member->user_id==0){ //Check if not adding an invalid user
 $DB->insert_record('chairman_members', $new_member);
 }
 
+//Add to Moodle log
+//Get role
+switch ($role) {
+    case 1:
+        $rolename = get_string('president', 'chairman');
+        break;
+    case 2:
+        $rolename = get_string('vicepresident', 'chairman');
+        break;
+    case 3:
+        $rolename = get_string('member', 'chairman');
+        break;
+    case 4:
+        $rolename = get_string('administrator', 'chairman');
+        break;
+}
+$user_info = $DB->get_record('user', array('id' => $user));
+add_to_log($COURSE->id, 'chairman', 'add','','User : ' . fullname($user_info). ', Role: ' . $rolename . ', Chairman: '.$chairman_name,$id);
 
 echo '<script type="text/javascript">';
 echo 'window.location.href="'.$CFG->wwwroot.'/mod/chairman/view.php?id='.$id.'";';

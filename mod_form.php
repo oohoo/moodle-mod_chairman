@@ -32,22 +32,6 @@ class mod_chairman_mod_form extends moodleform_mod {
         $mform    =& $this->_form;
         $this->mform = $mform;
         
-        //path to directory to scan
-        $directory = "$CFG->dirroot/mod/chairman/img/logos/";
-        
-        //get all image files with a .jpg extension.
-        $images = glob($directory."*.*");
-        
-        //$images = array('test.jpg', 'test2.gif');
-        $logos = array('' => 'Select');
-        //print each file name
-        $i = 0;
-        foreach($images as $image)
-        {
-            $logos[str_replace($directory, '', $image)] = str_replace($directory, '', $image);
-            $i++;
-        }
-        
         //chairman name
         $mform->addElement('header','chairman_general',get_string('header_general', 'mod_chairman'));
         $mform->addElement('text', 'name', get_string('name','chairman'), array('size'=>'48'));
@@ -130,10 +114,7 @@ class mod_chairman_mod_form extends moodleform_mod {
             $mform->setDefault('use_questionnaire', 0);
             $mform->addHelpButton('use_questionnaire', 'use_questionnaire', 'chairman');
         }
-        
-        $mform->addElement('select','logo',get_string('logo','chairman'),$logos);
-        $mform->addHelpButton('logo', 'logo', 'chairman');
-        
+                
         $mform->addElement('hidden','forum');
         $mform->setDefault('forum', 0);
         $mform->setType('forum', PARAM_INT);

@@ -210,5 +210,6 @@ function get_member_list($id, $planner, $elementid, $class, $rule_type) {
     
     echo "</select>";
 }
-
+//Add to logs
+add_to_log($COURSE->id, 'chairman', 'view','',get_string('newplanner', 'chairman'),$id);
 ?>
