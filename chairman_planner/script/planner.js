@@ -54,7 +54,7 @@ function planner_add_date(){
         day.datepicker({ dateFormat: "dd/mm/yy" });
 
        list.append($('<li>', {
-            value: value,
+            datevalue: value,
             text: text
         }));
         
@@ -121,7 +121,8 @@ function planner_submit(){
     	    id: 'dates',
     	    name: 'dates['+i+']',
     	    type: 'hidden',
-    	    value: $(item).attr('value')
+    	    value: $(item).attr('datevalue')
+            
     	});
     	
         element.insertAfter(lastElement);

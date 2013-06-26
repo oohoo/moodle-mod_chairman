@@ -146,7 +146,7 @@ if($planner != 0){
     foreach($dates_obj as $date_obj){
         $value = date('d/n/Y@H:i@',$date_obj->from_time).date('H:i',$date_obj->to_time);
         $text = date('M j, Y H:i - ',$date_obj->from_time).date('H:i',$date_obj->to_time);
-        echo '<li value="'.$value.'">'.$text.'</li>';
+        echo '<li datevalue="'.$value.'">'.$text.'</li>';
     }
 }
 echo '</ol>';
