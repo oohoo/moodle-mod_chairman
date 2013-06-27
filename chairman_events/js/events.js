@@ -108,9 +108,10 @@ function hide_ajax_loading()
  */
 function create_accordian()
 {
+    var active_tab = $("#current_active_month").val();
     $(".events_container").accordion({
         collapsible: true,
-        active: 0,
+        active: parseInt(active_tab, 0),
         heightStyle: "content"
     });
 }
@@ -138,7 +139,7 @@ $(function() {
     
     $(function() {
     $( ".date_time_picker" ).datepicker({
-      changeMonth: true,
+      changeMonth: false,
       changeYear: true,
       autoSize: true,
       dateFormat: "dd/mm/yy",

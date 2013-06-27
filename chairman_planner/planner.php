@@ -38,7 +38,7 @@ if(chairman_isadmin($id)){
 }
 
 //If a person is not a member(ANY ROLE-pres, member, etc), no content shown.
-if(!chairman_isMember($id)){
+if(!chairman_isMember($id) && !chairman_isadmin($id)){
    if (chairman_isadmin($id)){
        chairman_footer();
        return;
@@ -88,38 +88,43 @@ foreach($planners as $planner){
         echo '<div style="font-size:10px;font-weight:bold;margin-top:10px;margin-bottom:10px;">'.get_string('closed','chairman').'</div>';
         echo '<input type="button" value="'.get_string('viewresults','chairman').'" onclick="window.location.href=\''.$CFG->wwwroot.'/mod/chairman/chairman_planner/viewplanner.php?id='.$planner->id.'\';">';
     }
-    else{
+    else {
+        
+        $chairman_member = $DB->get_record('chairman_members', array('chairman_id' => $id, 'user_id' => $USER->id));
+        $planner_user = false;
+        
+        if ($chairman_member) {//allow site admins who aren't in chairman to view planners
+            $planner_user = $DB->get_record('chairman_planner_users', array('planner_id' => $planner->id, 'chairman_member_id' => $chairman_member->id));
+
+            //Member added to committee, trying to view event -- must add them
+            if (!$planner_user) {
+                $planner_user = new stdClass;
+                $planner_user->planner_id = $planner->id;
+                ;
+                $planner_user->chairman_member_id = $chairman_member->id;
+                $planner_user->rule = 0;  //added as optional -- someone with edit can update in planner if needed
+
+                $planner_id = $DB->insert_record('chairman_planner_users', $planner_user, $returnid = true, $bulk = false);
+                $planner_user = $DB->get_record('chairman_planner_users', array('planner_id' => $planner->id, 'chairman_member_id' => $chairman_member->id));
+            }
+        } 
 
 
-        $chairman_member = $DB->get_record('chairman_members', array('chairman_id'=>$id,'user_id'=>$USER->id));
-        $planner_user = $DB->get_record('chairman_planner_users', array('planner_id'=>$planner->id,'chairman_member_id'=>$chairman_member->id));
-
-        //Member added to committee, trying to view event -- must add them
-        if(!$planner_user){
-        $planner_user = new stdClass;
-        $planner_user->planner_id = $planner->id;;
-        $planner_user->chairman_member_id = $chairman_member->id;
-        $planner_user->rule = 0;  //added as optional -- someone with edit can update in planner if needed
-
-        $planner_id = $DB->insert_record('chairman_planner_users', $planner_user, $returnid=true, $bulk=false);
-        $planner_user = $DB->get_record('chairman_planner_users', array('planner_id'=>$planner->id,'chairman_member_id'=>$chairman_member->id));
-
-        }
-
-
-
-        if($DB->get_records('chairman_planner_response', array('planner_user_id'=>$planner_user->id))){
+      if(chairman_isMember($id)) {//site admins cannot respond if not an actual member
+        if($chairman_member && $DB->get_records('chairman_planner_response', array('planner_user_id'=>$planner_user->id))){
             echo '<div style="color:green;font-size:10px;font-weight:bold;margin-top:10px;margin-bottom:10px;">'.get_string('youhaveresponded','chairman').'</div>';
         }
         else{
             echo '<div style="color:red;font-size:10px;font-weight:bold;margin-top:10px;margin-bottom:10px;">'.get_string('youhavenotresponded','chairman').'</div>';
         }
+      }
 
         print '</td><td>';
         display_planner_results($planner->id, $id);
         print '</td></tr></table>';
 
-        echo '<input type="button" value="'.get_string('respond','chairman').'" onclick="window.location.href=\''.$CFG->wwwroot.'/mod/chairman/chairman_planner/viewplanner.php?id='.$planner->id.'\';">';
+        if(chairman_isMember($id))//site admins cannot respond if not an actual member
+            echo '<input type="button" value="'.get_string('respond','chairman').'" onclick="window.location.href=\''.$CFG->wwwroot.'/mod/chairman/chairman_planner/viewplanner.php?id='.$planner->id.'\';">';
     }
     echo '</table><br/><br/>';
 }

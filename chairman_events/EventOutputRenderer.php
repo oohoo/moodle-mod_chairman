@@ -113,11 +113,17 @@ class EventOutputRenderer {
         $min_year = getMinEventYear($this->id);
 
 
-        if ($skip_first)
+        if ($skip_first){
             list($itteration_date) = chairman_get_year_definition($this->id);
+            $itteration_date->add(new DateInterval("P1Y"));
+        }
         else
+        {
             list($a, $b, $itteration_date) = chairman_get_year_definition($this->id);
-
+            $itteration_date->add(new DateInterval("P1Y"));
+        }
+        
+        
         $end_year = new DateTime();
         $end_year->setDate($min_year, $date_time->format('m'), $date_time->format('d'));
 
@@ -156,9 +162,13 @@ class EventOutputRenderer {
      */
     public function output_year($unixnow, $itteration_date, $search, $force_first = true) {
         echo '<div class="events_container">';
-
+        $tab_counter = 0;
+        $active_tab = 0;
         list($start_date) = chairman_get_year_definition($this->id, $itteration_date);
-
+        $itteration_date->add(new DateInterval("P1Y"));
+        
+       $datetime = new DateTime();
+        
         $records = $this->get_month_event_records($itteration_date, $search);
 
         if (!empty($records) || $force_first) {
@@ -166,13 +176,13 @@ class EventOutputRenderer {
             echo '<div>';
             $this->chairman_print_events($unixnow, $records);
             echo "</div>";
+            
         }
 
         $itteration_date->sub(new DateInterval("P1M"));
         $interval = $itteration_date->diff($start_date, false);
 
         while ($interval && (($interval->invert === 1) || ($interval->invert === 0 && $interval->m === 0 && $interval->y === 0 && $interval->d === 0))) {
-
             //echo chairman_get_month($itteration_date->format('m'))."<br/>";
 
             $records = $this->get_month_event_records($itteration_date, $search);
@@ -181,6 +191,14 @@ class EventOutputRenderer {
                 continue;
             }
 
+             $tab_counter++;
+            if(($datetime->format('m') == $itteration_date->format('m')) && 
+                        $datetime->format('Y') == $itteration_date->format('Y'))
+            {
+                $active_tab = $tab_counter;
+                echo "<!-- TESTESTEST ".$datetime->format('Y')."  ".$datetime->format('m')."-->";
+            }
+            
             echo '<h3>' . chairman_get_month($itteration_date->format('m')) . ' ' . $itteration_date->format('Y') . '</h3>';
             echo '<div>';
             $this->chairman_print_events($unixnow, $records);
@@ -188,7 +206,7 @@ class EventOutputRenderer {
 
             $interval = $itteration_date->sub(new DateInterval("P1M"))->diff($start_date, false);
         }
-
+        echo '<input type="hidden" id="current_active_month" value="'.$active_tab.'"/>';
         echo '</div>'; //container
     }
 
