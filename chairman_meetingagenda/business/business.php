@@ -129,7 +129,7 @@ pdf_version($event_id);
         //Do nothing
   chairman_basic_footer();
   redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
-
+  
 
 //---------------PARTIAL SUBMIT-------------------------------------------------
 //------------------------------------------------------------------------------
@@ -200,7 +200,9 @@ pdf_version($event_id);
         }
 
         addAndUpdate_Motions($event_id, $selected_tab,$agenda_id);
-
+ //Add to logs
+ $event = $DB->get_record('chairman_events', array('id' => $event_id));
+ add_to_log($cm->course, 'chairman', 'update', '', get_string('arising_issues', 'chairman') . ' - ' .  $event->summary , $cm->id);
 chairman_basic_footer();
 //Submit ultimatly ends up redirecting the user back to tab
 redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event_id . '&selected_tab=' . $selected_tab);
@@ -214,7 +216,9 @@ redirect($CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id
         $toform->event_id = $event_id;
         $toform->selected_tab = $selected_tab;
 
-
+        //Add to logs
+        $event = $DB->get_record('chairman_events', array('id' => $event_id));
+        add_to_log($cm->course, 'chairman', 'view', '', get_string('arising_issues', 'chairman') . ' - ' .  $event->summary , $cm->id);
         $mform->set_data($toform); //Set values
 
         //Display Menu
@@ -253,6 +257,10 @@ $toform = $mform->getDefault_toform();
 $toform->event_id = $event_id;
 $toform->selected_tab = $selected_tab;
 $mform->set_data($toform);
+
+//Add to logs
+ $event = $DB->get_record('chairman_events', array('id' => $event_id));
+ add_to_log($cm->course, 'chairman', 'view', '', get_string('arising_issues', 'chairman') . ' - ' .  $event->summary , $cm->id);
 
 //Display Menu
 require_once("$CFG->dirroot/mod/chairman/chairman_meetingagenda/business/business_sidebar.php");

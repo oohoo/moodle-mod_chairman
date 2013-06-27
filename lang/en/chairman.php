@@ -167,7 +167,7 @@ $string['format_date'] = '%B %d, %Y';
 $string['guest_members'] = "Guests:";
 $string['hours'] = 'Hours';
 $string['location_agenda'] = 'Location: ';
-$string['meeting_agenda'] = 'Manage Agenda';
+$string['meeting_agenda'] = 'Agenda';
 $string['meeting_name'] = 'Meeting Name';
 $string['menu_topics'] = "Agenda Topics";
 $string['minutes_tab'] = 'Minutes';
@@ -498,4 +498,6 @@ $string['voting'] = 'Votes:';
 
 $string ['chairman_logo'] = "Chairman Logo";
 $string ['chairman_logo_help'] = "A logo that is used for the current chairman module. The optimal size is about 500 X 100 (can be wider or thinner width wise), and needs to be in an image format supported by moodle. ex: .jpeg, .png, etc";
+$string ['view_logs'] = "View logs";
+
 ?>

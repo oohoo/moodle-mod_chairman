@@ -68,7 +68,8 @@ if ($mform->is_cancelled()) {
         file_save_draft_area_files($data->public_files, $CONTEXT->id, 'mod_chairman', 'chairman',
                    0, array('subdirs' => 1, 'maxfiles' => 50));
     }
-    
+    //Add to logs
+    add_to_log($COURSE_MODULE->course, 'chairman', 'add', '', get_string('save_pdf_local', 'chairman'), $id);
     chairman_basic_footer();
     //redirect back to page
     redirect("$CFG->wwwroot/mod/chairman/chairman_filesystem/file_form.php?id=$id", null, 0);
@@ -76,7 +77,7 @@ if ($mform->is_cancelled()) {
 } else {
 
     //Display Form
-    
+    add_to_log($COURSE_MODULE->course, 'chairman', 'view', '', get_string('agenda_archive_files', 'chairman'), $id);
     $toform = new stdclass();
 
     

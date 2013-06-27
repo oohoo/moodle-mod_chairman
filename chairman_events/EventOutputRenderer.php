@@ -339,7 +339,7 @@ class EventOutputRenderer {
 
             //Find out if event is the next one in line. If so change background color
             if (($eventtimestamp >= $now) && ($nextevent == 0)) {
-                $eventstyle = 'style=background-color:#FFFFC7';
+                $eventstyle = 'style="background-color:#FFFFC7"';
                 $nextevent = 1;
             }
             else

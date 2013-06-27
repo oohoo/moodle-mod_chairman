@@ -222,11 +222,12 @@ function chairman_basic_footer() {
  * @param type $id
  */
 function chairman_menu($chairman, $pagename, $id) {
-    global $CFG, $DB;
-
+    global $CFG, $DB, $USER;
+    
     $select = "chairman_id = ? and " . $DB->sql_compare_text('page_code') . " = ?";
     $menu_state = $DB->get_record_select('chairman_menu_state', $select, array($chairman->id, $pagename));
-
+    $member = $DB->get_record('chairman_members', array('chairman_id' => $id, 'user_id' => $USER->id));
+    
     $state = 0;
     if ($menu_state && $menu_state->state == 1)
         $state = 1;
@@ -263,6 +264,15 @@ function chairman_menu($chairman, $pagename, $id) {
     if (isset($chairman->use_questionnaire) && $chairman->use_questionnaire == 1) {
 
         echo '<li><a href="' . $CFG->wwwroot . '/mod/questionnaire/view.php?id=' . $chairman->questionnaire . '" target="_blank">' . get_string('menu_questionnaire', 'chairman') . '</a></li>';
+    }
+    $role_id = '';
+    if (isset($member->role_id)) {
+        $role_id = $member->role_id;
+    }
+    if (($role_id == 1) || ($role_id == 2) || ($role_id == 4) || (chairman_isadmin($USER->id))) {
+       
+        $cm = get_coursemodule_from_id('chairman', $id);
+        echo '<li><a href="' . $CFG->wwwroot . '/report/log/index.php?chooselog=1&id=' . $cm->course . '&modid=' . $cm->id . '">' . get_string('view_logs', 'chairman') . '</a></li>';
     }
 
     echo "</ul>";

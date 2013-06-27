@@ -27,6 +27,7 @@ require_once('../lib_chairman.php');
 
 $id = required_param('id',PARAM_INT);
 $chairman_id = required_param('chairman_id',PARAM_INT);
+$cm = get_coursemodule_from_id('chairman', $chairman_id); //Course Module Object
 
 //Values from form
 
@@ -36,6 +37,8 @@ if (strlen($day) == 1) {
     $day = '0'.$day;
 }
 $month = optional_param('month',0, PARAM_INT);
+echo $month;
+die;
 $month = trim($month);
 if (strlen($month) == 1) {
     $month = '0'.$month;
@@ -97,6 +100,9 @@ $edit_event->timezone= $timezone;
 
 if (!$DB->update_record('chairman_events', $edit_event)) {
     echo 'Data was not saved';
+} else {
+    //Add to logs
+    add_to_log($cm->course, 'chairman', 'update', '', $summary, $chairman_id);
 }
 
 echo '<script type="text/javascript">';

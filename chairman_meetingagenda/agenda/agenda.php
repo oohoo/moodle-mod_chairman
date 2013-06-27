@@ -366,7 +366,9 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
                 $agenda_object->footer = $fromform->agenda_post_footer;
                 $topic_object->timemodified = time();
 
-
+                 //Add to logs
+                $event = $DB->get_record('chairman_events', array('id' => $event_id));
+                add_to_log($cm->course, 'chairman', 'update', '', get_string('agendas', 'chairman') . ' - ' .  $event->summary , $cm->id);
                 $DB->update_record('chairman_agenda', $agenda_object, $bulk = false);
             }
 
@@ -504,7 +506,8 @@ function agenda_editable($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
             $toform->topic_title[$index] = get_string('topic_title_default', 'chairman');
         }
 
-
+        //Add to logs
+        add_to_log($cm->course, 'chairman', 'view', '', get_string('agendas', 'chairman') . ' - ' .  $chairman_event->summary , $cm->id);
         $mform->set_data($toform);
         $mform->display();
 
@@ -636,7 +639,8 @@ function agenda_viewonly($agenda, $chairman_id, $event_id, $cm, $selected_tab, $
     }
 
 
-
+    //Add to logs
+    add_to_log($cm->course, 'chairman', 'view', '', get_string('agendas', 'chairman') . ' - ' .  $chairman_event->summary , $cm->id);
 
     $mform->set_data($toform);
     $mform->display();

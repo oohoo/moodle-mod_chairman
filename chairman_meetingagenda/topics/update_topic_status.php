@@ -35,6 +35,10 @@ $topic_id = $_POST['topic_id'];
 $topic_status = $_POST['status'];
 $return_url = $_POST['return_url'];
 
+//Get chairman info for logs
+$agenda_topic = $DB->get_record('chairman_agenda_topics', array('id' => $topic_id));
+$agenda = $DB->get_record('chairman_agenda', array('id' => $agenda_topic->chairman_agenda));
+$cm = get_coursemodule_from_id('chairman', $agenda->chairman_id);
 
 if($DB->record_exists('chairman_agenda_topics', array('id'=>$topic_id)))  {
 
@@ -43,6 +47,9 @@ if($DB->record_exists('chairman_agenda_topics', array('id'=>$topic_id)))  {
     $dataobject->status = $topic_status;
 
 $DB->update_record('chairman_agenda_topics', $dataobject, $bulk=false);
+$event = $DB->get_record('chairman_events', array('id' => $agenda->chairman_events_id));
+add_to_log($cm->course, 'chairman', 'update', '', get_string('open_topics_tab', 'chairman') . ' - ' .  $event->summary . ' - ' . $agenda_topic->title . ' - ' . $topic_status, $cm->id);
+
 
 }
 
