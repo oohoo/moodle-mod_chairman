@@ -391,7 +391,7 @@ class EventOutputRenderer {
             echo '<br/>';
             echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/add_event_moodle_cal.php?event_id=' . $event->id . '">' . get_string('addtomoodlecalendar', 'chairman') . '</a></br>';
             echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_events/export_event.php?event_id=' . $event->id . '">' . get_string('addtocalendar', 'chairman') . '</a></br>';
-            echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event->id . '">' . get_string('agendas', 'chairman') . '</a>';
+            echo '<a href="' . $CFG->wwwroot . '/mod/chairman/chairman_meetingagenda/view.php?event_id=' . $event->id . '">' . get_string('meeting_agenda', 'chairman') . '</a>';
             echo '</td></tr></table>';
             echo '</div>';
         }

@@ -37,6 +37,8 @@ if (strlen($day) == 1) {
     $day = '0'.$day;
 }
 $month = optional_param('month',0, PARAM_INT);
+echo $month;
+die;
 $month = trim($month);
 if (strlen($month) == 1) {
     $month = '0'.$month;
