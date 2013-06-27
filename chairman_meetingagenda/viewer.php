@@ -31,6 +31,7 @@ require_once('../lib_chairman.php');
 
 
 $chairman_id = optional_param('chairman_id', -1, PARAM_INT); // event ID
+$cm = get_coursemodule_from_id('chairman', $chairman_id); //Course Module Object
 
 //If not a member, get out
 if ((!chairman_isMember($chairman_id)) AND (!chairman_isadmin($chairman_id))) {
@@ -136,5 +137,6 @@ print_tabs($tabs, $currenttab);
 
 //Include tab content
 require_once($contents);
-
+//Add to logs
+add_to_log($cm->course, 'chairman', 'view', '', get_string('agendas', 'chairman') . ' - ' . get_string('events', 'chairman')  , $chairman_id);
 echo chairman_footer();

@@ -67,7 +67,9 @@ if ($credentials == 'president' || $credentials == 'vice' || $credentials == 'ad
                 $agenda_object->id = $agenda->id;
                 $agenda_object->completed = 1;
 
-
+                 //Add to logs
+                $event = $DB->get_record('chairman_events', array('id' => $event_id));
+                add_to_log($cm->course, 'chairman', 'update', '', get_string('agendas', 'chairman') . ' - ' .  $event->summary , $cm->id);
                 $DB->update_record('chairman_agenda', $agenda_object, $bulk = false);
             }
 redirect($CFG->wwwroot."/mod/chairman/chairman_meetingagenda/view.php?event_id=".$event_id);

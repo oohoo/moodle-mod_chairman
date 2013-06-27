@@ -28,6 +28,7 @@ require_once('./EventOutputRenderer.php');
 global $PAGE, $CFG;
 
 $id = optional_param('id', 0, PARAM_INT);    // Course Module ID
+$cm = get_coursemodule_from_id('chairman', $id);//Course Module Object
 $archive = optional_param('archive', 0, PARAM_INT);    // Course Module ID
 
 $PAGE->requires->css('/mod/chairman/chairman_events/css/event_style.css');
@@ -128,5 +129,6 @@ chairman_footer();
             $renderer->output_current_year($search);
         
     }
-
+//Add to logs
+    add_to_log($cm->course, 'chairman','view','',get_string('events', 'chairman'),$id);
 ?>

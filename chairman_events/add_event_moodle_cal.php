@@ -70,6 +70,8 @@ $moodle_event->timemodified = time();
 if(! $new_event = $DB->insert_record('event', $moodle_event)){
     print_error('cannotinsertrecord');
 } else {
+    //Add to logs
+    add_to_log($cm->course, 'chairman', 'add', '', get_string('event_added_to_mcal', 'chairman'), $cm->id);
     redirect($CFG->wwwroot."/mod/chairman/chairman_events/events.php?id=$event->chairman_id", get_string('event_added_to_mcal', 'mod_chairman'), 3);
 }
 

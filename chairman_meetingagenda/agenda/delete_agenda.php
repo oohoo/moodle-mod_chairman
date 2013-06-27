@@ -70,6 +70,9 @@ foreach ($files as $f) {
 $f->delete();
 }
 
+//Add to logs
+ $event = $DB->get_record('chairman_events', array('id' => $event_id));
+ add_to_log($cm->course, 'chairman', 'delete', '', get_string('agendas', 'chairman') . ' - ' .  $event->summary , $cm->id);
 
 $DB->delete_records('chairman_agenda_topics', array('chairman_agenda'=>$agenda_id));
 $DB->delete_records('chairman_agenda_guests', array('chairman_agenda'=>$agenda_id));
@@ -77,7 +80,7 @@ $DB->delete_records('chairman_agenda_motions', array('chairman_agenda'=>$agenda_
 $DB->delete_records('chairman_agenda_attendance', array('chairman_agenda'=>$agenda_id));
 $DB->delete_records('chairman_agenda_members', array('agenda_id'=>$agenda_id));
 $DB->delete_records('chairman_agenda', array('id'=>$agenda_id));
-
+ 
 redirect($CFG->wwwroot."/mod/chairman/view.php?id=".$chairman_id);
 
 } else {

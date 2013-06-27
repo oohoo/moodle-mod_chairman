@@ -28,6 +28,7 @@ require_once('../lib_chairman.php');
 global $CFG, $USER;
 
 $id = required_param('id',PARAM_INT);    // Course Module ID
+$cm = get_coursemodule_from_id('chairman', $id);//Course Module Object
 $edit = optional_param('edit',0,PARAM_INT);   //If editing, this points to the planner id
 
 $name = required_param('name',PARAM_TEXT);  // Planner name
@@ -51,11 +52,15 @@ if($edit != 0){
     $planner->id = $edit;
     $DB->update_record('chairman_planner',$planner);
     $planner_id = $edit;
+    //Add to logs
+    add_to_log($cm->course, 'chairman','update','',$name,$id);
 }
 else{
     $planner->active = 1;
     $planner->chairman_id = $id;
     $planner_id = $DB->insert_record('chairman_planner', $planner);
+    //Add to logs
+    add_to_log($cm->course, 'chairman','add','',$name,$id);
 }
 
 
