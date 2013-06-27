@@ -93,7 +93,7 @@ function checkSelected($mode,$status) {
 function output_open_topics($control, $chairman_id, $event_id, $selected_tab) {
 
     global $DB;
-    
+    $cm = get_coursemodule_from_id('chairman', $chairman_id);
     $date_time = new DateTime();
     $min_year = getMinEventYear($chairman_id);
     list($a, $b, $itteration_date) = chairman_get_year_definition($chairman_id);
@@ -136,6 +136,9 @@ function output_open_topics($control, $chairman_id, $event_id, $selected_tab) {
     }
     
     echo "</ul>";
+    
+    $event = $DB->get_record('chairman_events', array('id' => $event_id));
+    add_to_log($cm->course, 'chairman', 'view', '', get_string('open_topics_tab', 'chairman') . ' - ' .  $event->summary , $cm->id);
 
 
 }
