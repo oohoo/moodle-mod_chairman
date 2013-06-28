@@ -140,7 +140,7 @@ $(function() {
     $(function() {
     $( ".date_time_picker" ).datepicker({
       changeMonth: false,
-      changeYear: true,
+      changeYear: false,
       autoSize: true,
       dateFormat: "dd/mm/yy",
       defaultDate: (function() {
