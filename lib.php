@@ -361,16 +361,41 @@ function chairman_cron(){
         $week = (60*60*24)*7; //60 seconds * 60 minutes * 24 hours *7 days
         //get committee president for sending email
         $president = $DB->get_record('chairman_members', array('chairman_id' => $event->chairman_id, 'role_id' => 1));
-        //email information
-        $from = $DB->get_record('user', array('id' => $president->user_id));
+        //Add condition if the president is not defined
+        if($president === false)
+        {
+            $copresident = $DB->get_record('chairman_members', array('chairman_id' => $event->chairman_id, 'role_id' => 2));
+            if($copresident === false)
+            {
+                $adminchairman = $DB->get_record('chairman_members', array('chairman_id' => $event->chairman_id, 'role_id' => 4));
+                if($copresident === false)
+                {
+                    $from = $DB->get_record('user', array('id' => 2));
+                }
+                else
+                {
+                    $from = $DB->get_record('user', array('id' => $adminchairman->user_id));
+                }
+            }
+            else
+            {
+                $from = $DB->get_record('user', array('id' => $copresident->user_id));
+            }
+        }
+        else
+        {
+            //email information
+            $from = $DB->get_record('user', array('id' => $president->user_id));
+        }
+        
         $subject = get_string('notify_reminder', 'chairman').$event->summary;
         $emailmessage = get_string('notify_week_message', 'chairman').'<p>'.$event->description.'</p>';
+        //First get course module to retrieve instance id (The actual committee id)
+        $cm = $DB->get_record('course_modules',array('id'=>$event->chairman_id));
+        //get chairman information
+        $chairman = $DB->get_record('chairman',array('id' => $cm->instance));
+        
         if ($event->notify_week == 1){
-            
-            //First get course module to retrieve instance id (The actual committee id)
-            $cm = $DB->get_record('course_modules',array('id'=>$event->chairman_id));
-            //get chairman information
-            $chairman = $DB->get_record('chairman',array('id' => $cm->instance));
             //get date 7 days later then today
             $one_week_prior = time() + $week; //Now plus 7 days
             //Convert to human readible format
@@ -384,14 +409,15 @@ function chairman_cron(){
                 $members = $DB->get_records('chairman_members', array('chairman_id' => $event->chairman_id));
                 
                 $i=0;
-                
+                echo " Weekly email ready to be sent - {$event->summary}\n";
                 foreach ($members as $member){
                     $user = $DB->get_record('user',array('id' => $member->user_id));
                     $message[$i] = str_replace('{a}', "$user->firstname", $emailmessage);
                     $message[$i] = str_replace('{c}', "$chairman->name", $message[$i]);
                     $message[$i] = str_replace('{b}', "$event->day/$event->month/$event->year", $message[$i]);
                     //echo "$subject<br>$message[$i]<br>";
-					email_to_user($user, $from, $subject, $message[$i]);
+                    email_to_user($user, $from, $subject, strip_tags($message[$i]), $message[$i]);
+                    echo " - Weekly email sent to {$user->email}\n";
                     $i++;
                     
                 }
@@ -402,7 +428,7 @@ function chairman_cron(){
                 //enter info into DB
                 $update_event = $DB->update_record('chairman_events', $chairman_event);
             } else {
-                echo "No email sent<br>";
+                echo "No Week email sent - {$event->summary}\n";
             }    
         }
         //Now the same thing if it is a day prior
@@ -420,14 +446,15 @@ function chairman_cron(){
                 $members = $DB->get_records('chairman_members', array('chairman_id' => $event->chairman_id));
              
                 $i=0;
+                echo " Daily email ready to be sent - {$event->summary}\n";
                 foreach ($members as $member){
                     $user = $DB->get_record('user',array('id' => $member->user_id));
                     
                     $message[$i] = str_replace('{a}', "$user->firstname", $emailmessage);
                     $message[$i] = str_replace('{c}', "$chairman->name", $message[$i]);
                     $message[$i] = str_replace('{b}', "$event->day/$event->month/$event->year", $message[$i]);
-                    //echo "$subject<br>$message[$i]<br>";
-					email_to_user($user, $from, $subject, $message[$i]);
+                    email_to_user($user, $from, $subject, strip_tags($message[$i]), $message[$i]);
+                    echo " - Daily email sent to {$user->email}\n";
                     $i++;
                     
                 }
@@ -438,8 +465,7 @@ function chairman_cron(){
                 //enter info into DB
                 $update_event = $DB->update_record('chairman_events', $chairman_event);
             } else {
-                
-                echo "No email sent<br>";
+                echo "No Day email sent - {$event->summary}\n";
             }    
         }
     }

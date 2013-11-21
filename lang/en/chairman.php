@@ -129,7 +129,7 @@ $string['youhavenotresponded'] = 'You have not responded yet';
 $string['not_member'] = 'You are not a member of this committee. 
 						<ol><li>You may request to join one of the listed teams/groups and this will establish your workspace.</li>
 						<li>You may also request that a new special interest group/team be set up in a private workspace.</li>
-						</ol> For either request, email <a href="mailto:VAIC.HPV@ICID.com">VAIC.HPV@ICID.com </a>';
+						</ol> For either request, email <a href="mailto:virtualcommunities@icid.com">VIRTUALCOMMUNITIES@ICID.com </a>';
 
 
 //--------Agenda/Meeting---------

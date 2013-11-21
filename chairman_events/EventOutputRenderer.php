@@ -43,7 +43,7 @@ class EventOutputRenderer {
      * @param string $search A search criteria to filter events based on name/description.
      */
     public function output_current_year($search) {
-        return $this->output_year(time(), new DateTime(), $search);
+        return  $this->output_year(time(), new DateTime(), $search, false);
     }
 
     /**
@@ -58,7 +58,6 @@ class EventOutputRenderer {
         $this->output_yearly_itteration($search, true, function($date, $search) use ($self) {
                     echo '<h3>' . chairman_get_month($date->format('m')) . " " . ($date->format('Y') - 1) . " - " .
                     chairman_get_month($date->format('m')) . " " . ($date->format('Y')) . '</h3>';
-
                     echo '<div>';
                     $self->output_year($date->getTimestamp(), clone $date, $search, false);
                     echo '</div>';
@@ -162,12 +161,13 @@ class EventOutputRenderer {
      */
     public function output_year($unixnow, $itteration_date, $search, $force_first = true) {
         echo '<div class="events_container">';
+
         $tab_counter = 0;
         $active_tab = 0;
         list($start_date) = chairman_get_year_definition($this->id, $itteration_date);
         $itteration_date->add(new DateInterval("P1Y"));
         
-       $datetime = new DateTime();
+        $datetime = new DateTime();
         
         $records = $this->get_month_event_records($itteration_date, $search);
 
@@ -176,7 +176,6 @@ class EventOutputRenderer {
             echo '<div>';
             $this->chairman_print_events($unixnow, $records);
             echo "</div>";
-            
         }
 
         $itteration_date->sub(new DateInterval("P1M"));

@@ -75,10 +75,12 @@ echo '<div id="events_root">';
 echo '<span id="search_error" class="error"/>';
 $renderer = new EventOutputRenderer($id);
 
-if($archive)
+if($archive){
  $renderer->output_archive(null);
-else
+}
+else {
  $renderer->output_current_year(null);
+}
 
 //hidden ajax loading message
 echo '<div id="ajax_loading" style="display:none">';
