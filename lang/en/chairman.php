@@ -500,4 +500,7 @@ $string ['chairman_logo'] = "Chairman Logo";
 $string ['chairman_logo_help'] = "A logo that is used for the current chairman module. The optimal size is about 500 X 100 (can be wider or thinner width wise), and needs to be in an image format supported by moodle. ex: .jpeg, .png, etc";
 $string ['view_logs'] = "View logs";
 
-?>
+
+$string ['chairman:addinstance'] = "Chairman - Add instance";
+$string ['chairman:admin'] = "Chairman - Admin";
+
