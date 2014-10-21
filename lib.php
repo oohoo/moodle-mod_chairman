@@ -132,7 +132,7 @@ function chairman_update_instance($chairman, $mform=null) {
 
     if (isset($chairman->use_forum)){
         if ($chairman->forum == 0) {
-            $mod_id = update_module('forum', $chairman->course, $chairman->name, $chairman->id, 'add');
+            $mod_id = chairman_update_module('forum', $chairman->course, $chairman->name, $chairman->id, 'add');
             $chairman->forum = $mod_id;
             $DB->update_record('chairman', array('id'=>$chairman->id, 'forum'=>$chairman->forum));
         }
