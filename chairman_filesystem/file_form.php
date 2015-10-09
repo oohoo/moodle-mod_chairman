@@ -63,10 +63,10 @@ if ($mform->is_cancelled()) {
     if($ADMIN)
     {
         file_save_draft_area_files($data->private_files, $CONTEXT->id, 'mod_chairman', 'chairman_private',
-                   0, array('subdirs' => 1, 'maxfiles' => 50));
+                   0, array('subdirs' => 1, 'maxfiles' => 500));
         
         file_save_draft_area_files($data->public_files, $CONTEXT->id, 'mod_chairman', 'chairman',
-                   0, array('subdirs' => 1, 'maxfiles' => 50));
+                   0, array('subdirs' => 1, 'maxfiles' => 500));
     }
     //Add to logs
     add_to_log($COURSE_MODULE->course, 'chairman', 'add', '', get_string('save_pdf_local', 'chairman'), $id);
@@ -85,13 +85,13 @@ if ($mform->is_cancelled()) {
     if($PRIVATE)
     {
         $draftitemid = file_get_submitted_draft_itemid("private_files");
-        file_prepare_draft_area($draftitemid, $CONTEXT->id, 'mod_chairman', 'chairman_private', 0, array('subdirs' => 1, 'maxfiles' => 50));
+        file_prepare_draft_area($draftitemid, $CONTEXT->id, 'mod_chairman', 'chairman_private', 0, array('subdirs' => 1, 'maxfiles' => 200));
         $toform->private_files = $draftitemid;
     }
     
     //Display files for everyone who can view the page
     $draftitemid = file_get_submitted_draft_itemid('public_files');
-    file_prepare_draft_area($draftitemid, $CONTEXT->id, 'mod_chairman', 'chairman', 0, array('subdirs' => 1, 'maxfiles' => 50));
+    file_prepare_draft_area($draftitemid, $CONTEXT->id, 'mod_chairman', 'chairman', 0, array('subdirs' => 1, 'maxfiles' => 200));
     $toform->public_files = $draftitemid;
     
     //set data & display

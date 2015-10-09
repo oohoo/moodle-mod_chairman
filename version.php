@@ -23,4 +23,3 @@ $module->maturity = MATURITY_STABLE;
 $module->release = '5.0 (Build: 2013062500)';
 
 
-?>
