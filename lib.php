@@ -392,6 +392,10 @@ function chairman_cron(){
         $emailmessage = get_string('notify_week_message', 'chairman').'<p>'.$event->description.'</p>';
         //First get course module to retrieve instance id (The actual committee id)
         $cm = $DB->get_record('course_modules',array('id'=>$event->chairman_id));
+        if($cm == false)
+        {
+            continue;
+        }
         //get chairman information
         $chairman = $DB->get_record('chairman',array('id' => $cm->instance));
         
