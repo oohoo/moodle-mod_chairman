@@ -16,10 +16,11 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later                **
 **************************************************************************
 **************************************************************************/
 
-$module->version  = 2013062500;  // The current module version (Date: YYYYMMDDXX)
-$module->requires = 2012120300;  // Requires this Moodle version
-$module->cron     = 900;         // (15 minutes) Period for cron to check this module (secs)
-$module->maturity = MATURITY_STABLE;
-$module->release = '5.0 (Build: 2013062500)';
+$plugin->version  = 2016072100;  // The current module version (Date: YYYYMMDDXX)
+$plugin->requires = 2012120300;  // Requires this Moodle version
+$plugin->cron     = 900;         // (15 minutes) Period for cron to check this module (secs)
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '5.1 (Build: 2016072100)';
+$plugin->component  = 'mod_chairman';
 
 
